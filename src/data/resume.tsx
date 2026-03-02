@@ -188,7 +188,7 @@ export const DATA = {
       links: [
         {
           type: "GWM-XMD",
-          href: "/gwm-xmdbot.html",
+          href: "/gwm-xmdbot",
           icon: <Icons.globe className="size-3" />,
         },
           {
