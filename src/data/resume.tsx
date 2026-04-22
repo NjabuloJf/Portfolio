@@ -20,7 +20,7 @@ export const DATA = {
   locationLink: "https://www.google.com/maps/place/sanfrancisco",
   description:
     "sᴏғᴛᴡᴀʀᴇ ᴇɴɢɪɴᴇᴇʀ ᴛᴜʀɴᴇᴅ ᴇɴᴛʀᴇᴘʀᴇɴᴇᴜʀ. ɪ ʟᴏᴠᴇ ʙᴜɪʟᴅɪɴɢ ᴛʜɪɴɢs ᴀɴᴅ ʜᴇʟᴘɪɴɢ ᴘᴇᴏᴘʟᴇ. ᴠᴇʀʏ ᴀᴄᴛɪᴠᴇ ᴏɴ ᴡʜᴀᴛsᴀᴘᴘ ʙᴜsɪɴᴇssᴇs.",
-  summary: "", 
+  summary: "ᴀᴛ ᴛʜᴇ ᴇɴᴅ ᴏғ 2026, ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](ʜᴛᴛᴘs://ʙᴜɪʟᴅsᴘᴀᴄᴇ.sᴏ/sғ1).", 
     avatarUrl: "/me.png",
   skills: [
     { name: "React", icon: ReactLight },
