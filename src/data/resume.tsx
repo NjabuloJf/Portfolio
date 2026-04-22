@@ -134,10 +134,10 @@ export const DATA = {
   education: [
     {
       school: "welcome 🙏💃",
-      href: "https://local.com/Botswana",
-      degree: "only l say tanks for support my business",
+      href: "",
+      degree: "",
       logoUrl: "/buildspace.jpg",
-      start: "technology software",
+      start: "",
       end: "2024 to updating 2026",
     },
   ],
@@ -188,7 +188,7 @@ export const DATA = {
       links: [
         {
           type: "GWM-XMD",
-          href: "/gwm-xmdbot",
+          href: "/GWM-XMD both.html",
           icon: <Icons.globe className="size-3" />,
         },
           {
