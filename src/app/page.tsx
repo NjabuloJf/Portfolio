@@ -60,7 +60,7 @@ export default function Page() {
                 />
               </div>
               <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-4">
-                Loading Njabulo Jb
+                Loading Njabulo Jb bot
               </p>
             </div>
           </motion.div>
@@ -118,9 +118,21 @@ export default function Page() {
                   <WorkSection />
                 </BlurFade>
               </div>
+            </section>            
+            
+
+            <section id="projects">
+              <BlurFade delay={BLUR_FADE_DELAY * 11}>
+                <ProjectsSection />
+              </BlurFade>
             </section>
 
-            
+            <section id="hackathons">
+              <BlurFade delay={BLUR_FADE_DELAY * 13}>
+                <HackathonsSection />
+              </BlurFade>
+            </section>
+
             <section id="skills">
               <div className="flex min-h-0 flex-col gap-y-4">
                 <BlurFade delay={BLUR_FADE_DELAY * 9}>
@@ -137,18 +149,6 @@ export default function Page() {
                   ))}
                 </div>
               </div>
-            </section>
-
-            <section id="projects">
-              <BlurFade delay={BLUR_FADE_DELAY * 11}>
-                <ProjectsSection />
-              </BlurFade>
-            </section>
-
-            <section id="hackathons">
-              <BlurFade delay={BLUR_FADE_DELAY * 13}>
-                <HackathonsSection />
-              </BlurFade>
             </section>
 
             <section id="contact">
