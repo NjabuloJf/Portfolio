@@ -1,7 +1,7 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ChevronRight, Github, Star, GitFork, Users } from "lucide-react";
+import { ChevronRight, Github, Star, GitFork, Users, Bot } from "lucide-react";
 import { ButtonsPairs } from "@/components/buttons-pairs";
 import { NjabuloFeatures } from "@/components/njabulo-features";
 
@@ -33,7 +33,7 @@ export default async function NjabuloBotPage() {
           <div className="flex gap-2">
             <Link 
               href="https://github.com/njabulojs/njabulo-bot" 
-              target="_blank
+              target="_blank"
               className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md bg-card border border-border hover:bg-accent/50"
             >
               <Github className="size-3" />
@@ -183,4 +183,4 @@ export default async function NjabuloBotPage() {
       </BlurFade>
     </section>
   );
-          }
+              }
