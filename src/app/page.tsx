@@ -63,17 +63,8 @@ function LoadingScreen() {
 }
 
 // Search Bar Component
-function SearchBar({ onSearch }: { onSearch: (query: string) => void }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    onSearch(query);
-  };
-
+function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => void; searchQuery: string }) {
   const clearSearch = () => {
-    setSearchQuery("");
     onSearch("");
   };
 
@@ -84,7 +75,7 @@ function SearchBar({ onSearch }: { onSearch: (query: string) => void }) {
         <input
           type="text"
           value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => onSearch(e.target.value)}
           placeholder="Search projects, work, skills..."
           className="w-full h-10 pl-9 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
         />
@@ -97,6 +88,161 @@ function SearchBar({ onSearch }: { onSearch: (query: string) => void }) {
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+// Wrapper component for WorkSection with search filtering
+function WorkSectionWithSearch({ searchQuery }: { searchQuery: string }) {
+  if (!searchQuery) {
+    return <WorkSection />;
+  }
+
+  const filteredWork = DATA.work.filter(work => 
+    work.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    work.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    work.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (filteredWork.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No work experience found for "{searchQuery}"
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+      {filteredWork.map((work, id) => (
+        <BlurFade key={work.company} delay={0.05 * id}>
+          <Link
+            href={work.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+          >
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold leading-none flex items-center gap-2">
+                {work.title}
+                <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">
+                {work.company}
+              </div>
+              <div className="text-sm text-muted-foreground/80 mt-2 line-clamp-2">
+                {work.description}
+              </div>
+            </div>
+            <div className="text-xs tabular-nums text-muted-foreground shrink-0">
+              {work.start} - {work.end}
+            </div>
+          </Link>
+        </BlurFade>
+      ))}
+    </div>
+  );
+}
+
+// Wrapper component for ProjectsSection with search filtering
+function ProjectsSectionWithSearch({ searchQuery }: { searchQuery: string }) {
+  if (!searchQuery) {
+    return <ProjectsSection />;
+  }
+
+  const filteredProjects = DATA.projects?.filter(project => 
+    project.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    project.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    project.tech?.some((t: string) => t.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  if (filteredProjects?.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No projects found for "{searchQuery}"
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      {filteredProjects?.map((project, id) => (
+        <BlurFade key={project.title} delay={0.05 * id}>
+          <Link
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block p-4 border border-border rounded-lg hover:bg-accent/50 transition-all group"
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  {project.title}
+                  <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {project.tech?.map((tech: string) => (
+                    <span key={tech} className="text-xs px-2 py-0.5 bg-muted rounded-full">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Link>
+        </BlurFade>
+      ))}
+    </div>
+  );
+}
+
+// Wrapper component for HackathonsSection with search filtering
+function HackathonsSectionWithSearch({ searchQuery }: { searchQuery: string }) {
+  if (!searchQuery) {
+    return <HackathonsSection />;
+  }
+
+  const filteredHackathons = DATA.hackathons?.filter(hackathon => 
+    hackathon.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    hackathon.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    hackathon.organization?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (filteredHackathons?.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No hackathons found for "{searchQuery}"
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {filteredHackathons?.map((hackathon, id) => (
+        <BlurFade key={hackathon.name} delay={0.05 * id}>
+          <Link
+            href={hackathon.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block p-4 border border-border rounded-lg hover:bg-accent/50 transition-all group"
+          >
+            <div className="flex items-start justify-between flex-wrap gap-2">
+              <div className="flex-1">
+                <h3 className="font-semibold flex items-center gap-2">
+                  {hackathon.name}
+                  <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">{hackathon.organization}</p>
+                <p className="text-sm text-muted-foreground/80 mt-2">{hackathon.description}</p>
+              </div>
+              <div className="text-xs tabular-nums text-muted-foreground">
+                {hackathon.date}
+              </div>
+            </div>
+          </Link>
+        </BlurFade>
+      ))}
     </div>
   );
 }
@@ -114,44 +260,15 @@ export default function Page() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Filter functions for search
-  const filterProjects = (projects: any[]) => {
-    if (!searchQuery) return projects;
-    const query = searchQuery.toLowerCase();
-    return projects.filter(project => 
-      project.title?.toLowerCase().includes(query) ||
-      project.description?.toLowerCase().includes(query) ||
-      project.tech?.some((t: string) => t.toLowerCase().includes(query))
-    );
-  };
-
-  const filterWork = (work: any[]) => {
-    if (!searchQuery) return work;
-    const query = searchQuery.toLowerCase();
-    return work.filter(item => 
-      item.company?.toLowerCase().includes(query) ||
-      item.title?.toLowerCase().includes(query) ||
-      item.description?.toLowerCase().includes(query)
-    );
-  };
-
-  const filterSkills = (skills: any[]) => {
-    if (!searchQuery) return skills;
-    const query = searchQuery.toLowerCase();
-    return skills.filter(skill => 
-      skill.name?.toLowerCase().includes(query)
-    );
-  };
-
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   return (
-    <main className="min-h-dvh flex flex-col gap-14 relative">
+    <main className="min-h-dvh flex flex-col gap-14 relative pb-20">
       {/* Search Bar */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-4 border-b border-border">
-        <SearchBar onSearch={setSearchQuery} />
+        <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
       <section id="hero">
@@ -180,7 +297,7 @@ export default function Page() {
         </div>
       </section>
 
-      {(!searchQuery || (searchQuery && DATA.summary?.toLowerCase().includes(searchQuery.toLowerCase()))) && (
+      {(!searchQuery || (DATA.summary && DATA.summary.toLowerCase().includes(searchQuery.toLowerCase()))) && (
         <section id="about">
           <div className="flex min-h-0 flex-col gap-y-4">
             <BlurFade delay={BLUR_FADE_DELAY * 3}>
@@ -200,15 +317,17 @@ export default function Page() {
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-6">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <h2 className="text-xl font-bold">Work Experience</h2>
-            {searchQuery && (
-              <p className="text-sm text-muted-foreground">
-                Showing results for: "{searchQuery}"
-              </p>
-            )}
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold">Work Experience</h2>
+              {searchQuery && (
+                <span className="text-xs text-muted-foreground">
+                  Filtered by: "{searchQuery}"
+                </span>
+              )}
+            </div>
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 6}>
-            <WorkSection searchQuery={searchQuery} />
+            <WorkSectionWithSearch searchQuery={searchQuery} />
           </BlurFade>
         </div>
       </section>
@@ -288,18 +407,39 @@ export default function Page() {
                 </BlurFade>
               ))}
           </div>
+          {searchQuery && DATA.skills.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+            <p className="text-center text-sm text-muted-foreground py-4">
+              No skills found for "{searchQuery}"
+            </p>
+          )}
         </div>
       </section>
 
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
-          <ProjectsSection searchQuery={searchQuery} />
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Projects</h2>
+            {searchQuery && (
+              <span className="text-xs text-muted-foreground">
+                Filtered by: "{searchQuery}"
+              </span>
+            )}
+          </div>
+          <ProjectsSectionWithSearch searchQuery={searchQuery} />
         </BlurFade>
       </section>
 
       <section id="hackathons">
         <BlurFade delay={BLUR_FADE_DELAY * 13}>
-          <HackathonsSection searchQuery={searchQuery} />
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Hackathons</h2>
+            {searchQuery && (
+              <span className="text-xs text-muted-foreground">
+                Filtered by: "{searchQuery}"
+              </span>
+            )}
+          </div>
+          <HackathonsSectionWithSearch searchQuery={searchQuery} />
         </BlurFade>
       </section>
 
@@ -311,10 +451,10 @@ export default function Page() {
 
       {/* Search Results Summary */}
       {searchQuery && (
-        <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs shadow-lg">
+        <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs shadow-lg z-50">
           🔍 Searching: "{searchQuery}"
         </div>
       )}
     </main>
   );
-    }
+          }
