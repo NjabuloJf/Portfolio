@@ -12,7 +12,8 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, ChevronUp, Rocket, Bot, Sparkles } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, ChevronUp, Rocket, Bot, Sparkles, Music } from "lucide-react";
+import { MusicPlayer } from "@/components/music-player";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -116,8 +117,8 @@ function ScrollDownArrow() {
   );
 }
 
-// Scroll Up Arrow Component with Rocket and AI Icons
-function ScrollUpArrow() {
+// Scroll Up Arrow Component with Rocket, AI, and Music Icons
+function ScrollUpArrow({ onOpenMusic }: { onOpenMusic: () => void }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -148,6 +149,16 @@ function ScrollUpArrow() {
 
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2">
+      {/* Music Button */}
+      <button
+        onClick={onOpenMusic}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 hover:from-green-500/20 hover:to-emerald-500/20 transition-all duration-300 group"
+        aria-label="Open Music Player"
+      >
+        <Music className="size-4 text-green-500 group-hover:scale-110 transition-transform" />
+        <span className="text-xs text-green-600 hidden sm:inline">Music</span>
+      </button>
+      
       {/* Rocket - Projects Button */}
       <button
         onClick={scrollToProjects}
@@ -185,6 +196,7 @@ function ScrollUpArrow() {
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -199,6 +211,9 @@ export default function Page() {
 
   return (
     <main className="min-h-dvh flex flex-col gap-14 relative pb-20">
+      {/* Music Player */}
+      <MusicPlayer isOpen={isMusicPlayerOpen} onClose={() => setIsMusicPlayerOpen(false)} />
+
       {/* Search Bar */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-4 border-b border-border">
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
@@ -313,7 +328,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Projects Section - No small arrow here */}
+      {/* Projects Section */}
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
           <ProjectsSection />
@@ -334,8 +349,8 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* Scroll Up Arrows - Rocket, AI, and Top */}
-      <ScrollUpArrow />
+      {/* Scroll Up Arrows - Rocket, AI, Music, and Top */}
+      <ScrollUpArrow onOpenMusic={() => setIsMusicPlayerOpen(true)} />
 
       {/* Search Indicator */}
       {searchQuery && (
@@ -345,4 +360,4 @@ export default function Page() {
       )}
     </main>
   );
-          }
+      }
