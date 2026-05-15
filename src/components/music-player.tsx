@@ -17,7 +17,7 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // 5 Songs - Place your MP3 files in public folder
+  // 5 Songs
   const songs = [
     {
       id: 1,
@@ -56,16 +56,16 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
     }
   ];
 
-  // Reset and load new song when index changes
+  // Change song without stopping - just update source
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.load(); // Reload the new song
-      if (isPlaying) {
-        // Small delay to ensure the song is loaded before playing
+      const wasPlaying = isPlaying;
+      audioRef.current.load();
+      if (wasPlaying) {
         setTimeout(() => {
           if (audioRef.current) {
             audioRef.current.play().catch(err => {
-              console.log("Playback prevented:", err);
+              console.log("Playback error:", err);
               setIsPlaying(false);
             });
           }
@@ -103,33 +103,11 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
   };
 
   const playNext = () => {
-    // Stop current playback
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setIsPlaying(false);
-    // Change to next song
     setCurrentSongIndex((prev) => (prev + 1) % songs.length);
-    // Auto-play will be triggered by the useEffect
-    setTimeout(() => {
-      setIsPlaying(true);
-    }, 50);
   };
 
   const playPrevious = () => {
-    // Stop current playback
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setIsPlaying(false);
-    // Change to previous song
     setCurrentSongIndex((prev) => (prev - 1 + songs.length) % songs.length);
-    // Auto-play will be triggered by the useEffect
-    setTimeout(() => {
-      setIsPlaying(true);
-    }, 50);
   };
 
   const handleTimeUpdate = () => {
@@ -180,7 +158,6 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
 
   return (
     <>
-      {/* Audio Element */}
       <audio
         ref={audioRef}
         src={songs[currentSongIndex].url}
@@ -189,32 +166,32 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
         onEnded={handleSongEnd}
       />
 
-      {/* Music Player Modal */}
+      {/* White Background Music Player */}
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="bg-gradient-to-br from-purple-900/95 to-pink-900/95 rounded-2xl shadow-2xl w-96 max-w-[90%] p-6 border border-purple-500/30 animate-in fade-in zoom-in duration-300">
+        <div className="bg-white rounded-2xl shadow-2xl w-96 max-w-[90%] p-6 border border-gray-200 animate-in fade-in zoom-in duration-300">
           {/* Header */}
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-2">
-              <Music className="size-5 text-purple-400" />
-              <h3 className="text-lg font-semibold text-white">Music Player</h3>
+              <Music className="size-5 text-purple-500" />
+              <h3 className="text-lg font-semibold text-gray-800">Music Player</h3>
             </div>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <X className="size-5 text-white" />
+              <X className="size-5 text-gray-500" />
             </button>
           </div>
 
           {/* Song Info */}
           <div className="text-center mb-6">
-            <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center animate-pulse">
+            <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
               <Music className="size-10 text-white" />
             </div>
-            <h4 className="text-white font-semibold text-lg">
+            <h4 className="text-gray-800 font-semibold text-lg">
               {songs[currentSongIndex].title}
             </h4>
-            <p className="text-purple-300 text-sm">{songs[currentSongIndex].artist}</p>
+            <p className="text-gray-500 text-sm">{songs[currentSongIndex].artist}</p>
           </div>
 
           {/* Progress Bar */}
@@ -225,12 +202,12 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
               max={duration || 0}
               value={currentTime}
               onChange={handleSeek}
-              className="w-full h-1 bg-purple-700 rounded-lg appearance-none cursor-pointer"
+              className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #a855f7 ${(currentTime / duration) * 100}%, #581c87 ${(currentTime / duration) * 100}%)`
+                background: `linear-gradient(to right, #a855f7 ${(currentTime / duration) * 100}%, #e5e7eb ${(currentTime / duration) * 100}%)`
               }}
             />
-            <div className="flex justify-between text-xs text-purple-300 mt-1">
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
             </div>
@@ -240,9 +217,9 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
           <div className="flex items-center justify-center gap-4 mb-4">
             <button
               onClick={playPrevious}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all hover:scale-110"
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all hover:scale-110"
             >
-              <SkipBack className="size-6 text-white" />
+              <SkipBack className="size-6 text-gray-700" />
             </button>
             
             <button
@@ -258,9 +235,9 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
             
             <button
               onClick={playNext}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all hover:scale-110"
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all hover:scale-110"
             >
-              <SkipForward className="size-6 text-white" />
+              <SkipForward className="size-6 text-gray-700" />
             </button>
           </div>
 
@@ -268,12 +245,12 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleMute}
-              className="p-1 hover:bg-white/10 rounded transition-colors"
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
             >
               {isMuted || volume === 0 ? (
-                <VolumeX className="size-4 text-purple-300" />
+                <VolumeX className="size-4 text-gray-500" />
               ) : (
-                <Volume2 className="size-4 text-purple-300" />
+                <Volume2 className="size-4 text-gray-500" />
               )}
             </button>
             <input
@@ -283,35 +260,24 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
               step={0.01}
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="flex-1 h-1 bg-purple-700 rounded-lg appearance-none cursor-pointer"
+              className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
           </div>
 
           {/* Song List */}
-          <div className="mt-4 pt-3 border-t border-purple-700">
-            <p className="text-xs text-purple-300 mb-2">Playlist ({songs.length} songs)</p>
+          <div className="mt-4 pt-3 border-t border-gray-200">
+            <p className="text-xs text-gray-500 mb-2">Playlist ({songs.length} songs)</p>
             <div className="space-y-1 max-h-32 overflow-y-auto">
               {songs.map((song, idx) => (
                 <button
                   key={song.id}
                   onClick={() => {
-                    // Stop current playback
-                    if (audioRef.current) {
-                      audioRef.current.pause();
-                      audioRef.current.currentTime = 0;
-                    }
-                    setIsPlaying(false);
-                    // Change to selected song
                     setCurrentSongIndex(idx);
-                    // Auto-play the selected song
-                    setTimeout(() => {
-                      setIsPlaying(true);
-                    }, 50);
                   }}
                   className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${
                     currentSongIndex === idx
-                      ? "bg-purple-600/50 text-white"
-                      : "text-purple-300 hover:bg-white/10"
+                      ? "bg-purple-100 text-purple-700"
+                      : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
                   <div className="flex justify-between">
@@ -326,4 +292,4 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
       </div>
     </>
   );
-  }
+            }
