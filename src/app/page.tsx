@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, ChevronDown } from "lucide-react";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -70,6 +70,55 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
+// Scroll Down Arrow Component
+function ScrollDownArrow() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Hide arrow when user scrolls down more than 100px
+      if (window.scrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToNextSection = () => {
+    // Find the first section after hero (usually "about" section)
+    const aboutSection = document.getElementById("about");
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // Fallback: scroll down by window height
+      window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer">
+      <button
+        onClick={scrollToNextSection}
+        className="flex flex-col items-center gap-2 group"
+        aria-label="Scroll down"
+      >
+        <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+          Scroll Down
+        </span>
+        <div className="p-2 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-all duration-300">
+          <ChevronDown className="size-5 text-primary animate-pulse" />
+        </div>
+      </button>
+    </div>
+  );
+}
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,8 +141,8 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section */}
-      <section id="hero">
+      {/* Hero Section with Scroll Arrow */}
+      <section id="hero" className="relative min-h-[calc(100vh-200px)] flex items-center">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 gap-y-6 flex flex-col md:flex-row justify-between">
             <div className="gap-2 flex flex-col order-2 md:order-1">
@@ -117,6 +166,9 @@ export default function Page() {
             </BlurFade>
           </div>
         </div>
+        
+        {/* Scroll Down Arrow */}
+        <ScrollDownArrow />
       </section>
 
       {/* About Section */}
@@ -227,4 +279,4 @@ export default function Page() {
       )}
     </main>
   );
-        }
+      }
