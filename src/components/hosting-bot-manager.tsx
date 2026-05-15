@@ -232,4 +232,91 @@ export function HostingBotManager({ bots, setBots, setError }: HostingBotManager
                   <Settings className="size-3 inline mr-1" />
                   Advanced Configuration
                 </summary>
-                <div className="mt-
+                <div className="mt-2 p-2 bg-black/5 rounded overflow-x-auto">
+                  <div className="grid grid-cols-2 gap-1 text-xs">
+                    <p><strong>Auto Read:</strong> {bot.config.autoRead ? "✅" : "❌"}</p>
+                    <p><strong>Auto Typing:</strong> {bot.config.autoTyping ? "✅" : "❌"}</p>
+                    <p><strong>Auto Recording:</strong> {bot.config.autoRecording ? "✅" : "❌"}</p>
+                    <p><strong>Always Online:</strong> {bot.config.alwaysOnline ? "✅" : "❌"}</p>
+                    <p><strong>Auto React:</strong> {bot.config.autoReact ? "✅" : "❌"}</p>
+                    <p><strong>Anti Delete:</strong> {bot.config.antiDelete ? "✅" : "❌"}</p>
+                    <p><strong>Auto Status Reply:</strong> {bot.config.autoStatusReply ? "✅" : "❌"}</p>
+                    <p><strong>Auto Block:</strong> {bot.config.autoBlock ? "✅" : "❌"}</p>
+                    <p><strong>Reject Call:</strong> {bot.config.rejectCall ? "✅" : "❌"}</p>
+                    {bot.config.statusReadMsg && (
+                      <p className="col-span-2"><strong>Status Msg:</strong> {bot.config.statusReadMsg}</p>
+                    )}
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-2">
+              {bot.status === "stopped" && (
+                <button
+                  onClick={() => startBot(bot.id)}
+                  className="inline-flex items-center gap-1 px-3 py-1 text-xs rounded-lg bg-green-500 text-white hover:bg-green-600"
+                >
+                  <Play className="size-3" />
+                  Start Bot
+                </button>
+              )}
+              {bot.status === "running" && (
+                <button
+                  onClick={() => stopBot(bot.id)}
+                  className="inline-flex items-center gap-1 px-3 py-1 text-xs rounded-lg bg-yellow-500 text-white hover:bg-yellow-600"
+                >
+                  <Pause className="size-3" />
+                  Stop Bot
+                </button>
+              )}
+              {bot.status === "loading" && (
+                <button
+                  disabled
+                  className="inline-flex items-center gap-1 px-3 py-1 text-xs rounded-lg bg-gray-500 text-white cursor-not-allowed"
+                >
+                  <Loader2 className="size-3 animate-spin" />
+                  Loading (1 min)
+                </button>
+              )}
+              <button
+                onClick={() => editBotConfig(bot)}
+                className="inline-flex items-center gap-1 px-3 py-1 text-xs rounded-lg border border-border hover:bg-accent"
+              >
+                <Edit className="size-3" />
+                Edit Config
+              </button>
+              <button
+                onClick={() => deleteBot(bot.id)}
+                className="inline-flex items-center gap-1 px-3 py-1 text-xs rounded-lg border border-red-500/50 text-red-600 hover:bg-red-500/10"
+              >
+                <Trash2 className="size-3" />
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Warning when reaching limit */}
+      {bots.length >= 8 && bots.length < 10 && (
+        <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg flex items-center gap-2">
+          <AlertTriangle className="size-4 text-yellow-500" />
+          <p className="text-xs text-yellow-600">
+            You have {bots.length}/10 bots. {10 - bots.length} slots remaining.
+          </p>
+        </div>
+      )}
+
+      {bots.length >= 10 && (
+        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-2">
+          <AlertTriangle className="size-4 text-red-500" />
+          <p className="text-xs text-red-600">
+            Maximum 10 bots reached. Delete some bots to deploy more.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
