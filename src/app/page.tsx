@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, ChevronDown } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, ChevronUp, Rocket } from "lucide-react";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -76,7 +76,6 @@ function ScrollDownArrow() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Hide arrow when user scrolls down more than 100px
       if (window.scrollY > 100) {
         setIsVisible(false);
       } else {
@@ -89,12 +88,10 @@ function ScrollDownArrow() {
   }, []);
 
   const scrollToNextSection = () => {
-    // Find the first section after hero (usually "about" section)
     const aboutSection = document.getElementById("about");
     if (aboutSection) {
       aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-      // Fallback: scroll down by window height
       window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
     }
   };
@@ -116,6 +113,81 @@ function ScrollDownArrow() {
         </div>
       </button>
     </div>
+  );
+}
+
+// Scroll Up Arrow Component - Shows when scrolling down
+function ScrollUpArrow() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show arrow when scrolled past 300px
+      if (window.scrollY > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToProjects = () => {
+    const projectsSection = document.getElementById("projects");
+    if (projectsSection) {
+      projectsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2">
+      {/* Scroll to Projects Button */}
+      <button
+        onClick={scrollToProjects}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all duration-300 group"
+        aria-label="Go to Projects"
+      >
+        <Rocket className="size-4 text-primary group-hover:scale-110 transition-transform" />
+        <span className="text-xs text-primary hidden sm:inline">Projects</span>
+      </button>
+      
+      {/* Scroll to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all duration-300 group"
+        aria-label="Scroll to top"
+      >
+        <ChevronUp className="size-4 text-primary group-hover:-translate-y-1 transition-transform" />
+        <span className="text-xs text-primary hidden sm:inline">Back to Top</span>
+      </button>
+    </div>
+  );
+}
+
+// Projects Section with its own scroll arrow
+function ProjectsSectionWithArrow() {
+  return (
+    <section id="projects" className="relative">
+      <BlurFade delay={BLUR_FADE_DELAY * 11}>
+        <ProjectsSection />
+      </BlurFade>
+      
+      {/* Small arrow indicator within projects section */}
+      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
+        <div className="flex flex-col items-center gap-1 opacity-50 hover:opacity-100 transition-opacity">
+          <span className="text-[10px] text-muted-foreground">Scroll more</span>
+          <ChevronDown className="size-3 text-muted-foreground animate-bounce" />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -141,7 +213,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section with Scroll Arrow */}
+      {/* Hero Section with Scroll Down Arrow */}
       <section id="hero" className="relative min-h-[calc(100vh-200px)] flex items-center">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 gap-y-6 flex flex-col md:flex-row justify-between">
@@ -250,12 +322,8 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects">
-        <BlurFade delay={BLUR_FADE_DELAY * 11}>
-          <ProjectsSection />
-        </BlurFade>
-      </section>
+      {/* Projects Section with Arrow */}
+      <ProjectsSectionWithArrow />
 
       {/* Hackathons Section */}
       <section id="hackathons">
@@ -271,6 +339,9 @@ export default function Page() {
         </BlurFade>
       </section>
 
+      {/* Scroll Up Arrow - Shows after scrolling down */}
+      <ScrollUpArrow />
+
       {/* Search Indicator */}
       {searchQuery && (
         <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs shadow-lg z-50">
@@ -279,4 +350,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+                                    }
