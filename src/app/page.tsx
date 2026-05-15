@@ -12,9 +12,9 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Bot, Sparkles, Music } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
-import { AIAssistant } from "@/components/ai-assistant";
+import { ImageCarousel } from "@/components/image-carousel";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -72,8 +72,8 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// Bottom Buttons Component
-function BottomButtons({ onOpenMusic, onOpenAI }: { onOpenMusic: () => void; onOpenAI: () => void }) {
+// Bottom Buttons Component (Only Song and Rocket)
+function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -100,17 +100,6 @@ function BottomButtons({ onOpenMusic, onOpenAI }: { onOpenMusic: () => void; onO
 
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2">
-      {/* AI Assistant Button */}
-      <button
-        onClick={onOpenAI}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300 group"
-        aria-label="Open AI Assistant"
-      >
-        <Bot className="size-4 text-blue-500 group-hover:scale-110 transition-transform" />
-        <Sparkles className="size-3 text-purple-500 group-hover:scale-110 transition-transform" />
-        <span className="text-xs text-blue-600 hidden sm:inline">AI Assistant</span>
-      </button>
-      
       {/* Music Button */}
       <button
         onClick={onOpenMusic}
@@ -134,11 +123,45 @@ function BottomButtons({ onOpenMusic, onOpenAI }: { onOpenMusic: () => void; onO
   );
 }
 
+// 5 Images from public folder - Replace with your actual image names
+// Place your images in /public/images/ folder
+const carouselImages = [
+  {
+    src: "/images/image1.png",
+    alt: "Njabulo Jb Project 1",
+    link: "https://github.com/NjabuloJf/GWM-XMD",
+    onClick: () => console.log("Image 1 clicked")
+  },
+  {
+    src: "/images/image2.png",
+    alt: "Njabulo Jb Project 2",
+    link: "https://github.com/NjabuloJf/njabulo-bot",
+    onClick: () => console.log("Image 2 clicked")
+  },
+  {
+    src: "/images/image3.png",
+    alt: "Njabulo Jb Project 3",
+    link: "https://github.com/NjabuloJf/Portfolio",
+    onClick: () => console.log("Image 3 clicked")
+  },
+  {
+    src: "/images/image4.png",
+    alt: "Njabulo Jb Project 4",
+    link: "https://t.me/njabulojbbot",
+    onClick: () => console.log("Image 4 clicked")
+  },
+  {
+    src: "/images/image5.png",
+    alt: "Njabulo Jb Project 5",
+    link: "https://wa.me/27791234567",
+    onClick: () => console.log("Image 5 clicked")
+  }
+];
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
-  const [isAIOpen, setIsAIOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -155,9 +178,6 @@ export default function Page() {
     <main className="min-h-dvh flex flex-col gap-14 relative pb-20">
       {/* Music Player */}
       <MusicPlayer isOpen={isMusicPlayerOpen} onClose={() => setIsMusicPlayerOpen(false)} />
-      
-      {/* AI Assistant */}
-      <AIAssistant isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
 
       {/* Search Bar */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-4 border-b border-border">
@@ -188,6 +208,21 @@ export default function Page() {
               </Avatar>
             </BlurFade>
           </div>
+        </div>
+      </section>
+
+      {/* Image Carousel Section - Rectangular Images */}
+      <section id="carousel" className="py-8">
+        <div className="container mx-auto px-4">
+          <BlurFade delay={BLUR_FADE_DELAY * 2}>
+            <h2 className="text-2xl font-bold text-center mb-6">My Projects Gallery</h2>
+            <p className="text-center text-muted-foreground mb-8">
+              Click on any image to view the project
+            </p>
+          </BlurFade>
+          <BlurFade delay={BLUR_FADE_DELAY * 2.5}>
+            <ImageCarousel images={carouselImages} autoScrollInterval={4000} />
+          </BlurFade>
         </div>
       </section>
 
@@ -292,10 +327,7 @@ export default function Page() {
       </section>
 
       {/* Bottom Buttons */}
-      <BottomButtons 
-        onOpenMusic={() => setIsMusicPlayerOpen(true)} 
-        onOpenAI={() => setIsAIOpen(true)} 
-      />
+      <BottomButtons onOpenMusic={() => setIsMusicPlayerOpen(true)} />
 
       {/* Search Indicator */}
       {searchQuery && (
@@ -305,4 +337,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+        }
