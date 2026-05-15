@@ -72,22 +72,9 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// Bottom Buttons Component (Only Song and Rocket)
+// Bottom Buttons Component - MOVED HIGHER (shows immediately, not only after scroll)
 function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [isVisible, setIsVisible] = useState(true);
 
   const scrollToProjects = () => {
     const projectsSection = document.getElementById("projects");
@@ -99,63 +86,57 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2">
+    <div className="fixed bottom-32 right-8 z-50 flex flex-col gap-3">
       {/* Music Button */}
       <button
         onClick={onOpenMusic}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 hover:from-green-500/20 hover:to-emerald-500/20 transition-all duration-300 group"
+        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/40 hover:from-green-500/30 hover:to-emerald-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
         aria-label="Open Music Player"
       >
-        <Music className="size-4 text-green-500 group-hover:scale-110 transition-transform" />
-        <span className="text-xs text-green-600 hidden sm:inline">Music</span>
+        <Music className="size-5 text-green-500 group-hover:scale-110 transition-transform" />
+        <span className="text-sm font-medium text-green-600 hidden sm:inline">Music Player</span>
       </button>
       
       {/* Rocket - Projects Button */}
       <button
         onClick={scrollToProjects}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-500/10 border border-orange-500/30 hover:bg-orange-500/20 transition-all duration-300 group"
+        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-orange-500/20 border border-orange-500/40 hover:bg-orange-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
         aria-label="Go to Projects"
       >
-        <Rocket className="size-4 text-orange-500 group-hover:scale-110 group-hover:-translate-y-1 transition-transform" />
-        <span className="text-xs text-orange-600 hidden sm:inline">Projects</span>
+        <Rocket className="size-5 text-orange-500 group-hover:scale-110 group-hover:-translate-y-1 transition-transform" />
+        <span className="text-sm font-medium text-orange-600 hidden sm:inline">Projects</span>
       </button>
     </div>
   );
 }
 
-// 5 Images from public folder - Replace with your actual image names
-// Place your images in /public/images/ folder
+// 5 Images from public folder
 const carouselImages = [
   {
     src: "/images/image1.png",
     alt: "Njabulo Jb Project 1",
     link: "https://github.com/NjabuloJf/GWM-XMD",
-    onClick: () => console.log("Image 1 clicked")
   },
   {
     src: "/images/image2.png",
     alt: "Njabulo Jb Project 2",
     link: "https://github.com/NjabuloJf/njabulo-bot",
-    onClick: () => console.log("Image 2 clicked")
   },
   {
     src: "/images/image3.png",
     alt: "Njabulo Jb Project 3",
     link: "https://github.com/NjabuloJf/Portfolio",
-    onClick: () => console.log("Image 3 clicked")
   },
   {
     src: "/images/image4.png",
     alt: "Njabulo Jb Project 4",
     link: "https://t.me/njabulojbbot",
-    onClick: () => console.log("Image 4 clicked")
   },
   {
     src: "/images/image5.png",
     alt: "Njabulo Jb Project 5",
     link: "https://wa.me/27791234567",
-    onClick: () => console.log("Image 5 clicked")
-  }
+  },
 ];
 
 export default function Page() {
@@ -326,7 +307,7 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* Bottom Buttons */}
+      {/* Bottom Buttons - Moved UP (bottom-32 instead of bottom-8) */}
       <BottomButtons onOpenMusic={() => setIsMusicPlayerOpen(true)} />
 
       {/* Search Indicator */}
@@ -337,4 +318,4 @@ export default function Page() {
       )}
     </main>
   );
-        }
+      }
