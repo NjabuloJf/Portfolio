@@ -17,55 +17,78 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // 5 Songs - You can change these URLs or use local files
+  // 5 Songs - Place your MP3 files in public folder
   const songs = [
     {
       id: 1,
       title: "Song 1 - Summer Breeze",
       artist: "Njabulo Jb",
-      url: "/song.mp3", // Place your song in public/song.mp3
+      url: "/song.mp3",
       duration: "3:45"
     },
     {
       id: 2,
       title: "Song 2 - Night Dreams",
       artist: "Njabulo Jb",
-      url: "/song1.mp3", // Place your song in public/song1.mp3
+      url: "/song1.mp3",
       duration: "4:12"
     },
     {
       id: 3,
       title: "Song 3 - Morning Light",
       artist: "Njabulo Jb",
-      url: "/song2.mp3", // Place your song in public/song2.mp3
+      url: "/song2.mp3",
       duration: "3:28"
     },
     {
       id: 4,
       title: "Song 4 - Ocean Waves",
       artist: "Njabulo Jb",
-      url: "/song3.mp3", // Place your song in public/song3.mp3
+      url: "/song3.mp3",
       duration: "5:01"
     },
     {
       id: 5,
       title: "Song 5 - Starry Night",
       artist: "Njabulo Jb",
-      url: "/song4.mp3", // Place your song in public/song4.mp3
+      url: "/song4.mp3",
       duration: "4:35"
     }
   ];
 
+  // Reset and load new song when index changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load(); // Reload the new song
+      if (isPlaying) {
+        // Small delay to ensure the song is loaded before playing
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play().catch(err => {
+              console.log("Playback prevented:", err);
+              setIsPlaying(false);
+            });
+          }
+        }, 100);
+      }
+    }
+  }, [currentSongIndex]);
+
+  // Handle play/pause
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.play();
+        audioRef.current.play().catch(err => {
+          console.log("Playback error:", err);
+          setIsPlaying(false);
+        });
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentSongIndex]);
+  }, [isPlaying]);
 
+  // Handle volume
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume;
@@ -73,19 +96,40 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
   }, [volume, isMuted]);
 
   const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
   };
 
   const playNext = () => {
+    // Stop current playback
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    // Change to next song
     setCurrentSongIndex((prev) => (prev + 1) % songs.length);
-    setIsPlaying(true);
+    // Auto-play will be triggered by the useEffect
+    setTimeout(() => {
+      setIsPlaying(true);
+    }, 50);
   };
 
   const playPrevious = () => {
+    // Stop current playback
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    // Change to previous song
     setCurrentSongIndex((prev) => (prev - 1 + songs.length) % songs.length);
-    setIsPlaying(true);
+    // Auto-play will be triggered by the useEffect
+    setTimeout(() => {
+      setIsPlaying(true);
+    }, 50);
   };
 
   const handleTimeUpdate = () => {
@@ -126,6 +170,10 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
 
   const handleSongEnd = () => {
     playNext();
+  };
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
   };
 
   if (!isOpen) return null;
@@ -198,7 +246,7 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
             </button>
             
             <button
-              onClick={() => setIsPlaying(!isPlaying)}
+              onClick={togglePlayPause}
               className="p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all hover:scale-110 shadow-lg"
             >
               {isPlaying ? (
@@ -247,8 +295,18 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
                 <button
                   key={song.id}
                   onClick={() => {
+                    // Stop current playback
+                    if (audioRef.current) {
+                      audioRef.current.pause();
+                      audioRef.current.currentTime = 0;
+                    }
+                    setIsPlaying(false);
+                    // Change to selected song
                     setCurrentSongIndex(idx);
-                    setIsPlaying(true);
+                    // Auto-play the selected song
+                    setTimeout(() => {
+                      setIsPlaying(true);
+                    }, 50);
                   }}
                   className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${
                     currentSongIndex === idx
@@ -268,4 +326,4 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
       </div>
     </>
   );
-}
+  }
