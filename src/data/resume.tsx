@@ -131,7 +131,7 @@ export const DATA = {
   projects: [
     {
       title: "ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ",
-      href: "/repository.html",
+      href: "/njabulobot.html",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
@@ -149,37 +149,26 @@ export const DATA = {
           href: "/njabulobot.html",
           icon: <Icons.globe className="size-3" />,
         },
-          {
-          type: "Repository",
-          href: "/repository.html",
-          icon: <Icons.globe className="size-3" />,
-        },
       ],
-      image: "chat-collect.png",
+      image: "njabulobot.png",
     },
      {
       title: "ɢᴡᴍ-xᴍᴅ",
-      href: "/repository.html",
+      href: "/gmx-xmd.html",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
         "GWM-XMD' WhatsApp bot multi-device repository (NjabuloJ/GWM-XMD) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
       technologies: [
         "GWM-XMD",
-        "njabulo tecb",
+        "njabulo ui",
         "bot online",
-        "fana UI",
         "whatsapp chats",
       ],
       links: [
         {
           type: "GWM-XMD",
           href: "/gwm-xmdbot.html",
-          icon: <Icons.globe className="size-3" />,
-        },
-          {
-          type: "Repository",
-          href: "/repository.html",
           icon: <Icons.globe className="size-3" />,
         },
       ],
