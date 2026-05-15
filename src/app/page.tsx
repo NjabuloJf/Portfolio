@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, Rocket, Bot, Sparkles, Music } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Bot, Sparkles, Music } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { AIAssistant } from "@/components/ai-assistant";
 
@@ -72,53 +72,7 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// Scroll Down Arrow Component
-function ScrollDownArrow() {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToNextSection = () => {
-    const aboutSection = document.getElementById("about");
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
-    }
-  };
-
-  if (!isVisible) return null;
-
-  return (
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer">
-      <button
-        onClick={scrollToNextSection}
-        className="flex flex-col items-center gap-2 group"
-        aria-label="Scroll down"
-      >
-        <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-          Scroll Down
-        </span>
-        <div className="p-2 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-all duration-300">
-          <ChevronDown className="size-5 text-primary animate-pulse" />
-        </div>
-      </button>
-    </div>
-  );
-}
-
-// Bottom Buttons Component (No scroll up arrow)
+// Bottom Buttons Component
 function BottomButtons({ onOpenMusic, onOpenAI }: { onOpenMusic: () => void; onOpenAI: () => void }) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -210,8 +164,8 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section with Scroll Down Arrow */}
-      <section id="hero" className="relative min-h-[calc(100vh-200px)] flex items-center">
+      {/* Hero Section */}
+      <section id="hero" className="min-h-[calc(100vh-200px)] flex items-center">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 gap-y-6 flex flex-col md:flex-row justify-between">
             <div className="gap-2 flex flex-col order-2 md:order-1">
@@ -235,9 +189,6 @@ export default function Page() {
             </BlurFade>
           </div>
         </div>
-        
-        {/* Scroll Down Arrow */}
-        <ScrollDownArrow />
       </section>
 
       {/* About Section */}
@@ -340,7 +291,7 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* Bottom Buttons - No scroll up arrow */}
+      {/* Bottom Buttons */}
       <BottomButtons 
         onOpenMusic={() => setIsMusicPlayerOpen(true)} 
         onOpenAI={() => setIsAIOpen(true)} 
@@ -354,4 +305,4 @@ export default function Page() {
       )}
     </main>
   );
-          }
+      }
