@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download, Server, Clock, Bot, Shield, Zap, Database, Cloud } from "lucide-react";
+import { Copy, Download, Server, Clock, Bot, Cloud } from "lucide-react";
 
 export function ButtonPair() {
   const handleCopyEnv = async () => {
@@ -132,6 +132,7 @@ ENABLE_DEBUG=false`;
 
   return (
     <div className="space-y-4 mb-8">
+      {/* Main Button Pair */}
       <div className="flex flex-wrap gap-3">
         <button
           onClick={handleCopyEnv}
@@ -149,8 +150,9 @@ ENABLE_DEBUG=false`;
         </button>
       </div>
 
+      {/* Deployment Buttons */}
       <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-muted-foreground">Deploy to:</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground">🚀 Deploy to:</h3>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={deployToHeroku}
