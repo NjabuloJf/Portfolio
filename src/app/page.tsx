@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, ChevronUp, Rocket } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, ChevronUp, Rocket, Bot, Sparkles } from "lucide-react";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -116,13 +116,12 @@ function ScrollDownArrow() {
   );
 }
 
-// Scroll Up Arrow Component - Shows when scrolling down
+// Scroll Up Arrow Component with Rocket and AI Icons
 function ScrollUpArrow() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show arrow when scrolled past 300px
       if (window.scrollY > 300) {
         setIsVisible(true);
       } else {
@@ -149,14 +148,25 @@ function ScrollUpArrow() {
 
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2">
-      {/* Scroll to Projects Button */}
+      {/* Rocket - Projects Button */}
       <button
         onClick={scrollToProjects}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all duration-300 group"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-500/10 border border-orange-500/30 hover:bg-orange-500/20 transition-all duration-300 group"
         aria-label="Go to Projects"
       >
-        <Rocket className="size-4 text-primary group-hover:scale-110 transition-transform" />
-        <span className="text-xs text-primary hidden sm:inline">Projects</span>
+        <Rocket className="size-4 text-orange-500 group-hover:scale-110 group-hover:-translate-y-1 transition-transform" />
+        <span className="text-xs text-orange-600 hidden sm:inline">Projects</span>
+      </button>
+      
+      {/* AI Button */}
+      <button
+        onClick={scrollToProjects}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-300 group"
+        aria-label="Go to AI Projects"
+      >
+        <Bot className="size-4 text-purple-500 group-hover:scale-110 transition-transform" />
+        <Sparkles className="size-3 text-pink-500 group-hover:scale-110 transition-transform" />
+        <span className="text-xs text-purple-600 hidden sm:inline">AI</span>
       </button>
       
       {/* Scroll to Top Button */}
@@ -166,28 +176,9 @@ function ScrollUpArrow() {
         aria-label="Scroll to top"
       >
         <ChevronUp className="size-4 text-primary group-hover:-translate-y-1 transition-transform" />
-        <span className="text-xs text-primary hidden sm:inline">Back to Top</span>
+        <span className="text-xs text-primary hidden sm:inline">Top</span>
       </button>
     </div>
-  );
-}
-
-// Projects Section with its own scroll arrow
-function ProjectsSectionWithArrow() {
-  return (
-    <section id="projects" className="relative">
-      <BlurFade delay={BLUR_FADE_DELAY * 11}>
-        <ProjectsSection />
-      </BlurFade>
-      
-      {/* Small arrow indicator within projects section */}
-      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
-        <div className="flex flex-col items-center gap-1 opacity-50 hover:opacity-100 transition-opacity">
-          <span className="text-[10px] text-muted-foreground">Scroll more</span>
-          <ChevronDown className="size-3 text-muted-foreground animate-bounce" />
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -322,8 +313,12 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Projects Section with Arrow */}
-      <ProjectsSectionWithArrow />
+      {/* Projects Section - No small arrow here */}
+      <section id="projects">
+        <BlurFade delay={BLUR_FADE_DELAY * 11}>
+          <ProjectsSection />
+        </BlurFade>
+      </section>
 
       {/* Hackathons Section */}
       <section id="hackathons">
@@ -339,7 +334,7 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* Scroll Up Arrow - Shows after scrolling down */}
+      {/* Scroll Up Arrows - Rocket, AI, and Top */}
       <ScrollUpArrow />
 
       {/* Search Indicator */}
@@ -350,4 +345,4 @@ export default function Page() {
       )}
     </main>
   );
-                                    }
+          }
