@@ -154,7 +154,7 @@ export const DATA = {
     },
      {
       title: "ɢᴡᴍ-xᴍᴅ",
-      href: "./gmxxmd",
+      href: "/gmxxmd",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
@@ -176,7 +176,7 @@ export const DATA = {
     },
     {
       title: "ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ",
-      href: "/repository.html",
+      href: "/njabulo-telegrambot",
       dates: "last update Jeanunary 2026 version ^2.0.0¬",
       active: true,
       description:
@@ -190,7 +190,7 @@ export const DATA = {
       links: [
         {
           type: "Get Telegram Bot",
-          href: "/telegrambot.html",
+          href: "/njabulo-telegrambot",
           icon: <Icons.globe className="size-3" />,
         },
       ],
