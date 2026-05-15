@@ -1,7 +1,7 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ChevronRight, Telegram, Send, Users, MessageCircle, Bot, Zap, Shield, Database } from "lucide-react";
+import { ChevronRight, Send, Users, MessageCircle, Bot, Zap, Shield, Database, TrendingUp, Star, Gift } from "lucide-react";
 import { ButtonstPairst } from "@/components/buttonst-pairst";
 import { NjabuloTelegramFeatures } from "@/components/njabulotelegram-features";
 
@@ -36,7 +36,7 @@ export default async function NjabuloTelegramBotPage() {
               target="_blank"
               className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 hover:bg-blue-500/20"
             >
-              <Telegram className="size-3" />
+              <Send className="size-3" />
               <span>@njabulojbbot</span>
             </Link>
           </div>
