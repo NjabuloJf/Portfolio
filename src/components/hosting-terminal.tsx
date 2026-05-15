@@ -22,7 +22,6 @@ export function HostingTerminal() {
     const handleLogUpdate = () => loadLogs();
     window.addEventListener("gwm-xmd-logs-updated", handleLogUpdate);
     
-    // Auto-refresh every 3 seconds
     const interval = setInterval(loadLogs, 3000);
     
     return () => {
@@ -149,4 +148,4 @@ export function HostingTerminal() {
       </div>
     </div>
   );
-    }
+              }
