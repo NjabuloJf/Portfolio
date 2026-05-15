@@ -7,8 +7,9 @@ import { HostingTerminal } from "@/components/hosting-terminal";
 import { HostingBotManager } from "@/components/hosting-bot-manager";
 import { AlertCircle, CheckCircle, Server, Database, Shield, Bot } from "lucide-react";
 
-// Define types
+// Define consistent types
 interface BotConfig {
+  sessionId: string;
   prefix: string;
   mode: string;
   ownerName: string;
@@ -140,11 +141,11 @@ export default function HostingPage() {
         <div className="mt-8 p-4 border-t border-border text-center">
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <Shield className="size-3" />
-            <span>GWM-XMD Bot | Session ID encoded in Base64 | Max 10 bots per account</span>
+            <span>GWM-XMD Bot | Repository: NjabuloJf/GWM-XMD | Max 10 bots per account</span>
             <Database className="size-3" />
           </div>
         </div>
       </BlurFade>
     </section>
   );
-              }
+    }
