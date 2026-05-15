@@ -154,7 +154,7 @@ export const DATA = {
     },
      {
       title: "ɢᴡᴍ-xᴍᴅ",
-      href: "/gmx-xmd.html",
+      href: "/gmxxmd",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
@@ -168,7 +168,7 @@ export const DATA = {
       links: [
         {
           type: "GWM-XMD",
-          href: "/gwm-xmdbot.html",
+          href: "/gwmxmd",
           icon: <Icons.globe className="size-3" />,
         },
       ],
