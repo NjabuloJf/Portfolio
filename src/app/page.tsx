@@ -12,8 +12,9 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, ChevronUp, Rocket, Bot, Sparkles, Music } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, ChevronDown, Rocket, Bot, Sparkles, Music } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
+import { AIAssistant } from "@/components/ai-assistant";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -117,8 +118,8 @@ function ScrollDownArrow() {
   );
 }
 
-// Scroll Up Arrow Component with Rocket, AI, and Music Icons
-function ScrollUpArrow({ onOpenMusic }: { onOpenMusic: () => void }) {
+// Bottom Buttons Component (No scroll up arrow)
+function BottomButtons({ onOpenMusic, onOpenAI }: { onOpenMusic: () => void; onOpenAI: () => void }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -134,10 +135,6 @@ function ScrollUpArrow({ onOpenMusic }: { onOpenMusic: () => void }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const scrollToProjects = () => {
     const projectsSection = document.getElementById("projects");
     if (projectsSection) {
@@ -149,6 +146,17 @@ function ScrollUpArrow({ onOpenMusic }: { onOpenMusic: () => void }) {
 
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-2">
+      {/* AI Assistant Button */}
+      <button
+        onClick={onOpenAI}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300 group"
+        aria-label="Open AI Assistant"
+      >
+        <Bot className="size-4 text-blue-500 group-hover:scale-110 transition-transform" />
+        <Sparkles className="size-3 text-purple-500 group-hover:scale-110 transition-transform" />
+        <span className="text-xs text-blue-600 hidden sm:inline">AI Assistant</span>
+      </button>
+      
       {/* Music Button */}
       <button
         onClick={onOpenMusic}
@@ -168,27 +176,6 @@ function ScrollUpArrow({ onOpenMusic }: { onOpenMusic: () => void }) {
         <Rocket className="size-4 text-orange-500 group-hover:scale-110 group-hover:-translate-y-1 transition-transform" />
         <span className="text-xs text-orange-600 hidden sm:inline">Projects</span>
       </button>
-      
-      {/* AI Button */}
-      <button
-        onClick={scrollToProjects}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-300 group"
-        aria-label="Go to AI Projects"
-      >
-        <Bot className="size-4 text-purple-500 group-hover:scale-110 transition-transform" />
-        <Sparkles className="size-3 text-pink-500 group-hover:scale-110 transition-transform" />
-        <span className="text-xs text-purple-600 hidden sm:inline">AI</span>
-      </button>
-      
-      {/* Scroll to Top Button */}
-      <button
-        onClick={scrollToTop}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all duration-300 group"
-        aria-label="Scroll to top"
-      >
-        <ChevronUp className="size-4 text-primary group-hover:-translate-y-1 transition-transform" />
-        <span className="text-xs text-primary hidden sm:inline">Top</span>
-      </button>
     </div>
   );
 }
@@ -197,6 +184,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
+  const [isAIOpen, setIsAIOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -213,6 +201,9 @@ export default function Page() {
     <main className="min-h-dvh flex flex-col gap-14 relative pb-20">
       {/* Music Player */}
       <MusicPlayer isOpen={isMusicPlayerOpen} onClose={() => setIsMusicPlayerOpen(false)} />
+      
+      {/* AI Assistant */}
+      <AIAssistant isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
 
       {/* Search Bar */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-4 border-b border-border">
@@ -349,8 +340,11 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* Scroll Up Arrows - Rocket, AI, Music, and Top */}
-      <ScrollUpArrow onOpenMusic={() => setIsMusicPlayerOpen(true)} />
+      {/* Bottom Buttons - No scroll up arrow */}
+      <BottomButtons 
+        onOpenMusic={() => setIsMusicPlayerOpen(true)} 
+        onOpenAI={() => setIsAIOpen(true)} 
+      />
 
       {/* Search Indicator */}
       {searchQuery && (
@@ -360,4 +354,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+          }
