@@ -99,9 +99,9 @@ function WorkSectionWithSearch({ searchQuery }: { searchQuery: string }) {
   }
 
   const filteredWork = DATA.work.filter(work => 
-    work.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    work.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    work.description.toLowerCase().includes(searchQuery.toLowerCase())
+    work.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    work.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    work.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (filteredWork.length === 0) {
@@ -144,16 +144,16 @@ function WorkSectionWithSearch({ searchQuery }: { searchQuery: string }) {
   );
 }
 
-// Wrapper component for ProjectsSection with search filtering
+// Wrapper component for ProjectsSection with search filtering (fixed - no 'tech' property)
 function ProjectsSectionWithSearch({ searchQuery }: { searchQuery: string }) {
   if (!searchQuery) {
     return <ProjectsSection />;
   }
 
+  // Filter projects based on title and description only (since tech property doesn't exist)
   const filteredProjects = DATA.projects?.filter(project => 
     project.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    project.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    project.tech?.some((t: string) => t.toLowerCase().includes(searchQuery.toLowerCase()))
+    project.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (filteredProjects?.length === 0) {
@@ -175,19 +175,20 @@ function ProjectsSectionWithSearch({ searchQuery }: { searchQuery: string }) {
             className="block p-4 border border-border rounded-lg hover:bg-accent/50 transition-all group"
           >
             <div className="flex items-start justify-between">
-              <div>
+              <div className="flex-1">
                 <h3 className="font-semibold flex items-center gap-2">
                   {project.title}
                   <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                 </h3>
-                <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {project.tech?.map((tech: string) => (
-                    <span key={tech} className="text-xs px-2 py-0.5 bg-muted rounded-full">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                {project.dates && (
+                  <p className="text-xs text-muted-foreground mt-1">{project.dates}</p>
+                )}
+                <p className="text-sm text-muted-foreground/80 mt-2">{project.description}</p>
+                {project.active !== undefined && (
+                  <span className={`inline-block text-xs px-2 py-0.5 rounded-full mt-2 ${project.active ? 'bg-green-500/10 text-green-600' : 'bg-gray-500/10 text-gray-600'}`}>
+                    {project.active ? 'Active' : 'Inactive'}
+                  </span>
+                )}
               </div>
             </div>
           </Link>
@@ -457,4 +458,4 @@ export default function Page() {
       )}
     </main>
   );
-          }
+        }
