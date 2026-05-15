@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Terminal, Trash2, Copy, Check, AlertCircle, Info, CheckCircle, Loader2, Github } from "lucide-react";
+import { Terminal, Trash2, Copy, Check, AlertCircle, Info, CheckCircle, Github } from "lucide-react";
 
 interface LogEntry {
   id: number;
