@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download, Server, Clock, Bot, Cloud } from "lucide-react";
+import { Copy, Download, Server, Clock, Cloud } from "lucide-react";
 
 export function ButtonPair() {
   const handleCopyEnv = async () => {
@@ -179,4 +179,4 @@ ENABLE_DEBUG=false`;
       </div>
     </div>
   );
-}
+                  }
