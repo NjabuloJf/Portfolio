@@ -4,19 +4,17 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { paginate, normalizePage } from "@/lib/pagination";
 import { ChevronRight } from "lucide-react";
-import { ButtonPair } from "@/components/button-pair";
-import { GWMXFeatures } from "@/components/gwm-features";
 
 export const metadata: Metadata = {
-  title: "Blog | GWM-XMD WhatsApp Bot",
-  description: "Thoughts on software development, life, and more. GWM-XMD WhatsApp Bot deployment and management.",
+  title: "Blog",
+  description: "Thoughts on software development, life, and more.",
   openGraph: {
-    title: "Blog | GWM-XMD WhatsApp Bot",
-    description: "Thoughts on software development, life, and more. GWM-XMD WhatsApp Bot deployment and management.",
+    title: "Blog",
+    description: "Thoughts on software development, life, and more.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog | GWM-XMD WhatsApp Bot",
+    title: "Blog",
     description: "Thoughts on software development, life, and more.",
   },
 };
@@ -49,18 +47,10 @@ export default async function BlogPage({
   return (
     <section id="blog">
       <BlurFade delay={BLUR_FADE_DELAY}>
-        <h1 className="text-2xl font-semibold tracking-tight mb-2">
-          Blog <span className="ml-1 bg-card border border-border rounded-md px-2 py-1 text-muted-foreground text-sm">{sortedPosts.length} posts</span>
-        </h1>
+        <h1 className="text-2xl font-semibold tracking-tight mb-2">Blog <span className="ml-1 bg-card border border-border rounded-md px-2 py-1 text-muted-foreground text-sm">{sortedPosts.length} posts</span></h1>
         <p className="text-sm text-muted-foreground mb-8">
-          GWM-XMD WhatsApp Bot - Advanced WhatsApp bot with AI, games, and group management features.
+          My thoughts on software development, life, and more.
         </p>
-      </BlurFade>
-
-      {/* Client Components - Interactive elements */}
-      <BlurFade delay={BLUR_FADE_DELAY * 1.5}>
-        <ButtonPair />
-        <GWMXFeatures />
       </BlurFade>
 
       {paginatedPosts.length > 0 ? (
@@ -148,4 +138,4 @@ export default async function BlogPage({
       )}
     </section>
   );
-}
+          }
