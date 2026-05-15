@@ -220,7 +220,7 @@ export const DATA = {
     },
     {
       title: "ᴍᴇssᴀɢᴇ ᴏʀ ғᴏʟʟᴏᴡ ᴍᴇ",
-      href: "/repository.html",
+      href: "/contacts",
       dates: "my media am in tiktok & Facebook & Instagram & YouTube",
       active: true,
       description:
@@ -234,13 +234,8 @@ export const DATA = {
       ],
       links: [
         {
-          type: "Call Me",
-          href: "/call.html",
-          icon: <Icons.globe className="size-3" />,
-        },
-        {
           type: "Me on Social Media",
-          href: "/message.html",
+          href: "/contacts",
           icon: <Icons.globe className="size-3" />,
         },
       ],
