@@ -255,11 +255,16 @@ export function HostingButtons({ bots, setBots, setError, appJsonConfig }: Hosti
         <p className="text-xs text-blue-600 flex items-start gap-2">
           <AlertTriangle className="size-3 mt-0.5 shrink-0" />
           <span>
-            <strong>Deployment Process:</strong><br />
-            1. Enter your Base64 Session ID<br />
-            2. Click deploy - Configuration loads from app.json<br />
-            3. Bot activates in 1 minute<br />
-            4. Check WhatsApp > Linked Devices to see your bot<br />
+            <strong>Deployment Process:</strong>
+            <br />
+            1. Enter your Base64 Session ID
+            <br />
+            2. Click deploy - Configuration loads from app.json
+            <br />
+            3. Bot activates in 1 minute
+            <br />
+            4. Check WhatsApp {`>`} Linked Devices to see your bot
+            <br />
             5. View logs below for real-time status
           </span>
         </p>
@@ -284,4 +289,4 @@ export function HostingButtons({ bots, setBots, setError, appJsonConfig }: Hosti
       )}
     </div>
   );
-      }
+}
