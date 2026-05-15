@@ -131,7 +131,7 @@ export const DATA = {
   projects: [
     {
       title: "ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ",
-      href: "/njabulobot.html",
+      href: "/njabulobot",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
@@ -146,7 +146,7 @@ export const DATA = {
       links: [
         {
           type: "Njabulo-Jb",
-          href: "/njabulobot.html",
+          href: "/njabulobot",
           icon: <Icons.globe className="size-3" />,
         },
       ],
@@ -154,7 +154,7 @@ export const DATA = {
     },
      {
       title: "ɢᴡᴍ-xᴍᴅ",
-      href: "/gmxxmd",
+      href: "./gmxxmd",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
