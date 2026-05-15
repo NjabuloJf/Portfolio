@@ -61,10 +61,7 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
           className="w-full h-10 pl-9 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
         />
         {searchQuery && (
-          <button
-            onClick={() => onSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-          >
+          <button onClick={() => onSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
             <X className="size-4 text-muted-foreground hover:text-foreground transition-colors" />
           </button>
         )}
@@ -72,9 +69,6 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
     </div>
   );
 }
-
-// Rest of your wrapper components (WorkSectionWithSearch, ProjectsSectionWithSearch, etc.)
-// ... (keep all the wrapper functions from previous code)
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
@@ -93,11 +87,12 @@ export default function Page() {
 
   return (
     <main className="min-h-dvh flex flex-col gap-14 relative pb-20">
-      {/* SEARCH BAR - This should be visible */}
+      {/* Search Bar */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-4 border-b border-border">
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
+      {/* Hero Section */}
       <section id="hero">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 gap-y-6 flex flex-col md:flex-row justify-between">
@@ -125,43 +120,96 @@ export default function Page() {
       </section>
 
       {/* About Section */}
-      {(!searchQuery || (DATA.summary && DATA.summary.toLowerCase().includes(searchQuery.toLowerCase()))) && (
-        <section id="about">
-          <div className="flex min-h-0 flex-col gap-y-4">
-            <BlurFade delay={BLUR_FADE_DELAY * 3}>
-              <h2 className="text-xl font-bold">About</h2>
-            </BlurFade>
-            <BlurFade delay={BLUR_FADE_DELAY * 4}>
-              <div className="prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
-                <Markdown>{DATA.summary}</Markdown>
-              </div>
-            </BlurFade>
-          </div>
-        </section>
-      )}
+      <section id="about">
+        <div className="flex min-h-0 flex-col gap-y-4">
+          <BlurFade delay={BLUR_FADE_DELAY * 3}>
+            <h2 className="text-xl font-bold">About</h2>
+          </BlurFade>
+          <BlurFade delay={BLUR_FADE_DELAY * 4}>
+            <div className="prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
+              <Markdown>{DATA.summary}</Markdown>
+            </div>
+          </BlurFade>
+        </div>
+      </section>
 
-      {/* Skills Section - Easy to test search */}
+      {/* Work Section */}
+      <section id="work">
+        <div className="flex min-h-0 flex-col gap-y-6">
+          <BlurFade delay={BLUR_FADE_DELAY * 5}>
+            <h2 className="text-xl font-bold">Work Experience</h2>
+          </BlurFade>
+          <BlurFade delay={BLUR_FADE_DELAY * 6}>
+            <WorkSection />
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* Education Section */}
+      <section id="education">
+        <div className="flex min-h-0 flex-col gap-y-6">
+          <BlurFade delay={BLUR_FADE_DELAY * 7}>
+            <h2 className="text-xl font-bold">Education</h2>
+          </BlurFade>
+          <div className="flex flex-col gap-8">
+            {DATA.education.map((education, index) => (
+              <BlurFade key={education.school} delay={BLUR_FADE_DELAY * 8 + index * 0.05}>
+                <Link href={education.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-3 justify-between group">
+                  <div className="flex items-center gap-x-3 flex-1 min-w-0">
+                    {education.logoUrl ? (
+                      <img src={education.logoUrl} alt={education.school} className="size-8 md:size-10 p-1 border rounded-full shadow ring-2 ring-border overflow-hidden object-contain flex-none" />
+                    ) : (
+                      <div className="size-8 md:size-10 p-1 border rounded-full shadow ring-2 ring-border bg-muted flex-none" />
+                    )}
+                    <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                      <div className="font-semibold leading-none flex items-center gap-2">
+                        {education.school}
+                        <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" aria-hidden />
+                      </div>
+                      <div className="font-sans text-sm text-muted-foreground">{education.degree}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs tabular-nums text-muted-foreground text-right flex-none">
+                    <span>{education.start} - {education.end}</span>
+                  </div>
+                </Link>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Skills Section */}
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
             <h2 className="text-xl font-bold">Skills</h2>
           </BlurFade>
           <div className="flex flex-wrap gap-2">
-            {DATA.skills
-              .filter(skill => 
-                !searchQuery || 
-                skill.name?.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((skill, id) => (
-                <BlurFade key={skill.name} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
-                  <div className="border bg-background border-border ring-2 ring-border/20 rounded-xl h-8 w-fit px-4 flex items-center gap-2">
-                    {skill.icon && <skill.icon className="size-4 rounded overflow-hidden object-contain" />}
-                    <span className="text-foreground text-sm font-medium">{skill.name}</span>
-                  </div>
-                </BlurFade>
-              ))}
+            {DATA.skills.map((skill, id) => (
+              <BlurFade key={skill.name} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <div className="border bg-background border-border ring-2 ring-border/20 rounded-xl h-8 w-fit px-4 flex items-center gap-2">
+                  {skill.icon && <skill.icon className="size-4 rounded overflow-hidden object-contain" />}
+                  <span className="text-foreground text-sm font-medium">{skill.name}</span>
+                </div>
+              </BlurFade>
+            ))}
           </div>
         </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects">
+        <BlurFade delay={BLUR_FADE_DELAY * 11}>
+          <ProjectsSection />
+        </BlurFade>
+      </section>
+
+      {/* Hackathons Section */}
+      <section id="hackathons">
+        <BlurFade delay={BLUR_FADE_DELAY * 13}>
+          <HackathonsSection />
+        </BlurFade>
       </section>
 
       {/* Contact Section */}
@@ -170,6 +218,13 @@ export default function Page() {
           <ContactSection />
         </BlurFade>
       </section>
+
+      {/* Search Indicator */}
+      {searchQuery && (
+        <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs shadow-lg z-50">
+          🔍 Searching: "{searchQuery}"
+        </div>
+      )}
     </main>
   );
-      }
+        }
