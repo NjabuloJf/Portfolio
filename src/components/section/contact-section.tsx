@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { DATA } from "@/data/resume";
-import { Mail, HelpCircle, AlertCircle, Headphones, Server, User, ExternalLink } from "lucide-react";
 
 export default function ContactSection() {
   return (
@@ -38,60 +37,48 @@ export default function ContactSection() {
           soliciting.
         </p>
 
-        {/* Support Options Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full max-w-4xl mt-4">
-          {/* Support */}
+        {/* Support Links - Blue Text Only */}
+        <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
           <Link
             href="/support"
-            className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all group"
+            className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
           >
-            <Headphones className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium">Support</span>
+            Support
           </Link>
-
-          {/* Issue */}
+          <span className="text-muted-foreground">•</span>
           <Link
             href="/issue"
-            className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all group"
+            className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
           >
-            <AlertCircle className="size-6 text-orange-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium">Report Issue</span>
+            Report Issue
           </Link>
-
-          {/* Help */}
+          <span className="text-muted-foreground">•</span>
           <Link
             href="/help"
-            className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all group"
+            className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
           >
-            <HelpCircle className="size-6 text-blue-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium">Help Center</span>
+            Help Center
           </Link>
-
-          {/* Email Support */}
+          <span className="text-muted-foreground">•</span>
           <Link
             href="mailto:support@njabulojb.dev"
-            className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all group"
+            className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
           >
-            <Mail className="size-6 text-green-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium">Email Support</span>
+            Email Support
           </Link>
-
-          {/* Services */}
+          <span className="text-muted-foreground">•</span>
           <Link
             href="/services"
-            className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all group"
+            className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
           >
-            <Server className="size-6 text-purple-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium">Services</span>
+            Services
           </Link>
-
-          {/* Owner */}
+          <span className="text-muted-foreground">•</span>
           <Link
             href="/owner"
-            className="flex flex-col items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all group"
+            className="text-blue-500 hover:text-blue-600 hover:underline transition-colors"
           >
-            <User className="size-6 text-cyan-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium">Owner</span>
+            Owner
           </Link>
         </div>
 
