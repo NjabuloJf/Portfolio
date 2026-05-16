@@ -198,7 +198,7 @@ export const DATA = {
     },
     {
       title: "ᴍʏ ᴜᴘᴅᴀᴛᴇ sᴇᴠɪᴇʀ",
-      href: "/hosting",
+      href: "/business",
       dates: "follow my channel and group chats got updated",
       active: true,
       description:
@@ -212,7 +212,7 @@ export const DATA = {
       links: [
         {
           type: "Group & Channel",
-          href: "/hosting",
+          href: "/business",
           icon: <Icons.globe className="size-3" />,
         },
       ],
