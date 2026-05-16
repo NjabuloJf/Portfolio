@@ -106,22 +106,28 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   );
 }
 
-// Avatar with Green Status Ring and Meta Verified Badge ON the image
+// Avatar with Green Status Ring and Meta Verified Badge - PERFECTLY ROUND
 function AvatarWithMetaBadge() {
   return (
-    <div className="relative">
+    <div className="relative flex-shrink-0">
       {/* Green Status Ring - Outer ring with animation */}
       <div className="absolute -inset-1.5 rounded-full">
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse" />
         <div className="absolute inset-0 rounded-full bg-green-500/40 animate-ping" />
       </div>
       
-      {/* Avatar Image Container */}
-      <div className="relative">
-        <Avatar className="size-20 md:size-28 border-2 border-white dark:border-gray-800 shadow-lg ring-4 ring-green-500/30 relative overflow-visible">
-          <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-          <AvatarFallback>{DATA.initials}</AvatarFallback>
-        </Avatar>
+      {/* Avatar Image Container - FORCED ROUND */}
+      <div className="relative rounded-full overflow-hidden">
+        <div className="relative w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden">
+          <img 
+            src={DATA.avatarUrl} 
+            alt={DATA.name}
+            className="w-full h-full object-cover rounded-full"
+          />
+          
+          {/* Fallback if image fails */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 -z-10" />
+        </div>
         
         {/* Green Online Status Dot */}
         <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 z-10">
@@ -144,7 +150,7 @@ function AvatarWithMetaBadge() {
         </div>
       </div>
       
-      {/* Verified text indicator below avatar (optional) */}
+      {/* Verified text indicator below avatar */}
       <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap">
         <div className="flex items-center gap-1 bg-blue-500/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
           <CheckCircle className="size-2.5 text-blue-500" />
@@ -210,12 +216,13 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section - With Avatar Meta Verified Badge */}
+      {/* Hero Section - LEFT ALIGNED text, ROUND avatar */}
       <section id="hero" className="py-4">
-        <div className="mx-auto w-full max-w-2xl space-y-4">
-          <div className="gap-2 gap-y-4 flex flex-col md:flex-row justify-between items-center">
-            <div className="gap-1 flex flex-col order-2 md:order-1 text-center md:text-left">
-              <div className="flex items-center gap-2 justify-center md:justify-start flex-wrap">
+        <div className="mx-auto w-full max-w-4xl px-4">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            {/* Left side - Text content (LEFT ALIGNED) */}
+            <div className="flex-1 text-left order-2 md:order-1">
+              <div className="flex items-center gap-2 flex-wrap justify-start">
                 <BlurFadeText
                   delay={BLUR_FADE_DELAY}
                   className="text-3xl font-semibold tracking-tighter sm:text-4xl lg:text-5xl"
@@ -231,14 +238,18 @@ export default function Page() {
                 </span>
               </div>
               <BlurFadeText
-                className="text-muted-foreground max-w-[600px] md:text-base lg:text-lg"
+                className="text-muted-foreground max-w-[600px] md:text-base lg:text-lg mt-2 text-left"
                 delay={BLUR_FADE_DELAY}
                 text={DATA.description}
               />
             </div>
-            <BlurFade delay={BLUR_FADE_DELAY} className="order-1 md:order-2">
-              <AvatarWithMetaBadge />
-            </BlurFade>
+            
+            {/* Right side - Avatar (RIGHT ALIGNED on desktop, CENTER on mobile) */}
+            <div className="flex justify-center md:justify-end order-1 md:order-2">
+              <BlurFade delay={BLUR_FADE_DELAY}>
+                <AvatarWithMetaBadge />
+              </BlurFade>
+            </div>
           </div>
         </div>
       </section>
@@ -369,4 +380,4 @@ export default function Page() {
       )}
     </main>
   );
-        }
+  }
