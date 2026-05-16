@@ -18,19 +18,11 @@ import { ImageCarousel } from "@/components/image-carousel";
 
 const BLUR_FADE_DELAY = 0.04;
 
-// Loading Screen with Round Avatar and Verified Badge
+// Loading Screen ONLY - No WhatsApp icon, just avatar
 function LoadingScreen() {
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center">
-      {/* WhatsApp Icon with pulse */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 animate-ping rounded-full bg-green-500/30" />
-        <div className="relative bg-green-500 rounded-full p-4 shadow-lg">
-          <MessageCircle className="size-8 text-white" />
-        </div>
-      </div>
-      
-      {/* Round Avatar with Verified Badge during loading */}
+      {/* Round Avatar with Verified Badge */}
       <div className="relative mb-4">
         {/* Green Status Ring */}
         <div className="absolute -inset-1.5 rounded-full">
@@ -40,7 +32,7 @@ function LoadingScreen() {
         
         {/* Round Avatar Image */}
         <div className="relative rounded-full overflow-hidden">
-          <div className="relative w-20 h-20 rounded-full overflow-hidden">
+          <div className="relative w-24 h-24 rounded-full overflow-hidden">
             <img 
               src={DATA.avatarUrl} 
               alt={DATA.name}
@@ -49,19 +41,19 @@ function LoadingScreen() {
           </div>
           
           {/* Green Online Status Dot */}
-          <div className="absolute bottom-0 right-0 z-10">
+          <div className="absolute bottom-1 right-1 z-10">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
-              <div className="relative w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+              <div className="relative w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" />
             </div>
           </div>
           
-          {/* Verified Badge */}
+          {/* Verified Badge on Avatar */}
           <div className="absolute -bottom-1 -right-1 z-20">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/40 blur-sm" />
               <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-1 shadow-lg border border-white/20">
-                <CheckCircle className="size-3 text-white" strokeWidth={2.5} />
+                <CheckCircle className="size-3.5 text-white" strokeWidth={2.5} />
               </div>
             </div>
           </div>
@@ -91,18 +83,9 @@ function LoadingScreen() {
       
       <style jsx>{`
         @keyframes loading-line {
-          0% {
-            width: 0%;
-            opacity: 1;
-          }
-          50% {
-            width: 100%;
-            opacity: 1;
-          }
-          100% {
-            width: 0%;
-            opacity: 0;
-          }
+          0% { width: 0%; opacity: 1; }
+          50% { width: 100%; opacity: 1; }
+          100% { width: 0%; opacity: 0; }
         }
         .animate-loading-line {
           animation: loading-line 1.5s ease-in-out infinite;
@@ -146,7 +129,6 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
 
   return (
     <div className="fixed bottom-32 right-8 z-50 flex flex-col gap-3">
-      {/* Music Button */}
       <button
         onClick={onOpenMusic}
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/40 hover:from-green-500/30 hover:to-emerald-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
@@ -156,7 +138,6 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
         <span className="text-sm font-medium text-green-600 hidden sm:inline">Music Player</span>
       </button>
       
-      {/* Rocket - Projects Button */}
       <button
         onClick={scrollToProjects}
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-orange-500/20 border border-orange-500/40 hover:bg-orange-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
@@ -169,17 +150,15 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   );
 }
 
-// Avatar with Green Status Ring and Meta Verified Badge - PERFECTLY ROUND
+// Avatar with Green Status Ring and Meta Verified Badge
 function AvatarWithMetaBadge() {
   return (
     <div className="relative flex-shrink-0">
-      {/* Green Status Ring - Outer ring with animation */}
       <div className="absolute -inset-1.5 rounded-full">
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse" />
         <div className="absolute inset-0 rounded-full bg-green-500/40 animate-ping" />
       </div>
       
-      {/* Avatar Image Container - FORCED ROUND */}
       <div className="relative rounded-full overflow-hidden">
         <div className="relative w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden">
           <img 
@@ -187,12 +166,8 @@ function AvatarWithMetaBadge() {
             alt={DATA.name}
             className="w-full h-full object-cover rounded-full"
           />
-          
-          {/* Fallback if image fails */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 -z-10" />
         </div>
         
-        {/* Green Online Status Dot */}
         <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 z-10">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
@@ -200,20 +175,15 @@ function AvatarWithMetaBadge() {
           </div>
         </div>
         
-        {/* Meta Verified Badge ON the avatar image - bottom right corner */}
         <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 z-20">
           <div className="relative">
-            {/* Glow effect */}
             <div className="absolute inset-0 rounded-full bg-blue-500/40 blur-sm" />
-            {/* Meta blue verified badge */}
             <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-1 md:p-1.5 shadow-lg border border-white/20">
               <CheckCircle className="size-3 md:size-4 text-white" strokeWidth={2.5} />
             </div>
           </div>
         </div>
       </div>
-      
-      // ... rest of component
     </div>
   );
 }
@@ -265,19 +235,16 @@ export default function Page() {
 
   return (
     <main className="min-h-dvh flex flex-col gap-8 relative pb-20">
-      {/* Music Player */}
       <MusicPlayer isOpen={isMusicPlayerOpen} onClose={() => setIsMusicPlayerOpen(false)} />
 
-      {/* Search Bar */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-3 border-b border-border">
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section - LEFT ALIGNED text, ROUND avatar */}
+      {/* Hero Section - Your profile stays INTACT */}
       <section id="hero" className="py-4">
         <div className="mx-auto w-full max-w-4xl px-4">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            {/* Left side - Text content (LEFT ALIGNED) */}
             <div className="flex-1 text-left order-2 md:order-1">
               <div className="flex items-center gap-2 flex-wrap justify-start">
                 <BlurFadeText
@@ -286,7 +253,6 @@ export default function Page() {
                   yOffset={8}
                   text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
                 />
-                {/* Meta Verified Badge next to name */}
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
                   <CheckCircle className="size-3.5 md:size-4 text-white" />
                 </div>
@@ -301,7 +267,6 @@ export default function Page() {
               />
             </div>
             
-            {/* Right side - Avatar (RIGHT ALIGNED on desktop, CENTER on mobile) */}
             <div className="flex justify-center md:justify-end order-1 md:order-2">
               <BlurFade delay={BLUR_FADE_DELAY}>
                 <AvatarWithMetaBadge />
@@ -311,7 +276,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Rest of your sections... */}
+      {/* Rest of your sections - ALL INTACT */}
       <section id="carousel" className="py-2">
         <div className="container mx-auto px-4">
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
@@ -419,10 +384,8 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* Bottom Buttons */}
       <BottomButtons onOpenMusic={() => setIsMusicPlayerOpen(true)} />
 
-      {/* Search Indicator */}
       {searchQuery && (
         <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs shadow-lg z-50">
           🔍 Searching: "{searchQuery}"
