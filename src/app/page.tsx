@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -106,6 +106,55 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   );
 }
 
+// Avatar with Green Status Ring and Meta Verified Badge ON the image
+function AvatarWithMetaBadge() {
+  return (
+    <div className="relative">
+      {/* Green Status Ring - Outer ring with animation */}
+      <div className="absolute -inset-1.5 rounded-full">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse" />
+        <div className="absolute inset-0 rounded-full bg-green-500/40 animate-ping" />
+      </div>
+      
+      {/* Avatar Image Container */}
+      <div className="relative">
+        <Avatar className="size-20 md:size-28 border-2 border-white dark:border-gray-800 shadow-lg ring-4 ring-green-500/30 relative overflow-visible">
+          <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
+          <AvatarFallback>{DATA.initials}</AvatarFallback>
+        </Avatar>
+        
+        {/* Green Online Status Dot */}
+        <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 z-10">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
+            <div className="relative w-3 h-3 md:w-4 md:h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full" />
+          </div>
+        </div>
+        
+        {/* Meta Verified Badge ON the avatar image - bottom right corner */}
+        <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 z-20">
+          <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute inset-0 rounded-full bg-blue-500/40 blur-sm" />
+            {/* Meta blue verified badge */}
+            <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-1 md:p-1.5 shadow-lg border border-white/20">
+              <CheckCircle className="size-3 md:size-4 text-white" strokeWidth={2.5} />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Verified text indicator below avatar (optional) */}
+      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap">
+        <div className="flex items-center gap-1 bg-blue-500/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
+          <CheckCircle className="size-2.5 text-blue-500" />
+          <span className="text-[9px] font-medium text-blue-600">Meta Verified</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // 5 Images from public folder
 const carouselImages = [
   {
@@ -161,17 +210,26 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section - Reduced spacing */}
+      {/* Hero Section - With Avatar Meta Verified Badge */}
       <section id="hero" className="py-4">
         <div className="mx-auto w-full max-w-2xl space-y-4">
           <div className="gap-2 gap-y-4 flex flex-col md:flex-row justify-between items-center">
             <div className="gap-1 flex flex-col order-2 md:order-1 text-center md:text-left">
-              <BlurFadeText
-                delay={BLUR_FADE_DELAY}
-                className="text-3xl font-semibold tracking-tighter sm:text-4xl lg:text-5xl"
-                yOffset={8}
-                text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
-              />
+              <div className="flex items-center gap-2 justify-center md:justify-start flex-wrap">
+                <BlurFadeText
+                  delay={BLUR_FADE_DELAY}
+                  className="text-3xl font-semibold tracking-tighter sm:text-4xl lg:text-5xl"
+                  yOffset={8}
+                  text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
+                />
+                {/* Meta Verified Badge next to name */}
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
+                  <CheckCircle className="size-3.5 md:size-4 text-white" />
+                </div>
+                <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                  Meta Verified
+                </span>
+              </div>
               <BlurFadeText
                 className="text-muted-foreground max-w-[600px] md:text-base lg:text-lg"
                 delay={BLUR_FADE_DELAY}
@@ -179,16 +237,13 @@ export default function Page() {
               />
             </div>
             <BlurFade delay={BLUR_FADE_DELAY} className="order-1 md:order-2">
-              <Avatar className="size-20 md:size-28 border rounded-full shadow-lg ring-4 ring-muted">
-                <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-                <AvatarFallback>{DATA.initials}</AvatarFallback>
-              </Avatar>
+              <AvatarWithMetaBadge />
             </BlurFade>
           </div>
         </div>
       </section>
 
-      {/* Image Carousel Section - Reduced spacing */}
+      {/* Image Carousel Section */}
       <section id="carousel" className="py-2">
         <div className="container mx-auto px-4">
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
@@ -203,7 +258,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* About Section - Reduced spacing */}
+      {/* About Section */}
       <section id="about">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
@@ -217,7 +272,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Work Section - Reduced spacing */}
+      {/* Work Section */}
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
@@ -229,7 +284,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Education Section - Reduced spacing */}
+      {/* Education Section */}
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -263,7 +318,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Skills Section - Reduced spacing */}
+      {/* Skills Section */}
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
@@ -314,4 +369,4 @@ export default function Page() {
       )}
     </main>
   );
-}
+        }
