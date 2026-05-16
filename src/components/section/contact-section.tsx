@@ -37,7 +37,7 @@ export default function ContactSection() {
           soliciting.
         </p>
 
-        {/* Support Links - Blue Text Only */}
+        {/* Support Links - All working links */}
         <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
           <Link
             href="/support"
@@ -118,7 +118,7 @@ export default function ContactSection() {
                 © 2026
               </p>
               <p className="text-[10px] text-muted-foreground/60 mt-1">
-                All rights reserved | Version 2.0.0
+                JavaScript | React.js | Next.js Developer | Business Portfolio Available
               </p>
             </div>
           </div>
@@ -126,4 +126,4 @@ export default function ContactSection() {
       </div>
     </div>
   );
-          }
+            }
