@@ -18,28 +18,91 @@ import { ImageCarousel } from "@/components/image-carousel";
 
 const BLUR_FADE_DELAY = 0.04;
 
-// Loading Component
+// Loading Screen with Round Avatar and Verified Badge
 function LoadingScreen() {
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center">
-      <div className="relative mb-8">
+      {/* WhatsApp Icon with pulse */}
+      <div className="relative mb-6">
         <div className="absolute inset-0 animate-ping rounded-full bg-green-500/30" />
-        <div className="relative bg-green-500 rounded-full p-6 shadow-lg">
-          <MessageCircle className="size-12 text-white" />
+        <div className="relative bg-green-500 rounded-full p-4 shadow-lg">
+          <MessageCircle className="size-8 text-white" />
         </div>
       </div>
-      <h2 className="text-2xl font-semibold mb-2 text-foreground">
-        Njabulo Jb
-      </h2>
-      <p className="text-sm text-muted-foreground mb-4">Loading...</p>
+      
+      {/* Round Avatar with Verified Badge during loading */}
+      <div className="relative mb-4">
+        {/* Green Status Ring */}
+        <div className="absolute -inset-1.5 rounded-full">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse" />
+          <div className="absolute inset-0 rounded-full bg-green-500/40 animate-ping" />
+        </div>
+        
+        {/* Round Avatar Image */}
+        <div className="relative rounded-full overflow-hidden">
+          <div className="relative w-20 h-20 rounded-full overflow-hidden">
+            <img 
+              src={DATA.avatarUrl} 
+              alt={DATA.name}
+              className="w-full h-full object-cover rounded-full"
+            />
+          </div>
+          
+          {/* Green Online Status Dot */}
+          <div className="absolute bottom-0 right-0 z-10">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
+              <div className="relative w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+            </div>
+          </div>
+          
+          {/* Verified Badge */}
+          <div className="absolute -bottom-1 -right-1 z-20">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-blue-500/40 blur-sm" />
+              <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-1 shadow-lg border border-white/20">
+                <CheckCircle className="size-3 text-white" strokeWidth={2.5} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Name with Verified Badge */}
+      <div className="flex items-center gap-2 mb-2">
+        <h2 className="text-xl font-semibold text-foreground">
+          Njabulo Jb
+        </h2>
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
+          <CheckCircle className="size-3 text-white" />
+        </div>
+        <span className="text-[8px] font-medium text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded-full">
+          Meta Verified
+        </span>
+      </div>
+      
+      {/* Loading Text */}
+      <p className="text-xs text-muted-foreground mb-4">Loading your dashboard...</p>
+      
+      {/* Green Loading Line */}
       <div className="w-48 h-1 bg-muted rounded-full overflow-hidden">
         <div className="h-full bg-green-500 rounded-full animate-loading-line" />
       </div>
+      
       <style jsx>{`
         @keyframes loading-line {
-          0% { width: 0%; opacity: 1; }
-          50% { width: 100%; opacity: 1; }
-          100% { width: 0%; opacity: 0; }
+          0% {
+            width: 0%;
+            opacity: 1;
+          }
+          50% {
+            width: 100%;
+            opacity: 1;
+          }
+          100% {
+            width: 0%;
+            opacity: 0;
+          }
         }
         .animate-loading-line {
           animation: loading-line 1.5s ease-in-out infinite;
@@ -150,13 +213,7 @@ function AvatarWithMetaBadge() {
         </div>
       </div>
       
-      {/* Verified text indicator below avatar */}
-      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap">
-        <div className="flex items-center gap-1 bg-blue-500/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
-          <CheckCircle className="size-2.5 text-blue-500" />
-          <span className="text-[9px] font-medium text-blue-600">Meta Verified</span>
-        </div>
-      </div>
+      // ... rest of component
     </div>
   );
 }
@@ -254,7 +311,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Image Carousel Section */}
+      {/* Rest of your sections... */}
       <section id="carousel" className="py-2">
         <div className="container mx-auto px-4">
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
@@ -269,7 +326,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* About Section */}
       <section id="about">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
@@ -283,7 +339,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Work Section */}
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
@@ -295,7 +350,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Education Section */}
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -329,7 +383,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Skills Section */}
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
@@ -348,21 +401,18 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Projects Section */}
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
           <ProjectsSection />
         </BlurFade>
       </section>
 
-      {/* Hackathons Section */}
       <section id="hackathons">
         <BlurFade delay={BLUR_FADE_DELAY * 13}>
           <HackathonsSection />
         </BlurFade>
       </section>
 
-      {/* Contact Section */}
       <section id="contact">
         <BlurFade delay={BLUR_FADE_DELAY * 16}>
           <ContactSection />
@@ -380,4 +430,4 @@ export default function Page() {
       )}
     </main>
   );
-  }
+          }
