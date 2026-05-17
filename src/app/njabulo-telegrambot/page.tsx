@@ -27,8 +27,8 @@ export default async function NjabuloTelegramBotPage() {
       <BlurFade delay={BLUR_FADE_DELAY}>
         <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
           <h1 className="text-2xl font-semibold tracking-tight">
-            ɴᴊᴀʙᴜʟᴏ-ᴊʙ ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ
-            <span className="ml-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-md px-2 py-1 text-sm">Telegram v1.0.0</span>
+            ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ
+            <span className="ml-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-md px-2 py-1 text-sm">ᴛᴇʟᴇɢʀᴀᴍ v1.0.0</span>
           </h1>
           <div className="flex gap-2">
             <Link 
