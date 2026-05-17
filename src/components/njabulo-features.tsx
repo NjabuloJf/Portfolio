@@ -45,7 +45,7 @@ export function NjabuloFeatures() {
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <Bot className="size-5" />
-          Njabulo-Jb Features
+          ɴᴊᴀʙᴜʟᴏ-ᴊʙ ғᴇᴀᴛᴜʀᴇs
         </h2>
         <div className="flex gap-2">
           <span className="text-xs px-2 py-1 rounded-full bg-green-500/10 text-green-600 border border-green-500/20 flex items-center gap-1">
