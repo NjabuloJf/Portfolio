@@ -455,7 +455,7 @@ export default function BusinessPage() {
               <div className="ml-auto">
                 <a href="https://wa.me/26777821911" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
                   <Send className="size-4" />
-                  Contact Me
+                  ᴄᴏɴᴛᴀᴄᴛ ᴍᴇ
                 </a>
               </div>
             </div>
@@ -463,7 +463,7 @@ export default function BusinessPage() {
 
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-              Njabulo-Jb Scripts & Services Store
+              ɴᴊᴀʙᴜʟᴏ-ᴊʙ sᴄʀɪᴘᴛs & sᴇʀᴠɪᴄᴇs sᴛᴏʀᴇ
             </h1>
             <p className="text-muted-foreground">Professional scripts from $5 USD | Custom websites from $10 USD</p>
           </div>
@@ -475,7 +475,7 @@ export default function BusinessPage() {
             <div className="inline-flex p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full mb-3">
               <Rocket className="size-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold">🚀 Custom Services & Website Development</h2>
+            <h2 className="text-2xl font-bold">🚀 ᴄᴜsᴛᴏᴍ sᴇʀᴠɪᴄᴇs & ᴡᴇʙsɪᴛᴇ ᴅᴇᴠᴇʟᴏᴘᴍᴇɴᴛ</h2>
             <p className="text-muted-foreground">Starting from only $10 USD / 130 BWP</p>
           </div>
 
@@ -701,7 +701,7 @@ export default function BusinessPage() {
         {/* WhatsApp Banner */}
         <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
           <Send className="size-10 text-green-500 mx-auto mb-3" />
-          <h3 className="text-xl font-semibold mb-2">Need a Custom Website or Script?</h3>
+          <h3 className="text-xl font-semibold mb-2">ɴᴇᴇᴅ ᴀ ᴄᴜsᴛᴏᴍ ᴡᴇʙsɪᴛᴇ ᴏʀ sᴄʀɪᴘᴛ?</h3>
           <p className="text-muted-foreground mb-4">Contact me directly on WhatsApp for custom projects</p>
           <a href="https://wa.me/26777821911" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600">
             <Send className="size-4" />
