@@ -27,7 +27,7 @@ const njabuloJbHelp = {
     },
     {
       question: "How to get coding help?",
-      answer: "Email support@njabulojb.dev for JavaScript/React/Next.js assistance"
+      answer: "Email fanajb65@gmail.com for JavaScript/React/Next.js assistance"
     },
     {
       question: "Response time for support?",
@@ -85,7 +85,7 @@ console.log("JavaScript help results:", results);`;
           
           <div className="p-6 border rounded-lg">
             <h2 className="text-xl font-semibold mb-2">How to contact support?</h2>
-            <p className="text-muted-foreground">Email us at support@njabulojb.dev or use live chat</p>
+            <p className="text-muted-foreground">Email us at fanajb65@gmail.com or use live chat</p>
           </div>
           
           <div className="p-6 border rounded-lg">
