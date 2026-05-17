@@ -81,11 +81,11 @@ export const DATA = {
 
   work: [
     {
-      company: "Owner name",
+      company: "ᴏᴡɴᴇʀ ɴᴀᴍᴇ",
       href: "/repository.html",
       badges: [],
       location: "Botswana",
-      title: "My name is njabulo",
+      title: "ᴍʏ ɴᴀᴍᴇ ɪs ɴᴊᴀʙᴜʟᴏ",
       logoUrl: "/atomic.png",
       start: "age 20",
       end: "date Oct 20o5",
