@@ -134,7 +134,7 @@ TIMEZONE=UTC`;
     window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
   };
 
-  const deployToQr = () => {
+  const generateQRCode = () => {
     window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
   };
 
@@ -184,13 +184,14 @@ TIMEZONE=UTC`;
             Render
           </button>
           <button
-            onClick={deployToQr}
+            onClick={generateQRCode}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
           >
-            <Server className="size-4 text-blue-600" />
-            Render
+            <QrCode className="size-4 text-blue-600" />
+            Show QR 
           </button>
           <button
+
             onClick={setupUptimeBot}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
           >
