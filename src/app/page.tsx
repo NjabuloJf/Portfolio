@@ -188,12 +188,17 @@ function AvatarWithMetaBadge() {
   );
 }
 
-// Section Header with Avatar Component
+// Section Header with Verified Badge only (no avatar image)
 function SectionHeader({ title, id }: { title: string; id: string }) {
   return (
-    <div className="flex items-center gap-3 mb-4">
-      <AvatarWithMetaBadge />
+    <div className="flex items-center gap-2 mb-4">
       <h2 id={id} className="text-xl font-bold">{title}</h2>
+      <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
+        <CheckCircle className="size-3.5 text-white" />
+      </div>
+      <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
+        Meta Verified
+      </span>
     </div>
   );
 }
@@ -301,7 +306,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* About Section with Avatar */}
+      {/* About Section with Verified Badge only */}
       <section id="about">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
@@ -315,7 +320,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Work Section with Avatar */}
+      {/* Work Section with Verified Badge only */}
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
@@ -361,7 +366,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Skills Section with Avatar */}
+      {/* Skills Section with Verified Badge only */}
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
@@ -380,7 +385,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Projects Section with Avatar */}
+      {/* Projects Section with Verified Badge only */}
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
           <SectionHeader title="Projects" id="projects" />
@@ -411,4 +416,4 @@ export default function Page() {
       )}
     </main>
   );
-            }
+}
