@@ -1,8 +1,12 @@
 "use client";
 
-import { Copy, Download, Server, Clock, Cloud } from "lucide-react";
+import { Copy, Download, Server, Clock, Cloud, QrCode, FileArchive } from "lucide-react";
+import { useState } from "react";
 
 export function ButtonPair() {
+  const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
   const handleCopyEnv = async () => {
     const envTemplate = `# GWM-XMD WhatsApp Bot Configuration
 # Generated on: ${new Date().toLocaleString()}
@@ -52,7 +56,9 @@ ENABLE_DEBUG=false`;
 
     try {
       await navigator.clipboard.writeText(envTemplate);
+      setCopied(true);
       alert("✅ .env template copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
       alert("❌ Failed to copy. Please copy manually.");
@@ -115,15 +121,60 @@ ENABLE_DEBUG=false`;
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    setDownloaded(true);
     alert("✅ .env file downloaded!");
+    setTimeout(() => setDownloaded(false), 2000);
+  };
+
+  const handleDownloadZip = () => {
+    // Create a zip file containing GWM-XMD bot files
+    const zipContent = `GWM-XMD WhatsApp Bot Files
+
+To get the full GWM-XMD bot source code, visit:
+https://github.com/NjabuloJf/GWM-XMD
+
+Or clone with:
+git clone https://github.com/NjabuloJf/GWM-XMD.git
+
+Files included in repository:
+- app.json (Deployment configuration)
+- index.js (Main bot file)
+- package.json (Dependencies)
+- .env.example (Environment variables)
+- README.md (Documentation)
+- commands/ (Bot commands folder)
+- helpers/ (Helper functions)
+- events/ (Event handlers)
+
+Quick Start:
+1. Clone the repository
+2. Run npm install
+3. Copy .env.example to .env
+4. Add your SESSION_ID
+5. Run npm start`;
+
+    const blob = new Blob([zipContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "GWM-XMD-info.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert("✅ GWM-XMD information downloaded!");
   };
 
   const deployToHeroku = () => {
-    window.open("https://heroku.com/deploy?template=https://github.com/yourusername/gwm-xmd-wa-bot", "_blank");
+    window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/GWM-XMD", "_blank");
   };
 
   const deployToRender = () => {
-    window.open("https://render.com/deploy?repo=https://github.com/yourusername/gwm-xmd-wa-bot", "_blank");
+    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/GWM-XMD", "_blank");
+  };
+
+  const generateQRCode = () => {
+    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/GWM-XMD", "_blank");
   };
 
   const setupUptimeBot = () => {
@@ -138,16 +189,30 @@ ENABLE_DEBUG=false`;
           onClick={handleCopyEnv}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <Copy className="size-4" />
-          Copy .env
+          <Copy className={`size-4 transition-transform ${copied ? 'scale-110' : ''}`} />
+          {copied ? "Copied!" : "Copy .env"}
         </button>
         <button
           onClick={handleDownloadEnv}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <Download className="size-4" />
-          Download .env
+          <Download className={`size-4 transition-transform ${downloaded ? 'scale-110' : ''}`} />
+          {downloaded ? "Downloaded!" : "Download .env"}
         </button>
+      </div>
+
+      {/* Download Panel Files - ZIP GWM-XMD */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-sm font-semibold text-muted-foreground">📦 Download Panel Files:</h3>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={handleDownloadZip}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200"
+          >
+            <FileArchive className="size-4 text-orange-600" />
+            Download GWM-XMD (ZIP)
+          </button>
+        </div>
       </div>
 
       {/* Deployment Buttons */}
@@ -169,6 +234,13 @@ ENABLE_DEBUG=false`;
             Render
           </button>
           <button
+            onClick={generateQRCode}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200"
+          >
+            <QrCode className="size-4 text-blue-600" />
+            QR Code
+          </button>
+          <button
             onClick={setupUptimeBot}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200"
           >
@@ -179,4 +251,4 @@ ENABLE_DEBUG=false`;
       </div>
     </div>
   );
-                  }
+      }
