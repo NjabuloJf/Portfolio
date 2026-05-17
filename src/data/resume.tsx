@@ -152,7 +152,7 @@ export const DATA = {
     },
      {
       title: "ɢᴡᴍ-xᴍᴅ",
-      href: "/gmxxmd",
+      href: "/gwmxmd",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
