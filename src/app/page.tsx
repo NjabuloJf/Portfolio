@@ -295,7 +295,7 @@ export default function Page() {
       <section id="carousel" className="py-2">
         <div className="container mx-auto px-4">
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
-            <h2 className="text-xl font-bold text-center mb-3">My Projects Gallery</h2>
+            <h2 className="text-xl font-bold text-center mb-3">ᴍʏ ᴘʀᴏᴊᴇᴄᴛs ɢᴀʟʟᴇʀʏ</h2>
             <p className="text-center text-muted-foreground text-sm mb-5">
               Click on any image to view the project
             </p>
@@ -307,7 +307,7 @@ export default function Page() {
       </section>
 
       {/* About Section with Verified Badge only */}
-      <section id="about">
+      <section id="ɴᴊᴀʙᴜʟᴏ ᴊʙ">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
             <SectionHeader title="About" id="about" />
