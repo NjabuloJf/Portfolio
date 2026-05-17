@@ -28,11 +28,11 @@ export default async function ContactsPage() {
         <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
           <h1 className="text-2xl font-semibold tracking-tight">
             Contact Us
-            <span className="ml-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-md px-2 py-1 text-sm">Get in Touch</span>
+            <span className="ml-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-md px-2 py-1 text-sm">ɢᴇᴛ ɪɴ ᴛᴏᴜᴄʜ</span>
           </h1>
         </div>
         <p className="text-sm text-muted-foreground mb-8">
-          Connect with Njabulo Jb Dev Tech on all social media platforms. We're available 24/7 to assist you with your queries.
+          ᴄᴏɴɴᴇᴄᴛ ᴡɪᴛʜ ɴᴊᴀʙᴜʟᴏ ᴊʙ ᴅᴇᴠ ᴛᴇᴄʜ ᴏɴ ᴀʟʟ sᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ᴘʟᴀᴛғᴏʀᴍs. ᴡᴇ'ʀᴇ ᴀᴠᴀɪʟᴀʙʟᴇ 24/7 ᴛᴏ ᴀssɪsᴛ ʏᴏᴜ ᴡɪᴛʜ ʏᴏᴜʀ ǫᴜᴇʀɪᴇs.
         </p>
       </BlurFade>
 
@@ -48,8 +48,8 @@ export default async function ContactsPage() {
           <div className="p-4 border border-border rounded-lg text-center bg-card/30 hover:bg-accent/30 transition-all duration-200">
             <Mail className="size-6 mx-auto mb-2 text-blue-500" />
             <p className="text-sm font-semibold">Email</p>
-            <p className="text-xs text-muted-foreground">info@njabulojb.dev</p>
-            <p className="text-xs text-muted-foreground">support@njabulojb.dev</p>
+            <p className="text-xs text-muted-foreground">fanajb65@gmail.com</p>
+            <p className="text-xs text-muted-foreground">fanajb54@gmail.com</p>
           </div>
           <div className="p-4 border border-border rounded-lg text-center bg-card/30 hover:bg-accent/30 transition-all duration-200">
             <Clock className="size-6 mx-auto mb-2 text-purple-500" />
