@@ -266,7 +266,7 @@ export default function Page() {
                   delay={BLUR_FADE_DELAY}
                   className="text-3xl font-semibold tracking-tighter sm:text-4xl lg:text-5xl"
                   yOffset={8}
-                  text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
+                  text={`${DATA.name.split(" ")[0]}`}
                 />
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
                   <CheckCircle className="size-3.5 md:size-4 text-white" />
