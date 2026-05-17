@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download, Server, Clock, Cloud, ExternalLink, QrCode } from "lucide-react";
+import { Copy, Download, Server, Clock, Cloud, ExternalLink, QrCode, X } from "lucide-react";
 import { useState } from "react";
 
 interface ButtonsPairsProps {
@@ -258,4 +258,4 @@ TIMEZONE=UTC`;
       </div>
     </div>
   );
-                                        }
+}
