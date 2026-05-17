@@ -71,7 +71,7 @@ export function ButtonszPairsZ() {
   };
 
   const openTelegram = () => {
-    window.open("https://t.me/njabulojbdev", "_blank");
+    window.open("t.me/njabuloOFC", "_blank");
   };
 
   const openDiscord = () => {
