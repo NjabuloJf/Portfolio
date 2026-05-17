@@ -201,7 +201,7 @@ export const DATA = {
       dates: "[MY BUSINESS] Available and update updated",
       active: true,
       description:
-        "Welcome to Njabulo-Jb TECH! I am a full-stack developer specializing in WhatsApp and Telegram bot development, website creation, and e-commerce solutions. With over 80+ stars on GitHub and hundreds of satisfied customers, I provide high-quality scripts and services at affordable PRICES What I Offer WhatsApp Bots - Multi-device bots with AI, auto-reply, group management, and more Telegram Bots - Channel management, auto-forwarding, command handlers, and analytics Websites - Custom websites for portfolios, businesses, and personal BRANDS  Online Stores - Complete e-commerce solutions with payment INTEGRATION  Food Delivery Systems - Restaurant websites with online ORDERING  Technical Consulting - Expert advice for your tech PROJECTS All scripts start from $5 USD 65 BWP. I also offer free fixes and 24/7 support for all my CUSTOMERS. Contact me today to bring your idea to life!.",
+        "Welcome to Njabulo-Jb TECH! I am a full-stack developer specializing in WhatsApp and Telegram bot development, website creation, and e-commerce solutions. With over 80+ stars on GitHub and hundreds of satisfied customers.",
       technologies: [
         "BUSINESS",
         "MUKURU",
@@ -223,7 +223,7 @@ export const DATA = {
       dates: "my media am in tiktok & Facebook & Instagram & YouTube",
       active: true,
       description:
-        "Hey, don't miss out! Follow me on Facebook, TikTok, YouTube, and Instagram for the latest updates and behind-the-scenes content!  Stay connected and let's vibe! .",
+        "Hey don't miss out! Follow me on Facebook, TikTok, YouTube, and Instagram for the latest updates and behind-the-scenes content!  Stay connected and let's vibe because text times you will free in project! .",
       technologies: [
         "NJABULO JB",
         "OWNER ME",
