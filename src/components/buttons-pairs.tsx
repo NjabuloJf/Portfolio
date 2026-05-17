@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download, Server, Clock, Cloud, ExternalLink } from "lucide-react";
+import { Copy, Download, Server, Clock, Cloud, ExternalLink, QrCode } from "lucide-react";
 import { useState } from "react";
 
 interface ButtonsPairsProps {
@@ -10,6 +10,8 @@ interface ButtonsPairsProps {
 export function ButtonsPairs({ botName = "njabulo" }: ButtonsPairsProps) {
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+  const [qrValue, setQrValue] = useState("");
 
   const getEnvTemplate = () => {
     return `# ${botName.toUpperCase()} WhatsApp Bot Configuration
@@ -135,7 +137,17 @@ TIMEZONE=UTC`;
   };
 
   const generateQRCode = () => {
-    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
+    // Generate QR code for WhatsApp pairing
+    const whatsappNumber = "26777821911";
+    const whatsappMessage = "Hello Njabulo Jb! I want to deploy a bot";
+    const qrData = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+    setQrValue(qrData);
+    setShowQR(true);
+  };
+
+  const closeQRModal = () => {
+    setShowQR(false);
+    setQrValue("");
   };
 
   const setupUptimeBot = () => {
@@ -144,6 +156,41 @@ TIMEZONE=UTC`;
 
   return (
     <div className="space-y-4 mb-8">
+      {/* QR Code Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-card rounded-xl p-6 max-w-sm w-full mx-4 border shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Scan QR Code</h3>
+              <button onClick={closeQRModal} className="p-1 hover:bg-accent rounded">
+                <X className="size-5" />
+              </button>
+            </div>
+            <div className="flex flex-col items-center gap-4">
+              <div className="bg-white p-4 rounded-lg">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}`}
+                  alt="QR Code"
+                  className="w-48 h-48"
+                />
+              </div>
+              <p className="text-sm text-center text-muted-foreground">
+                Scan this QR code with your WhatsApp to message me directly
+              </p>
+              <p className="text-xs text-center text-muted-foreground">
+                WhatsApp Number: +267 77 821 911
+              </p>
+              <button
+                onClick={() => window.open(qrValue, "_blank")}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              >
+                Open WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Button Pair */}
       <div className="flex flex-wrap gap-3">
         <button
@@ -188,10 +235,9 @@ TIMEZONE=UTC`;
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
           >
             <QrCode className="size-4 text-blue-600" />
-            Show QR 
+            QR Code
           </button>
           <button
-
             onClick={setupUptimeBot}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
           >
@@ -212,4 +258,4 @@ TIMEZONE=UTC`;
       </div>
     </div>
   );
-      }
+                                        }
