@@ -18,9 +18,9 @@ export const DATA = {
   url: "https://github.com",
   location: "San Francisco, CA",
   locationLink: "https://www.google.com/maps/place/sanfrancisco",
-  description: "sᴏғᴛᴡᴀʀᴇ ᴇɴɢɪɴᴇᴇʀ ᴛᴜʀɴᴇᴅ ᴇɴᴛʀᴇᴘʀᴇɴᴇᴜʀ. ɪ ʟᴏᴠᴇ ʙᴜɪʟᴅɪɴɢ ᴛʜɪɴɢs ᴀɴᴅ ʜᴇʟᴘɪɴɢ ᴘᴇᴏᴘʟᴇ. ᴠᴇʀʏ ᴀᴄᴛɪᴠᴇ ᴏɴ ᴡʜᴀᴛsᴀᴘᴘ ʙᴜsɪɴᴇssᴇs.ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](https://com).",
-  summary: "ᴀᴛ ᴛʜᴇ ᴇɴᴅ ᴏғ 2026, ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](https://buildspace.so/sf1).", 
-  avatarUrl: "/me.png",
+  description: "sᴏғᴛᴡᴀʀᴇ ᴇɴɢɪɴᴇᴇʀ ᴛᴜʀɴᴇᴅ ᴇɴᴛʀᴇᴘʀᴇɴᴇᴜʀ. ɪ ʟᴏᴠᴇ ʙᴜɪʟᴅɪɴɢ ᴛʜɪɴɢs ᴀɴᴅ ʜᴇʟᴘɪɴɢ ᴘᴇᴏᴘʟᴇ. ᴠᴇʀʏ ᴀᴄᴛɪᴠᴇ ᴏɴ ᴡʜᴀᴛsᴀᴘᴘ ʙᴜsɪɴᴇssᴇs.ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](ʜᴛᴛᴘs://com).",
+  summary: "ᴀᴛ ᴛʜᴇ ᴇɴᴅ ᴏғ 2026, ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](ʜᴛᴛᴘs://ʙᴜɪʟᴅsᴘᴀᴄᴇ.sᴏ/sғ1).", 
+    avatarUrl: "/me.png",
   skills: [
     { name: "React", icon: ReactLight },
     { name: "Next.js", icon: NextjsIconDark },
@@ -48,16 +48,19 @@ export const DATA = {
         icon: Icons.github,
         navbar: true,
       },
+
       LinkedIn: {
         name: "LinkedIn",
         url: "https://www.facebook.com/profile.php?id=100094314013209",
         icon: Icons.linkedin,
+
         navbar: true,
       },
       X: {
         name: "X",
         url: "https://www.instagram.com/njabulojb871?igsh=MTJ4cXZydW4yNHhpeg==",
         icon: Icons.x,
+
         navbar: true,
       },
       Youtube: {
@@ -70,6 +73,7 @@ export const DATA = {
         name: "Send Email",
         url: "#",
         icon: Icons.email,
+
         navbar: false,
       },
     },
@@ -78,46 +82,46 @@ export const DATA = {
   work: [
     {
       company: "Owner name",
-      href: "/owner",
-      badges: ["Meta AI Verified"],
+      href: "/repository.html",
+      badges: [],
       location: "Botswana",
       title: "My name is njabulo",
       logoUrl: "/atomic.png",
       start: "age 20",
       end: "date Oct 20o5",
       description:
-        "Meta AI Verified - Implemented the Bitcoin discreet log contract (DLC) protocol specifications as an open source Typescript SDK. Dockerized all microservices and setup production kubernetes cluster. Architected a data lake using AWS S3 and Athena for historical backtesting of bitcoin trading strategies. Built a mobile app using react native and typescript.",
+        "Implemented the Bitcoin discreet log contract (DLC) protocol specifications as an open source Typescript SDK. Dockerized all microservices and setup production kubernetes cluster. Architected a data lake using AWS S3 and Athena for historical backtesting of bitcoin trading strategies. Built a mobile app using react native and typescript.",
     },
     {
       company: "My work",
       href: "/repository.html",
-      badges: ["Meta AI Verified"],
+      badges: [],
       location: "Santa Clara, CA",
       title: "Software Engineer",
       logoUrl: "/nvidia.png",
       start: "January 2024",
       end: "April 2026",
       description:
-        "Meta AI Verified - Architected and wrote the entire MVP of the GeForce Now Cloud Gaming internal admin and A/B testing dashboard using React, Redux, TypeScript, and Python.",
+        "Architected and wrote the entire MVP of the GeForce Now Cloud Gaming internal admin and A/B testing dashboard using React, Redux, TypeScript, and Python.",
     },
     {
       company: "My country",
       href: "/repository.html",
-      badges: ["Meta AI Verified"],
+      badges: [],
       location: "Toronto, ON",
-      title: "Botswana and Zimbabwe",
+      title: "Botswana🇧🇼 and Zimbabwe🇿🇼",
       logoUrl: "/mitremedia.png",
       start: "am born in Zimbabwe",
       end: "my project in Botswana",
       description:
-        "Meta AI Verified - Designed and implemented a robust password encryption and browser cookie storage system in Ruby on Rails. Leveraged the Yahoo finance API to develop the dividend.com equity screener",
+        "Designed and implemented a robust password encryption and browser cookie storage system in Ruby on Rails. Leveraged the Yahoo finance API to develop the dividend.com equity screener",
     },
   ],
   education: [
     {
-      school: "welcome",
+      school: "welcome 🙏💃",
       href: "",
-      degree: "Meta AI Verified",
+      degree: "",
       logoUrl: "/buildspace.jpg",
       start: "",
       end: "2024 to updating 2026",
@@ -128,12 +132,11 @@ export const DATA = {
     {
       title: "ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ",
       href: "/njabulobot",
-      dates: "last update February 2026 version ^4.12.9",
+      dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
-        "Meta AI Verified - Njabulo Jb' WhatsApp bot multi-device repository (NjabuloJ/Njabulo-Jb) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
+        "Njabulo Jb' WhatsApp bot multi-device repository (NjabuloJ/Njabulo-Jb) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
       technologies: [
-        "Meta AI Verified",
         "NJABULO-JB",
         "njabulo tech",
         "bot online",
@@ -149,15 +152,14 @@ export const DATA = {
       ],
       image: "njabulobot.png",
     },
-    {
+     {
       title: "ɢᴡᴍ-xᴍᴅ",
-      href: "/gwmxmd",
-      dates: "last update February 2026 version ^4.12.9",
+      href: "/gmxxmd",
+      dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
-        "Meta AI Verified - GWM-XMD' WhatsApp bot multi-device repository (NjabuloJ/GWM-XMD) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
+        "GWM-XMD' WhatsApp bot multi-device repository (NjabuloJ/GWM-XMD) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
       technologies: [
-        "Meta AI Verified",
         "GWM-XMD",
         "njabulo ui",
         "bot online",
@@ -175,12 +177,11 @@ export const DATA = {
     {
       title: "ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ",
       href: "/njabulo-telegrambot",
-      dates: "last update Jeanunary 2026 version ^2.0.0",
+      dates: "last update Jeanunary 2026 version ^2.0.0¬",
       active: true,
       description:
-        "Meta AI Verified - Get the Njabulo Jb Telegram bot or clone is free .- a powerful multi-device solution with over 80+ stars on GitHub.",
+        "Get the Njabulo Jb Telegram bot or clone is free .- a powerful multi-device solution with over 80+ stars on GitHub.",
       technologies: [
-        "Meta AI Verified",
         "telegram bot",
         "online",
         "fana UI",
@@ -196,14 +197,13 @@ export const DATA = {
       image: "ib.png",
     },
     {
-      title: "ᴍʏ ᴜᴘᴅᴀᴛᴇ sᴇʀᴠɪᴄᴇ",
+      title: "ᴍʏ ᴜᴘᴅᴀᴛᴇ sᴇᴠɪᴇʀ",
       href: "/business",
       dates: "follow my channel and group chats got updated",
       active: true,
       description:
-        "Meta AI Verified - Thanks for your support! Join my channels and groups to get the latest updates on Njabulo JB. Stay ahead with new features and more!.",
+        "Thanks for your support!  Join my channels and groups to get the latest updates on Njabulo JB. Stay ahead with new features and more!.",
       technologies: [
-        "Meta AI Verified",
         "njabulo.js",
         "channel join",
         "group join",
@@ -224,9 +224,8 @@ export const DATA = {
       dates: "my media am in tiktok & Facebook & Instagram & YouTube",
       active: true,
       description:
-        "Meta AI Verified - Hey, don't miss out! Follow me on Facebook, TikTok, YouTube, and Instagram for the latest updates and behind-the-scenes content! Stay connected and let's vibe! .",
+        "Hey, don't miss out! Follow me on Facebook, TikTok, YouTube, and Instagram for the latest updates and behind-the-scenes content!  Stay connected and let's vibe! .",
       technologies: [
-        "Meta AI Verified",
         "njabulo.js",
         "tiktok",
         "facebook",
@@ -240,7 +239,7 @@ export const DATA = {
           icon: <Icons.globe className="size-3" />,
         },
       ],
-      image: "magic-ui.png", 
+     image: "magic-ui.png", 
     },
   ],
   hackathons: [
@@ -249,7 +248,7 @@ export const DATA = {
       dates: "November 23rd - 25th, 2024",
       location: "Botswana' Gaborone",
       description:
-        "Meta AI Verified - Developed a mobile application which delivered bedtime stories to children using augmented reality.",
+        "Developed a mobile application which delivered bedtime stories to children using augmented reality.",
       image: "computer-software.png",
       mlh: "https://s3.amazonaws.com/logged-assets/trust-badge/2019/mlh-trust-badge-2019-white.svg",
       links: [],
@@ -259,7 +258,7 @@ export const DATA = {
       dates: "September 14th - 16th, 203",
       location: "Zimbabwe, bulawayo",
       description:
-        "Meta AI Verified - Developed a mobile application which delivers university campus wide events in real time to all students.",
+        "Developed a mobile application which delivers university campus wide events in real time to all students.",
       image: "hack-software.png",
       mlh: "https://s3.amazonaws.com/logged-assets/trust-badge/2019/mlh-trust-badge-2019-white.svg",
       links: [],
@@ -269,17 +268,18 @@ export const DATA = {
       dates: "March 23rd - 24th, 2018",
       location: "bulawayo, Gaborone",
       description:
-        "Meta AI Verified - Developed a mobile application which communicates a victims medical data from inside an ambulance to doctors at hospital.",
+        "Developed a mobile application which communcicates a victims medical data from inside an ambulance to doctors at hospital.",
       icon: "public",
       image: "me.png",
       links: [],
+    
     },
     {
       title: "github clone",
       dates: "October 29, 2025",
       location: "Gaborone, Botswana",
       description:
-        "Meta AI Verified - Developed an internal widget for uploading assignments using Waterloo's portal app",
+        "Developed an internal widget for uploading assignments using Waterloo's portal app",
       image: "github-cline.png",
       links: [
         {
