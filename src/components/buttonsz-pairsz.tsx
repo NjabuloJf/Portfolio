@@ -47,19 +47,19 @@ export function ButtonszPairsZ() {
 
   // Social Media Links
   const openTikTok = () => {
-    window.open("https://www.tiktok.com/@njabulojbdev", "_blank");
+    window.open("https://www.tiktok.com/@njabulo.jb24", "_blank");
   };
 
   const openFacebook = () => {
-    window.open("https://www.facebook.com/njabulojbdev", "_blank");
+    window.open("https://www.facebook.com/profile.php?id=100094314013209", "_blank");
   };
 
   const openYouTube = () => {
-    window.open("https://www.youtube.com/@njabulojbdev", "_blank");
+    window.open("http://www.youtube.com/@Njabulo-JBOffice", "_blank");
   };
 
   const openInstagram = () => {
-    window.open("https://www.instagram.com/njabulojbdev", "_blank");
+    window.open("https://www.instagram.com/njabulojb871", "_blank");
   };
 
   const openTwitter = () => {
