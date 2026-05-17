@@ -188,6 +188,16 @@ function AvatarWithMetaBadge() {
   );
 }
 
+// Section Header with Avatar Component
+function SectionHeader({ title, id }: { title: string; id: string }) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <AvatarWithMetaBadge />
+      <h2 id={id} className="text-xl font-bold">{title}</h2>
+    </div>
+  );
+}
+
 // 5 Images from public folder
 const carouselImages = [
   {
@@ -241,7 +251,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Hero Section - Your profile stays INTACT */}
+      {/* Hero Section */}
       <section id="hero" className="py-4">
         <div className="mx-auto w-full max-w-4xl px-4">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -276,7 +286,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Rest of your sections - ALL INTACT */}
+      {/* Image Carousel Section */}
       <section id="carousel" className="py-2">
         <div className="container mx-auto px-4">
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
@@ -291,10 +301,11 @@ export default function Page() {
         </div>
       </section>
 
+      {/* About Section with Avatar */}
       <section id="about">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
-            <h2 className="text-xl font-bold">About</h2>
+            <SectionHeader title="About" id="about" />
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 4}>
             <div className="prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
@@ -304,10 +315,11 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Work Section with Avatar */}
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <h2 className="text-xl font-bold">Work Experience</h2>
+            <SectionHeader title="Work Experience" id="work" />
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 6}>
             <WorkSection />
@@ -315,6 +327,7 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Education Section */}
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -348,10 +361,11 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Skills Section with Avatar */}
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
-            <h2 className="text-xl font-bold">Skills</h2>
+            <SectionHeader title="Skills" id="skills" />
           </BlurFade>
           <div className="flex flex-wrap gap-2">
             {DATA.skills.map((skill, id) => (
@@ -366,18 +380,22 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Projects Section with Avatar */}
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
+          <SectionHeader title="Projects" id="projects" />
           <ProjectsSection />
         </BlurFade>
       </section>
 
+      {/* Hackathons Section */}
       <section id="hackathons">
         <BlurFade delay={BLUR_FADE_DELAY * 13}>
           <HackathonsSection />
         </BlurFade>
       </section>
 
+      {/* Contact Section */}
       <section id="contact">
         <BlurFade delay={BLUR_FADE_DELAY * 16}>
           <ContactSection />
@@ -393,4 +411,4 @@ export default function Page() {
       )}
     </main>
   );
-          }
+            }
