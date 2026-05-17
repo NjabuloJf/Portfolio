@@ -63,7 +63,7 @@ function LoadingScreen() {
       {/* Name with Verified Badge */}
       <div className="flex items-center gap-2 mb-2">
         <h2 className="text-xl font-semibold text-foreground">
-          Njabulo Jb
+          ɳʝαႦυʅσ
         </h2>
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
           <CheckCircle className="size-3 text-white" />
@@ -394,7 +394,7 @@ export default function Page() {
       </section>
 
       {/* Hackathons Section */}
-      <section id="hackathons">
+      <section id="ʜᴀᴄᴋᴀᴛʜᴏɴ">
         <BlurFade delay={BLUR_FADE_DELAY * 13}>
           <HackathonsSection />
         </BlurFade>
