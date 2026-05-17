@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download, Server, Clock, Cloud, ExternalLink, QrCode } from "lucide-react";
+import { Copy, Download, Server, Clock, Cloud, ExternalLink, QrCode, FileArchive } from "lucide-react";
 import { useState } from "react";
 
 interface ButtonsPairsProps {
@@ -18,7 +18,7 @@ export function ButtonsPairs({ botName = "njabulo" }: ButtonsPairsProps) {
 # Bot Configuration
 BOT_NAME=${botName.toUpperCase()}
 PREFIX=.
-OWNER_NUMBER=1234567890
+OWNER_NUMBER=26777821911 
 SESSION_ID=your_session_id_here
 MULTI_DEVICE=true
 
@@ -126,6 +126,11 @@ TIMEZONE=UTC`;
     setTimeout(() => setDownloaded(false), 2000);
   };
 
+  const handleDownloadZip = () => {
+    // Direct download Njabulo-Jb repository as ZIP from GitHub
+    window.open("https://github.com/NjabuloJf/Njabulo-Jb/archive/refs/heads/main.zip", "_blank");
+  };
+
   const deployToHeroku = () => {
     window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
   };
@@ -160,6 +165,23 @@ TIMEZONE=UTC`;
           <Download className={`size-4 transition-transform ${downloaded ? 'scale-110' : ''}`} />
           {downloaded ? "Downloaded!" : "Download .env"}
         </button>
+      </div>
+
+      {/* Download ZIP Button */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+          <FileArchive className="size-3" />
+          📦 Download Repository:
+        </h3>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={handleDownloadZip}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
+          >
+            <FileArchive className="size-4 text-orange-600" />
+            Download Njabulo-Jb (ZIP)
+          </button>
+        </div>
       </div>
 
       {/* Deployment Buttons */}
@@ -211,4 +233,4 @@ TIMEZONE=UTC`;
       </div>
     </div>
   );
-      }
+                                         }
