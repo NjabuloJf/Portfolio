@@ -213,12 +213,12 @@ const carouselImages = [
   {
     src: "/images/image2.png",
     alt: "Njabulo Jb Project 2",
-    link: "https://github.com/NjabuloJf/njabulo-bot",
+    link: "https://github.com/NjabuloJf/Njabulo-Jb",
   },
   {
     src: "images/image3.png",
     alt: "Njabulo Jb Project 3",
-    link: "https://github.com/NjabuloJf/Portfolio",
+    link: "https://github.com/NjabuloJf/GWM-XMD",
   },
   {
     src: "images/image4.png",
@@ -324,7 +324,7 @@ export default function Page() {
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <SectionHeader title="Work Experience" id="work" />
+            <SectionHeader title="ᴡᴏʀᴋ ᴇxᴘᴇʀɪᴇɴᴄᴇ" id="work" />
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 6}>
             <WorkSection />
@@ -336,7 +336,7 @@ export default function Page() {
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
-            <h2 className="text-xl font-bold">Education</h2>
+            <h2 className="text-xl font-bold">ᴇᴅᴜᴄᴀᴛɪᴏɴ</h2>
           </BlurFade>
           <div className="flex flex-col gap-5">
             {DATA.education.map((education, index) => (
@@ -370,7 +370,7 @@ export default function Page() {
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
-            <SectionHeader title="Skills" id="skills" />
+            <SectionHeader title="sᴋɪʟʟs" id="skills" />
           </BlurFade>
           <div className="flex flex-wrap gap-2">
             {DATA.skills.map((skill, id) => (
@@ -388,7 +388,7 @@ export default function Page() {
       {/* Projects Section with Verified Badge only */}
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
-          <SectionHeader title="Projects" id="projects" />
+          <SectionHeader title="ᴘʀᴏᴊᴇᴄᴛs" id="projects" />
           <ProjectsSection />
         </BlurFade>
       </section>
