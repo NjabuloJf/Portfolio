@@ -97,7 +97,7 @@ export default async function ContactsPage() {
               <p className="text-xs text-muted-foreground flex items-start gap-2">
                 <MapPin className="size-3 mt-0.5 shrink-0" />
                 123 Tech Street, Innovation Hub<br />
-                Johannesburg, South Africa<br />
+                Gaborone, Botswana<br />
                 2196
               </p>
             </div>
