@@ -26,7 +26,7 @@ export default async function GWMXMPage() {
     <section id="gwmxmd">
       <BlurFade delay={BLUR_FADE_DELAY}>
         <h1 className="text-2xl font-semibold tracking-tight mb-2">
-          GWM-XMD WhatsApp Bot 
+          ɢᴡᴍ-xᴍᴅ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ 
           <span className="ml-2 bg-primary/10 border border-primary/20 rounded-md px-2 py-1 text-primary text-sm">v2.0.0</span>
         </h1>
         <p className="text-sm text-muted-foreground mb-8">
@@ -43,7 +43,7 @@ export default async function GWMXMPage() {
       {/* Quick Start Guide */}
       <BlurFade delay={BLUR_FADE_DELAY * 2}>
         <div className="mt-8 p-6 border border-border rounded-xl bg-card/30">
-          <h2 className="text-lg font-semibold mb-4">Quick Start Guide</h2>
+          <h2 className="text-lg font-semibold mb-4">ǫᴜɪᴄᴋ sᴛᴀʀᴛ ɢᴜɪᴅᴇ</h2>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-bold">1</span>
