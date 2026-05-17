@@ -42,7 +42,7 @@ export default async function ContactsPage() {
           <div className="p-4 border border-border rounded-lg text-center bg-card/30 hover:bg-accent/30 transition-all duration-200">
             <Phone className="size-6 mx-auto mb-2 text-green-500" />
             <p className="text-sm font-semibold">Phone/WhatsApp</p>
-            <p className="text-xs text-muted-foreground">+27 123 456 789</p>
+            <p className="text-xs text-muted-foreground">+26777821911</p>
             <p className="text-xs text-muted-foreground">Available 24/7</p>
           </div>
           <div className="p-4 border border-border rounded-lg text-center bg-card/30 hover:bg-accent/30 transition-all duration-200">
@@ -116,7 +116,7 @@ export default async function ContactsPage() {
             <div className="text-center">
               <MapPin className="size-8 mx-auto mb-2 text-muted-foreground" />
               <p className="text-xs text-muted-foreground">Interactive Map Integration</p>
-              <p className="text-xs text-muted-foreground">Johannesburg, South Africa</p>
+              <p className="text-xs text-muted-foreground">Gaborone , Botswana</p>
             </div>
           </div>
         </div>
