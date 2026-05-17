@@ -206,7 +206,7 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
 // 5 Images from public folder
 const carouselImages = [
   {
-    src: "/images/business.png",
+    src: "/png/business.png",
     alt: "Njabulo Jb Project 1",
     link: "/business",
   },
