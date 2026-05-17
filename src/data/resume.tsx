@@ -137,6 +137,7 @@ export const DATA = {
       description:
         "Njabulo Jb' WhatsApp bot multi-device repository (NjabuloJ/Njabulo-Jb) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
       technologies: [
+        { name: "React", icon: ReactLight },
         "NJABULO-JB",
         "njabulo tech",
         "bot online",
