@@ -127,11 +127,15 @@ TIMEZONE=UTC`;
   };
 
   const deployToHeroku = () => {
-    window.open("https://heroku.com/deploy?template=https://github.com/njabulojs/njabulo-bot", "_blank");
+    window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
   };
 
   const deployToRender = () => {
-    window.open("https://render.com/deploy?repo=https://github.com/njabulojs/njabulo-bot", "_blank");
+    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
+  };
+
+  const deployToQr = () => {
+    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
   };
 
   const setupUptimeBot = () => {
@@ -174,6 +178,13 @@ TIMEZONE=UTC`;
           </button>
           <button
             onClick={deployToRender}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
+          >
+            <Server className="size-4 text-blue-600" />
+            Render
+          </button>
+          <button
+            onClick={deployToQr}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-all duration-200 hover:scale-105 transform"
           >
             <Server className="size-4 text-blue-600" />
