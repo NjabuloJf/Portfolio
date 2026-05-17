@@ -139,15 +139,15 @@ TIMEZONE=UTC`;
   };
 
   const joinTelegramGroup = () => {
-    window.open("https://t.me/njabulojbgroup", "_blank");
+    window.open("https://t.me/+J1P5PlGE4JVjNDg0", "_blank");
   };
 
   const joinTelegramChannel = () => {
-    window.open("https://t.me/njabulojbchannel", "_blank");
+    window.open("https://t.me/njabullojb", "_blank");
   };
 
   const sendBotMessage = () => {
-    window.open("https://t.me/njabulojbbot", "_blank");
+    window.open("https://t.me/njabullo_bot", "_blank");
   };
 
   return (
@@ -174,7 +174,7 @@ TIMEZONE=UTC`;
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
           <MessageCircle className="size-3" />
-          📢 Join Our Telegram Community:
+          📢 ᴊᴏɪɴ ᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ᴄᴏᴍᴍᴜɴɪᴛʏ:
         </h3>
         <div className="flex flex-wrap gap-3">
           <button
@@ -196,7 +196,7 @@ TIMEZONE=UTC`;
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-green-500 text-white hover:bg-green-600 transition-all duration-200 hover:scale-105 transform"
           >
             <Bot className="size-4" />
-            Message @njabulojbbot
+            Message @njabullo_bot
           </button>
         </div>
       </div>
@@ -205,7 +205,7 @@ TIMEZONE=UTC`;
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
           <Bot className="size-3" />
-          🤖 Create Your Own Bot:
+          🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ʙᴏᴛ:
         </h3>
         <div className="flex flex-wrap gap-3">
           <button
