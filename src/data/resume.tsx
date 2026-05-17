@@ -15,10 +15,10 @@ import { Csharp } from "@/components/ui/svgs/csharp";
 export const DATA = {
   name: "ɳʝαႦυʅσ ʝႦ",
   initials: "",
-  url: "https://github.com",
+  url: "https://github.com/NjabuloJf/Njabulo-Jb",
   location: "San Francisco, CA",
   locationLink: "https://www.google.com/maps/place/sanfrancisco",
-  description: "sᴏғᴛᴡᴀʀᴇ ᴇɴɢɪɴᴇᴇʀ ᴛᴜʀɴᴇᴅ ᴇɴᴛʀᴇᴘʀᴇɴᴇᴜʀ. ɪ ʟᴏᴠᴇ ʙᴜɪʟᴅɪɴɢ ᴛʜɪɴɢs ᴀɴᴅ ʜᴇʟᴘɪɴɢ ᴘᴇᴏᴘʟᴇ. ᴠᴇʀʏ ᴀᴄᴛɪᴠᴇ ᴏɴ ᴡʜᴀᴛsᴀᴘᴘ ʙᴜsɪɴᴇssᴇs.ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](ʜᴛᴛᴘs://com).",
+  description: "sᴏғᴛᴡᴀʀᴇ ᴇɴɢɪɴᴇᴇʀ ᴛᴜʀɴᴇᴅ ᴇɴᴛʀᴇᴘʀᴇɴᴇᴜʀ. ɪ ʟᴏᴠᴇ ʙᴜɪʟᴅɪɴɢ ᴛʜɪɴɢs ᴀɴᴅ ʜᴇʟᴘɪɴɢ ᴘᴇᴏᴘʟᴇ. ᴠᴇʀʏ ᴀᴄᴛɪᴠᴇ ᴏɴ ᴡʜᴀᴛsᴀᴘᴘ ʙᴜsɪɴᴇssᴇs.ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ]",
   summary: "ᴀᴛ ᴛʜᴇ ᴇɴᴅ ᴏғ 2026, ᴄᴏɴᴛɪɴᴜᴇ ʙᴜɪʟᴅɪɴɢ ᴄᴏᴅᴇ ғᴏʀ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ. [ʙᴜɪʟᴅsᴘᴀᴄᴇ ʙᴏᴛ](ʜᴛᴛᴘs://ʙᴜɪʟᴅsᴘᴀᴄᴇ.sᴏ/sғ1).", 
     avatarUrl: "/me.png",
   skills: [
@@ -36,7 +36,7 @@ export const DATA = {
   ],
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
-    { href: "/blog", icon: NotebookIcon, label: "Blog" },
+    { href: "/business", icon: NotebookIcon, label: "Blog" },
   ],
   contact: {
     email: "fanajb65@gmail.com",
@@ -44,7 +44,7 @@ export const DATA = {
     social: {
       GitHub: {
         name: "GitHub",
-        url: "https://github.com",
+        url: "https://github.com/NjabuloJf/Njabulo-Jb",
         icon: Icons.github,
         navbar: true,
       },
@@ -109,7 +109,7 @@ export const DATA = {
       href: "/repository.html",
       badges: [],
       location: "Toronto, ON",
-      title: "Botswana🇧🇼 and Zimbabwe🇿🇼",
+      title: "Botswana and Zimbabwe",
       logoUrl: "/mitremedia.png",
       start: "am born in Zimbabwe",
       end: "my project in Botswana",
@@ -139,7 +139,6 @@ export const DATA = {
       technologies: [
         "NJABULO TECH",
         "WHATSAPP BOT",
-        "FANA UI",
         "CHATS BOT",
       ],
       links: [
@@ -161,7 +160,6 @@ export const DATA = {
       technologies: [
         "GWM-XMD",
         "NJABULO TECH",
-        "FANA UI",
         "WHATSAPP BOT",
       ],
       links: [
@@ -183,7 +181,6 @@ export const DATA = {
       technologies: [
         "TELEGRAM BOT",
         "ONLINE",
-        "FANA UI",
         "NJABULO TECH",
       ],
       links: [
@@ -206,7 +203,7 @@ export const DATA = {
         "BUSINESS",
         "MUKURU",
         "MONEY UI",
-        "FMB VISA",
+        "FMB Visa CARD",
       ],
       links: [
         {
@@ -283,7 +280,7 @@ export const DATA = {
         {
           title: "Source",
           icon: <Icons.github className="h-4 w-4" />,
-          href: "/repository.html",
+          href: "https:// github.com/NjabuloJf/Njabulo-Jb",
         },
       ],
     },
