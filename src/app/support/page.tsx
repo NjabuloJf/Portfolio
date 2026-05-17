@@ -20,14 +20,14 @@ const njabuloJbSupport = {
   businessPortfolio: {
     status: "AVAILABLE",
     services: ["Web Development", "Bot Development", "Mobile Apps", "Technical Consulting"],
-    contact: "support@njabulojb.dev",
+    contact: "fanajb65@gmail.com",
     responseTime: "24-48 hours"
   },
   
   // Support Contact
   contact: {
     email: "support@njabulojb.dev",
-    phone: "+27 79 123 4567",
+    phone: "+26777821911",
     hours: "Monday-Friday, 9 AM - 6 PM SAST",
     liveChat: "Available during business hours"
   },
@@ -81,7 +81,7 @@ console.log("Email:", njabuloJbSupport.contact.email);`;
           
           <div className="p-6 border rounded-lg">
             <h2 className="text-xl font-semibold mb-2">📧 Email Support</h2>
-            <p className="text-muted-foreground">support@njabulojb.dev</p>
+            <p className="text-muted-foreground">fanajb65@gmail.com</p>
           </div>
           
           <div className="p-6 border rounded-lg">
@@ -91,7 +91,7 @@ console.log("Email:", njabuloJbSupport.contact.email);`;
           
           <div className="p-6 border rounded-lg">
             <h2 className="text-xl font-semibold mb-2">📞 Phone Support</h2>
-            <p className="text-muted-foreground">+27 79 123 4567</p>
+            <p className="text-muted-foreground">+26777821911</p>
           </div>
         </div>
 
