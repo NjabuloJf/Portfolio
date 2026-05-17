@@ -24,7 +24,7 @@ export default function ContactSection() {
           Get in Touch
         </h2>
         <p className="mx-auto max-w-lg text-muted-foreground text-balance">
-          Want to chat? Just shoot me a dm{" "}
+          Want to chat? Just shoot me a dm{"https://whatsapp.com/channel/0029VbC9yTmElah0BO3KD509"}
           <Link
             href={DATA.contact.social.X.url}
             target="_blank"
@@ -32,7 +32,7 @@ export default function ContactSection() {
             className="text-blue-500 hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             with a direct question on Facebook me
-          </Link>{" "}
+          </Link>{"https://www.facebook.com/profile.php?id=100094314013209 "}
           and I&apos;ll respond whenever I can. I will ignore all
           soliciting.
         </p>
