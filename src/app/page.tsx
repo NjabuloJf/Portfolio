@@ -206,27 +206,27 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
 // 5 Images from public folder
 const carouselImages = [
   {
-    src: "/business.png",
+    src: "/images/image1png",
     alt: "Njabulo Jb Project 1",
     link: "/business",
   },
   {
-    src: "image2.png",
+    src: "/images/image2.png",
     alt: "Njabulo Jb Project 2",
     link: "https://github.com/NjabuloJf/njabulo-bot",
   },
   {
-    src: "image3.png",
+    src: "images/image3.png",
     alt: "Njabulo Jb Project 3",
     link: "https://github.com/NjabuloJf/Portfolio",
   },
   {
-    src: "image4.png",
+    src: "images/image4.png",
     alt: "Njabulo Jb Project 4",
     link: "https://t.me/njabulojbbot",
   },
   {
-    src: "image5.png",
+    src: "images/image5.png",
     alt: "Njabulo Jb Project 5",
     link: "https://wa.me/27791234567",
   },
