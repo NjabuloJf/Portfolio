@@ -193,7 +193,7 @@ export const DATA = {
       image: "ib.png",
     },
     {
-      title: "ᴍʏ ᴜᴘᴅᴀᴛᴇ sᴇᴠɪᴇʀ",
+      title: "ᴍʏ ʙᴜsɪɴᴇss ᴜᴘᴅᴀᴛᴇ sᴇᴠɪᴇʀ",
       href: "/business",
       dates: "[MY BUSINESS] Available and update updated",
       active: true,
@@ -239,7 +239,7 @@ export const DATA = {
   ],
   hackathons: [
     {
-      title: "Computer software",
+      title: "ᴄᴏᴍᴘᴜᴛᴇʀ sᴏғᴛᴡᴀʀᴇ",
       dates: "November 23rd - 25th, 2024",
       location: "Botswana' Gaborone",
       description:
@@ -249,8 +249,8 @@ export const DATA = {
       links: [],
     },
     {
-      title: "hack software",
-      dates: "September 14th - 16th, 203",
+      title: "ʜᴀᴄᴋ sᴏғᴛᴡᴀʀᴇ",
+      dates: "September 14th - 16th, 2026",
       location: "Zimbabwe, bulawayo",
       description:
         "Developed a mobile application which delivers university campus wide events in real time to all students.",
@@ -259,8 +259,8 @@ export const DATA = {
       links: [],
     },
     {
-      title: "Njabulo Jb",
-      dates: "March 23rd - 24th, 2018",
+      title: "ɴᴊᴀʙᴜʟᴏ ᴊʙ",
+      dates: "March 23rd - 24th, 2024",
       location: "bulawayo, Gaborone",
       description:
         "Developed a mobile application which communcicates a victims medical data from inside an ambulance to doctors at hospital.",
@@ -270,7 +270,7 @@ export const DATA = {
     
     },
     {
-      title: "github clone",
+      title: "ɢɪᴛʜᴜʙ ᴄʟᴏɴᴇ",
       dates: "October 29, 2025",
       location: "Gaborone, Botswana",
       description:
