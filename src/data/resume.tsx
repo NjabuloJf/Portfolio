@@ -140,7 +140,7 @@ export const DATA = {
         "NJABULO TECH",
         "WHATSAPP BOT",
         "FANA UI",
-        "ONLINE CHATS BOT",
+        "CHATS BOT",
       ],
       links: [
         {
@@ -160,9 +160,9 @@ export const DATA = {
         "GWM-XMD' WhatsApp bot multi-device repository (NjabuloJ/GWM-XMD) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
       technologies: [
         "GWM-XMD",
-        "njabulo ui",
-        "bot online",
-        "whatsapp chats",
+        "NJABULO TECH",
+        "FANA UI",
+        "WHATSAPP BOT",
       ],
       links: [
         {
@@ -181,10 +181,10 @@ export const DATA = {
       description:
         "Get the Njabulo Jb Telegram bot or clone is free .- a powerful multi-device solution with over 80+ stars on GitHub.",
       technologies: [
-        "telegram bot",
-        "online",
-        "fana UI",
-        "njabulo UI",
+        "TELEGRAM BOT",
+        "ONLINE",
+        "FANA UI",
+        "NJABULO TECH",
       ],
       links: [
         {
@@ -198,15 +198,15 @@ export const DATA = {
     {
       title: "ᴍʏ ᴜᴘᴅᴀᴛᴇ sᴇᴠɪᴇʀ",
       href: "/business",
-      dates: "follow my channel and group chats got updated",
+      dates: "[MY BUSINESS] Available and update updated",
       active: true,
       description:
-        "Thanks for your support!  Join my channels and groups to get the latest updates on Njabulo JB. Stay ahead with new features and more!.",
+        "Welcome to Njabulo-Jb TECH! I am a full-stack developer specializing in WhatsApp and Telegram bot development, website creation, and e-commerce solutions. With over 80+ stars on GitHub and hundreds of satisfied customers, I provide high-quality scripts and services at affordable PRICES What I Offer WhatsApp Bots - Multi-device bots with AI, auto-reply, group management, and more Telegram Bots - Channel management, auto-forwarding, command handlers, and analytics Websites - Custom websites for portfolios, businesses, and personal BRANDS  Online Stores - Complete e-commerce solutions with payment INTEGRATION  Food Delivery Systems - Restaurant websites with online ORDERING  Technical Consulting - Expert advice for your tech PROJECTS All scripts start from $5 USD 65 BWP. I also offer free fixes and 24/7 support for all my CUSTOMERS. Contact me today to bring your idea to life!.",
       technologies: [
-        "njabulo.js",
-        "channel join",
-        "group join",
-        "fana UI",
+        "BUSINESS",
+        "MUKURU",
+        "MONEY UI",
+        "FMB VISA",
       ],
       links: [
         {
@@ -225,15 +225,14 @@ export const DATA = {
       description:
         "Hey, don't miss out! Follow me on Facebook, TikTok, YouTube, and Instagram for the latest updates and behind-the-scenes content!  Stay connected and let's vibe! .",
       technologies: [
-        "njabulo.js",
-        "tiktok",
-        "facebook",
-        "Instagram",
-        "YouTube",
+        "NJABULO JB",
+        "OWNER ME",
+        "MESSAGE",
+        "MEDIA",
       ],
       links: [
         {
-          type: "Me on Social Media",
+          type: "Message Me",
           href: "/contacts",
           icon: <Icons.globe className="size-3" />,
         },
