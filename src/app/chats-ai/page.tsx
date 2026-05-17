@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -86,7 +87,24 @@ type Chat = {
   model: string;
 };
 
-// Components
+// Helper Components
+function ChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+// Model Selector Component
 function ModelSelector({ selectedModel, onSelect }: { selectedModel: string; onSelect: (model: string) => void }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -98,7 +116,7 @@ function ModelSelector({ selectedModel, onSelect }: { selectedModel: string; onS
       >
         {AI_MODELS[selectedModel as keyof typeof AI_MODELS]?.icon}
         <span className="text-sm font-medium">{AI_MODELS[selectedModel as keyof typeof AI_MODELS]?.name}</span>
-        <ChevronDown className="size-4" />
+        <ChevronDownIcon className="size-4" />
       </button>
       
       {isOpen && (
@@ -127,14 +145,7 @@ function ModelSelector({ selectedModel, onSelect }: { selectedModel: string; onS
   );
 }
 
-function ChevronDown({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-    </svg>
-  );
-}
-
+// Code Block Component
 function CodeBlock({ code, onCopy }: { code: string; onCopy: () => void }) {
   const [copied, setCopied] = useState(false);
 
@@ -160,6 +171,7 @@ function CodeBlock({ code, onCopy }: { code: string; onCopy: () => void }) {
   );
 }
 
+// Image Uploader Component
 function ImageUploader({ onImageUpload }: { onImageUpload: (image: string) => void }) {
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -180,6 +192,7 @@ function ImageUploader({ onImageUpload }: { onImageUpload: (image: string) => vo
   );
 }
 
+// Chat Message Component
 function ChatMessage({ message, onEdit, onCopy }: { message: Message; onEdit: (newContent: string) => void; onCopy: (content: string) => void }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
@@ -190,7 +203,7 @@ function ChatMessage({ message, onEdit, onCopy }: { message: Message; onEdit: (n
   };
 
   return (
-    <div className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+    <div className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"} group`}>
       <div className={`max-w-[80%] ${message.role === "user" ? "order-2" : "order-1"}`}>
         <div className="flex items-center gap-2 mb-1">
           {message.role === "user" ? (
@@ -199,7 +212,7 @@ function ChatMessage({ message, onEdit, onCopy }: { message: Message; onEdit: (n
             <Bot className="size-4 text-primary" />
           )}
           <span className="text-xs text-muted-foreground">
-            {message.role === "user" ? "You" : AI_MODELS["gpt-5.4-nano" as keyof typeof AI_MODELS]?.name}
+            {message.role === "user" ? "You" : "Njabulo AI"}
           </span>
           {message.edited && <span className="text-xs text-muted-foreground">(edited)</span>}
         </div>
@@ -322,56 +335,7 @@ export default function ChatsAIPage() {
     setChats(updatedChats);
   };
 
-  const sendMessage = async () => {
-    if (!inputMessage.trim() && uploadedImages.length === 0) return;
-    if (!currentChat) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: inputMessage,
-      timestamp: new Date(),
-      images: uploadedImages.length > 0 ? uploadedImages : undefined,
-    };
-
-    // Update chat with user message
-    const updatedChat = {
-      ...currentChat,
-      messages: [...currentChat.messages, userMessage],
-      updatedAt: new Date(),
-    };
-    const updatedChats = chats.map(chat =>
-      chat.id === currentChat.id ? updatedChat : chat
-    );
-    setChats(updatedChats);
-    setInputMessage("");
-    setUploadedImages([]);
-    setIsTyping(true);
-
-    // Simulate AI response (since we don't have actual API keys)
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: generateAIResponse(inputMessage, selectedModel),
-        timestamp: new Date(),
-      };
-      
-      const finalChat = {
-        ...updatedChat,
-        messages: [...updatedChat.messages, aiResponse],
-        updatedAt: new Date(),
-      };
-      const finalChats = updatedChats.map(chat =>
-        chat.id === currentChat.id ? finalChat : chat
-      );
-      setChats(finalChats);
-      setIsTyping(false);
-    }, 1500);
-  };
-
   const generateAIResponse = (message: string, model: string): string => {
-    // Simple response generation based on message content
     const lowerMsg = message.toLowerCase();
     
     if (lowerMsg.includes("code") || lowerMsg.includes("script") || lowerMsg.includes("html")) {
@@ -426,6 +390,52 @@ I can help you with:
 What specific help do you need?`;
   };
 
+  const sendMessage = async () => {
+    if (!inputMessage.trim() && uploadedImages.length === 0) return;
+    if (!currentChat) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: inputMessage,
+      timestamp: new Date(),
+      images: uploadedImages.length > 0 ? uploadedImages : undefined,
+    };
+
+    const updatedChat = {
+      ...currentChat,
+      messages: [...currentChat.messages, userMessage],
+      updatedAt: new Date(),
+    };
+    const updatedChats = chats.map(chat =>
+      chat.id === currentChat.id ? updatedChat : chat
+    );
+    setChats(updatedChats);
+    setInputMessage("");
+    setUploadedImages([]);
+    setIsTyping(true);
+
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: generateAIResponse(inputMessage, selectedModel),
+        timestamp: new Date(),
+      };
+      
+      const finalChat = {
+        ...updatedChat,
+        messages: [...updatedChat.messages, aiResponse],
+        updatedAt: new Date(),
+      };
+      const finalChats = updatedChats.map(chat =>
+        chat.id === currentChat.id ? finalChat : chat
+      );
+      setChats(finalChats);
+      setIsTyping(false);
+    }, 1500);
+  };
+
   const editMessage = (messageId: string, newContent: string) => {
     if (!currentChat) return;
     const updatedMessages = currentChat.messages.map(msg =>
@@ -440,7 +450,6 @@ What specific help do you need?`;
 
   const copyMessage = (content: string) => {
     navigator.clipboard.writeText(content);
-    // Could add a toast notification here
   };
 
   return (
@@ -466,7 +475,6 @@ What specific help do you need?`;
           </button>
         </div>
 
-        {/* New Chat Button */}
         <button
           onClick={createNewChat}
           className="m-3 flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all"
@@ -475,7 +483,6 @@ What specific help do you need?`;
           {sidebarOpen && <span>New Chat</span>}
         </button>
 
-        {/* Chat List */}
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {chats.map((chat) => (
             <div
@@ -519,7 +526,6 @@ What specific help do you need?`;
           ))}
         </div>
 
-        {/* Profile Section in Sidebar */}
         {sidebarOpen && (
           <div className="p-4 border-t border-border">
             <div className="flex items-center gap-3">
@@ -535,7 +541,7 @@ What specific help do you need?`;
                 <div className="flex items-center gap-1">
                   <span className="text-sm font-medium">{DATA.name}</span>
                   <div className="bg-blue-500 rounded-full p-0.5">
-                    <Check className="size-2 text-white" />
+                    <CheckIcon className="size-2 text-white" />
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">Verified AI Assistant</p>
@@ -547,16 +553,14 @@ What specific help do you need?`;
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold">{currentChat?.name || "Njabulo AI"}</h1>
-            <p className="text-xs text-muted-foreground">AI Assistant • Powered by {AI_MODELS[selectedModel as keyof typeof AI_MODELS]?.name}</p>
+            <p className="text-xs text-muted-foreground">AI Assistant • Powered by Njabulo AI</p>
           </div>
           <ModelSelector selectedModel={selectedModel} onSelect={setSelectedModel} />
         </div>
 
-        {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {currentChat?.messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
@@ -566,7 +570,7 @@ What specific help do you need?`;
                   <img src={DATA.avatarUrl} alt={DATA.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-1">
-                  <Check className="size-3 text-white" />
+                  <CheckIcon className="size-3 text-white" />
                 </div>
               </div>
               <h2 className="text-2xl font-bold mb-2">Njabulo AI Assistant</h2>
@@ -600,7 +604,6 @@ What specific help do you need?`;
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
         <div className="p-4 border-t border-border">
           <div className="flex gap-2 items-end">
             <div className="flex-1 relative">
@@ -643,13 +646,4 @@ What specific help do you need?`;
       </div>
     </div>
   );
-}
-
-// Helper component
-function Check({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-    </svg>
-  );
-  }
+      }
