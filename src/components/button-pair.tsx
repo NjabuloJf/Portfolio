@@ -8,51 +8,24 @@ export function ButtonPair() {
   const [downloaded, setDownloaded] = useState(false);
 
   const handleCopyEnv = async () => {
-    const envTemplate = `# GWM-XMD WhatsApp Bot Configuration
-# Generated on: ${new Date().toLocaleString()}
-
-# Bot Configuration
-BOT_NAME=GWM-XMD
-PREFIX=.
-OWNER_NUMBER=1234567890
-SESSION_ID=your_session_id_here
-
-# API Keys
-OPENAI_API_KEY=your_openai_key
-GROQ_API_KEY=your_groq_key
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/gwm-xmd
-REDIS_URL=redis://localhost:6379
-
-# Deployment
-PORT=3000
-NODE_ENV=production
-
-# UptimeRobot
-UPTIMEROBOT_API_KEY=your_uptimerobot_key
-MONITOR_URL=https://your-app-url.herokuapp.com
-
-# Features
-ENABLE_AI=true
-ENABLE_GAMES=true
-ENABLE_DOWNLOADER=true
-ENABLE_GROUP_TOOLS=true
-ENABLE_ANTI_LINK=true
-ENABLE_AUTO_REACT=true
-ENABLE_AUTO_STATUS_VIEW=true
-
-# Webhook
-WEBHOOK_URL=https://your-webhook-url.com
-WEBHOOK_SECRET=your_webhook_secret
-
-# Rate Limiting
-RATE_LIMIT_MAX=100
-RATE_LIMIT_WINDOW=60000
-
-# Logging
-LOG_LEVEL=info
-ENABLE_DEBUG=false`;
+    const envTemplate = `SESSION_ID="put your session id"
+AUTO_READ_STATUS=true
+STATUS_READ_MSG="Status Seen By me 𝐁𝐖𝐌-𝐗𝐌𝐃"
+AUTO_STATUS_REPLY=false
+AUTO_REJECT_CALLS=false
+MODE="public"
+WELCOME=true
+AUTO_READ_MESSAGES=false
+AUTO_TYPING=false
+OWNER_NAME="Njabulo-Jb"
+OWNER_NUMBER="26777821911"
+AUTO_RECORDING=false
+ALWAYS_ONLINE=false
+AUTO_BLOCK=false
+AUTO_REACT=false
+PREFIX="."
+STARTING_BOT_MESSAGE=yes
+`;
 
     try {
       await navigator.clipboard.writeText(envTemplate);
@@ -66,51 +39,24 @@ ENABLE_DEBUG=false`;
   };
 
   const handleDownloadEnv = () => {
-    const envContent = `# GWM-XMD WhatsApp Bot Configuration
-# Generated on: ${new Date().toLocaleString()}
-
-# Bot Configuration
-BOT_NAME=GWM-XMD
-PREFIX=.
-OWNER_NUMBER=1234567890
-SESSION_ID=your_session_id_here
-
-# API Keys
-OPENAI_API_KEY=your_openai_key
-GROQ_API_KEY=your_groq_key
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/gwm-xmd
-REDIS_URL=redis://localhost:6379
-
-# Deployment
-PORT=3000
-NODE_ENV=production
-
-# UptimeRobot
-UPTIMEROBOT_API_KEY=your_uptimerobot_key
-MONITOR_URL=https://your-app-url.herokuapp.com
-
-# Features
-ENABLE_AI=true
-ENABLE_GAMES=true
-ENABLE_DOWNLOADER=true
-ENABLE_GROUP_TOOLS=true
-ENABLE_ANTI_LINK=true
-ENABLE_AUTO_REACT=true
-ENABLE_AUTO_STATUS_VIEW=true
-
-# Webhook
-WEBHOOK_URL=https://your-webhook-url.com
-WEBHOOK_SECRET=your_webhook_secret
-
-# Rate Limiting
-RATE_LIMIT_MAX=100
-RATE_LIMIT_WINDOW=60000
-
-# Logging
-LOG_LEVEL=info
-ENABLE_DEBUG=false`;
+    const envContent = `SESSION_ID="put your session id"
+AUTO_READ_STATUS=true
+STATUS_READ_MSG="Status Seen By me 𝐁𝐖𝐌-𝐗𝐌𝐃"
+AUTO_STATUS_REPLY=false
+AUTO_REJECT_CALLS=false
+MODE="public"
+WELCOME=true
+AUTO_READ_MESSAGES=false
+AUTO_TYPING=false
+OWNER_NAME="Njabulo-Jb"
+OWNER_NUMBER="26777821911"
+AUTO_RECORDING=false
+ALWAYS_ONLINE=false
+AUTO_BLOCK=false
+AUTO_REACT=false
+PREFIX="."
+STARTING_BOT_MESSAGE=yes
+`;
 
     const blob = new Blob([envContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -174,7 +120,7 @@ Quick Start:
   };
 
   const generateQRCode = () => {
-    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/GWM-XMD", "_blank");
+    window.open("https://gwm-xmd-qr-46edc1ec0fb1.herokuapp.com/", "_blank");
   };
 
   const setupUptimeBot = () => {
