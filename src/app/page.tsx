@@ -307,10 +307,10 @@ export default function Page() {
       </section>
 
       {/* About Section with Verified Badge only */}
-      <section id="ɴᴊᴀʙᴜʟᴏ ᴊʙ">
+      <section id="about">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
-            <SectionHeader title="About" id="about" />
+            <SectionHeader title="ɴᴊᴀʙᴜʟᴏ ᴊʙ" id="about" />
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 4}>
             <div className="prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
