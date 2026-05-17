@@ -73,42 +73,8 @@ STARTING_BOT_MESSAGE=yes
   };
 
   const handleDownloadZip = () => {
-    // Create a zip file containing GWM-XMD bot files
-    const zipContent = `GWM-XMD WhatsApp Bot Files
-
-To get the full GWM-XMD bot source code, visit:
-https://github.com/NjabuloJf/GWM-XMD
-
-Or clone with:
-git clone https://github.com/NjabuloJf/GWM-XMD.git
-
-Files included in repository:
-- app.json (Deployment configuration)
-- index.js (Main bot file)
-- package.json (Dependencies)
-- .env.example (Environment variables)
-- README.md (Documentation)
-- commands/ (Bot commands folder)
-- helpers/ (Helper functions)
-- events/ (Event handlers)
-
-Quick Start:
-1. Clone the repository
-2. Run npm install
-3. Copy .env.example to .env
-4. Add your SESSION_ID
-5. Run npm start`;
-
-    const blob = new Blob([zipContent], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "GWM-XMD-info.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert("✅ GWM-XMD information downloaded!");
+    // Direct download GWM-XMD repository as ZIP from GitHub
+    window.open("https://github.com/NjabuloJf/GWM-XMD/archive/refs/heads/main.zip", "_blank");
   };
 
   const deployToHeroku = () => {
@@ -197,4 +163,4 @@ Quick Start:
       </div>
     </div>
   );
-      }
+}
