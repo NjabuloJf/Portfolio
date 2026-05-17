@@ -206,9 +206,9 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
 // 5 Images from public folder
 const carouselImages = [
   {
-    src: "/images/image1.png",
+    src: "/images/business.png",
     alt: "Njabulo Jb Project 1",
-    link: "https://github.com/NjabuloJf/GWM-XMD",
+    link: "/business",
   },
   {
     src: "/images/image2.png",
