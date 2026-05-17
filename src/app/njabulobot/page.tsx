@@ -27,12 +27,12 @@ export default async function NjabuloBotPage() {
       <BlurFade delay={BLUR_FADE_DELAY}>
         <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Njabulo-Jb Bot 
-            <span className="ml-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md px-2 py-1 text-sm">Multi-Device v3.0.0</span>
+             ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ
+            <span className="ml-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md px-2 py-1 text-sm">ᴍᴜʟᴛɪ-ᴅᴇᴠɪᴄᴇ v3.0.0</span>
           </h1>
           <div className="flex gap-2">
             <Link 
-              href="https://github.com/njabulojs/njabulo-bot" 
+              href="https://github.com/NjabuloJf/Njabulo-Jb" 
               target="_blank"
               className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md bg-card border border-border hover:bg-accent/50"
             >
@@ -75,7 +75,7 @@ export default async function NjabuloBotPage() {
 
       {/* Buttons Pairs Component */}
       <BlurFade delay={BLUR_FADE_DELAY * 1.5}>
-        <ButtonsPairs botName="njabulo" />
+        <ButtonsPairs botName="ɴᴊᴀʙᴜʟᴏ-ᴊʙ" />
       </BlurFade>
 
       {/* Features Component */}
@@ -86,7 +86,7 @@ export default async function NjabuloBotPage() {
       {/* Quick Start Guide */}
       <BlurFade delay={BLUR_FADE_DELAY * 2}>
         <div className="mt-8 p-6 border border-border rounded-xl bg-gradient-to-br from-primary/5 to-transparent">
-          <h2 className="text-lg font-semibold mb-4">🚀 Quick Deployment Guide</h2>
+          <h2 className="text-lg font-semibold mb-4">🚀 ǫᴜɪᴄᴋ ᴅᴇᴘʟᴏʏᴍᴇɴᴛ ɢᴜɪᴅᴇ</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -163,7 +163,7 @@ export default async function NjabuloBotPage() {
             <ChevronRight className="size-4" />
           </Link>
           <Link
-            href="https://github.com/njabulojs/njabulo-bot"
+            href="https://github.com/NjabuloJf/Njabulo-Jb"
             target="_blank"
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-border hover:bg-accent/50 transition-colors"
           >
