@@ -30,19 +30,19 @@ export function ButtonszPairsZ() {
 
   // WhatsApp Links
   const openWhatsAppChat = () => {
-    window.open("https://wa.me/27791234567?text=Hello%20Njabulo%20Jb%20Dev%20Tech%2C%20I%20need%20assistance%20with...", "_blank");
+    window.open("https://wa.me/26777821911?text=Hello%20Njabulo%20Jb%20Dev%20Tech%2C%20I%20need%20assistance%20with...", "_blank");
   };
 
   const openWhatsAppGroup = () => {
-    window.open("https://chat.whatsapp.com/yourgroupinvitecode", "_blank");
+    window.open("https://chat.whatsapp.com/H8Q5Iwg4xOl9qHY5xTFMdU", "_blank");
   };
 
   const openWhatsAppChannel = () => {
-    window.open("https://whatsapp.com/channel/yourchannelid", "_blank");
+    window.open("https://whatsapp.com/channel/0029VbC9yTmElah0BO3KD509", "_blank");
   };
 
   const callNumber = () => {
-    window.open("tel:+27791234567");
+    window.open("tel:+26777821911");
   };
 
   // Social Media Links
@@ -79,7 +79,7 @@ export function ButtonszPairsZ() {
   };
 
   const openGitHub = () => {
-    window.open("https://github.com/njabulojs", "_blank");
+    window.open("https://github.com/njabulojf", "_blank");
   };
 
   return (
@@ -95,7 +95,7 @@ export function ButtonszPairsZ() {
           <div className="flex items-center justify-between p-2 bg-card rounded-lg border border-border">
             <div className="flex items-center gap-2">
               <Phone className="size-4 text-green-500" />
-              <span className="text-sm">+27 79 123 4567</span>
+              <span className="text-sm">+26777821911</span>
             </div>
             <button
               onClick={() => copyToClipboard("+27 79 123 4567", 'number')}
@@ -108,10 +108,10 @@ export function ButtonszPairsZ() {
           <div className="flex items-center justify-between p-2 bg-card rounded-lg border border-border">
             <div className="flex items-center gap-2">
               <Mail className="size-4 text-blue-500" />
-              <span className="text-sm">info@njabulojb.dev</span>
+              <span className="text-sm">fanajb65@gmail.com</span>
             </div>
             <button
-              onClick={() => copyToClipboard("info@njabulojb.dev", 'email')}
+              onClick={() => copyToClipboard("fanajb65@gmail.com", 'email')}
               className="p-1 hover:bg-accent rounded transition-colors"
             >
               {copiedEmail ? <Check className="size-4 text-green-500" /> : <Copy className="size-4" />}
