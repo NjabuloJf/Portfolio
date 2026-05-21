@@ -10,29 +10,31 @@ import {
   CheckCircle, Wifi, WifiOff
 } from "lucide-react";
 
-// API Configuration - Multiple endpoints for fallback
-const API_ENDPOINTS = {
-  primary: "https://prenivapi.vercel.app/api",
-  secondary: "https://api.socialdownload.fun/api",
-  tertiary: "https://tikwm.com/api"
+// Alternative Working APIs
+const getApiUrl = (platform: string, url: string) => {
+  const encodedUrl = encodeURIComponent(url);
+  
+  switch(platform) {
+    case "tiktok":
+      return `https://tikwm.com/api/?url=${encodedUrl}`;
+    case "instagram":
+      return `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.instagram.com/oembed?url=${encodedUrl}`)}`;
+    case "youtube":
+      return `https://pipedapi.kavin.rocks/oembed?url=${encodedUrl}`;
+    default:
+      return `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://prenivapi.vercel.app/api/${platform}?url=${encodedUrl}`)}`;
+  }
 };
 
 const platforms = [
-  { name: "TikTok", key: "tiktok", icon: <Music className="size-5" />, color: "bg-black", endpoint: "/tiktok?url=", placeholder: "https://www.tiktok.com/@username/video/123456789" },
-  { name: "Facebook", key: "facebook", icon: <Facebook className="size-5" />, color: "bg-blue-600", endpoint: "/facebookv1?url=", placeholder: "https://www.facebook.com/watch?v=123456789" },
-  { name: "Instagram", key: "instagram", icon: <Instagram className="size-5" />, color: "bg-pink-600", endpoint: "/igdl?url=", placeholder: "https://www.instagram.com/p/ABC123XYZ/" },
-  { name: "Twitter/X", key: "twitter", icon: <Twitter className="size-5" />, color: "bg-black", endpoint: "/twitter?url=", placeholder: "https://twitter.com/username/status/123456789" },
-  { name: "YouTube", key: "youtube", icon: <Youtube className="size-5" />, color: "bg-red-600", endpoint: "/youtube?url=", placeholder: "https://www.youtube.com/watch?v=ABC123XYZ" },
-  { name: "Douyin", key: "douyin", icon: <Film className="size-5" />, color: "bg-blue-500", endpoint: "/douyin?url=", placeholder: "https://www.douyin.com/video/123456789" },
-  { name: "Spotify", key: "spotify", icon: <Music className="size-5" />, color: "bg-green-500", endpoint: "/spotify?url=", placeholder: "https://open.spotify.com/track/123456789" },
-  { name: "Pinterest", key: "pinterest", icon: <Image className="size-5" />, color: "bg-red-500", endpoint: "/pinterest?url=", placeholder: "https://www.pinterest.com/pin/123456789" },
-  { name: "Apple Music", key: "applemusic", icon: <Music className="size-5" />, color: "bg-pink-500", endpoint: "/applemusic?url=", placeholder: "https://music.apple.com/us/album/123456789" },
-  { name: "CapCut", key: "capcut", icon: <Film className="size-5" />, color: "bg-blue-500", endpoint: "/capcut?url=", placeholder: "https://www.capcut.com/t/ABC123XYZ" },
-  { name: "Bluesky", key: "bluesky", icon: <Globe className="size-5" />, color: "bg-blue-400", endpoint: "/bluesky?url=", placeholder: "https://bsky.app/profile/username/post/123456789" },
-  { name: "RedNote", key: "rednote", icon: <Sparkles className="size-5" />, color: "bg-red-400", endpoint: "/rednote?url=", placeholder: "https://www.xiaohongshu.com/explore/123456789" },
-  { name: "Threads", key: "threads", icon: <Send className="size-5" />, color: "bg-black", endpoint: "/threads?url=", placeholder: "https://www.threads.net/@username/post/123456789" },
-  { name: "Kuaishou", key: "kuaishou", icon: <Film className="size-5" />, color: "bg-blue-500", endpoint: "/kuaishou?url=", placeholder: "https://www.kuaishou.com/short-video/123456789" },
-  { name: "Weibo", key: "weibo", icon: <Share2 className="size-5" />, color: "bg-red-500", endpoint: "/weibo?url=", placeholder: "https://m.weibo.cn/status/123456789" }
+  { name: "TikTok", key: "tiktok", icon: <Music className="size-5" />, color: "bg-black", placeholder: "https://www.tiktok.com/@username/video/123456789" },
+  { name: "Facebook", key: "facebook", icon: <Facebook className="size-5" />, color: "bg-blue-600", placeholder: "https://www.facebook.com/watch?v=123456789" },
+  { name: "Instagram", key: "instagram", icon: <Instagram className="size-5" />, color: "bg-pink-600", placeholder: "https://www.instagram.com/p/ABC123XYZ/" },
+  { name: "Twitter/X", key: "twitter", icon: <Twitter className="size-5" />, color: "bg-black", placeholder: "https://twitter.com/username/status/123456789" },
+  { name: "YouTube", key: "youtube", icon: <Youtube className="size-5" />, color: "bg-red-600", placeholder: "https://www.youtube.com/watch?v=ABC123XYZ" },
+  { name: "Spotify", key: "spotify", icon: <Music className="size-5" />, color: "bg-green-500", placeholder: "https://open.spotify.com/track/123456789" },
+  { name: "Pinterest", key: "pinterest", icon: <Image className="size-5" />, color: "bg-red-500", placeholder: "https://www.pinterest.com/pin/123456789" },
+  { name: "CapCut", key: "capcut", icon: <Film className="size-5" />, color: "bg-blue-500", placeholder: "https://www.capcut.com/t/ABC123XYZ" }
 ];
 
 type MediaItem = {
@@ -45,7 +47,6 @@ type DownloadData = {
   success: boolean;
   title?: string;
   thumbnail?: string;
-  duration?: string;
   medias?: MediaItem[];
   error?: string;
 };
@@ -58,25 +59,6 @@ export default function UrlDownloadPage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
-  const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
-
-  // Check API status on mount
-  useState(() => {
-    const checkApi = async () => {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        const response = await fetch("https://prenivapi.vercel.app/api/tiktok?url=https://www.tiktok.com/@test", {
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        setApiStatus(response.ok ? "online" : "offline");
-      } catch {
-        setApiStatus("offline");
-      }
-    };
-    checkApi();
-  });
 
   const handleDownload = async () => {
     if (!url.trim()) {
@@ -89,8 +71,7 @@ export default function UrlDownloadPage() {
     setResult(null);
 
     try {
-      // Try primary API
-      const apiUrl = `https://prenivapi.vercel.app/api${selectedPlatform.endpoint}${encodeURIComponent(url)}`;
+      const apiUrl = getApiUrl(selectedPlatform.key, url);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -100,49 +81,73 @@ export default function UrlDownloadPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`API responded with status ${response.status}`);
+        throw new Error(`HTTP ${response.status}`);
       }
 
       const data = await response.json();
       
-      // Process response
-      if (data && (data.medias || data.video || data.audio || data.images || data.data)) {
-        const medias: MediaItem[] = [];
-        
-        // Handle different response formats
-        const mediaData = data.data || data;
-        
-        if (mediaData.medias && Array.isArray(mediaData.medias)) {
-          mediaData.medias.forEach((m: any) => {
-            medias.push({ url: m.url, type: m.type || "video", quality: m.quality });
-          });
-        }
-        if (mediaData.video) medias.push({ url: mediaData.video, type: "video" });
-        if (mediaData.audio) medias.push({ url: mediaData.audio, type: "audio" });
-        if (mediaData.images && Array.isArray(mediaData.images)) {
-          mediaData.images.forEach((img: string) => medias.push({ url: img, type: "image" }));
-        }
-        if (mediaData.url) medias.push({ url: mediaData.url, type: "video" });
-        
-        // For TikTok format
-        if (mediaData.play) medias.push({ url: mediaData.play, type: "video", quality: "HD" });
-        if (mediaData.wmplay) medias.push({ url: mediaData.wmplay, type: "video", quality: "Watermark" });
-        if (mediaData.hdplay) medias.push({ url: mediaData.hdplay, type: "video", quality: "HD" });
-        
-        if (medias.length === 0) {
-          throw new Error("No downloadable media found");
-        }
+      // Process different response formats
+      const medias: MediaItem[] = [];
+      let title = "";
+      let thumbnail = "";
 
-        setResult({
-          success: true,
-          title: mediaData.title || mediaData.desc || "Download Ready",
-          thumbnail: mediaData.thumbnail || mediaData.cover,
-          duration: mediaData.duration,
-          medias: medias
-        });
-      } else {
-        throw new Error(data.error || data.msg || "No media found for this URL");
+      // TikTok response format
+      if (selectedPlatform.key === "tiktok" && data.data) {
+        const tiktokData = data.data;
+        title = tiktokData.title || "TikTok Video";
+        thumbnail = tiktokData.cover;
+        if (tiktokData.play) medias.push({ url: tiktokData.play, type: "video", quality: "HD" });
+        if (tiktokData.wmplay) medias.push({ url: tiktokData.wmplay, type: "video", quality: "With Watermark" });
+        if (tiktokData.hdplay) medias.push({ url: tiktokData.hdplay, type: "video", quality: "Full HD" });
+        if (tiktokData.music) medias.push({ url: tiktokData.music, type: "audio", quality: "Original Audio" });
       }
+      // Instagram oEmbed format
+      else if (selectedPlatform.key === "instagram" && data.thumbnail_url) {
+        title = data.title || "Instagram Post";
+        thumbnail = data.thumbnail_url;
+        if (data.thumbnail_url) medias.push({ url: data.thumbnail_url, type: "image", quality: "HD" });
+      }
+      // YouTube oEmbed format
+      else if (selectedPlatform.key === "youtube" && data.thumbnail_url) {
+        title = data.title || "YouTube Video";
+        thumbnail = data.thumbnail_url;
+        // Note: YouTube video download requires different API
+        medias.push({ url: `https://img.youtube.com/vi/${getYouTubeId(url)}/maxresdefault.jpg`, type: "image", quality: "Thumbnail" });
+      }
+      // Try to extract from any response
+      else if (data.medias) {
+        data.medias.forEach((m: any) => {
+          medias.push({ url: m.url, type: m.type || "video", quality: m.quality });
+        });
+        title = data.title || "Download Ready";
+        thumbnail = data.thumbnail;
+      }
+      else if (data.video) {
+        medias.push({ url: data.video, type: "video" });
+        title = data.title || "Video Download";
+        thumbnail = data.thumbnail;
+      }
+      else if (data.url) {
+        medias.push({ url: data.url, type: "video" });
+        title = data.title || "Download Ready";
+      }
+      else if (data.data?.play) {
+        medias.push({ url: data.data.play, type: "video", quality: "HD" });
+        title = data.data.title || "Video";
+        thumbnail = data.data.cover;
+      }
+      
+      if (medias.length === 0) {
+        throw new Error("No downloadable media found. The API may be temporarily unavailable.");
+      }
+
+      setResult({
+        success: true,
+        title: title,
+        thumbnail: thumbnail,
+        medias: medias
+      });
+      
     } catch (err) {
       console.error("Download error:", err);
       setError(`Failed to fetch: ${err instanceof Error ? err.message : "Please check the URL and try again"}`);
@@ -150,6 +155,11 @@ export default function UrlDownloadPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getYouTubeId = (url: string) => {
+    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    return match ? match[1] : "";
   };
 
   const handleCopy = (text: string) => {
@@ -164,7 +174,7 @@ export default function UrlDownloadPage() {
     setError(null);
   };
 
-  const displayedPlatforms = showAllPlatforms ? platforms : platforms.slice(0, 8);
+  const displayedPlatforms = showAllPlatforms ? platforms : platforms.slice(0, 6);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
@@ -183,20 +193,8 @@ export default function UrlDownloadPage() {
               Social Media Downloader
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Download videos, images, and audio from TikTok, Facebook, Instagram, Twitter, YouTube, and more
+              Download videos and images from TikTok, Instagram, YouTube, Facebook, Twitter, and more
             </p>
-            
-            {/* API Status Indicator */}
-            <div className="flex items-center justify-center gap-2 mt-2">
-              {apiStatus === "checking" && <Loader2 className="size-3 animate-spin text-yellow-500" />}
-              {apiStatus === "online" && <Wifi className="size-3 text-green-500" />}
-              {apiStatus === "offline" && <WifiOff className="size-3 text-red-500" />}
-              <span className="text-xs text-muted-foreground">
-                {apiStatus === "checking" && "Checking API..."}
-                {apiStatus === "online" && "API Online"}
-                {apiStatus === "offline" && "API Offline - Trying alternative"}
-              </span>
-            </div>
           </div>
         </div>
 
@@ -219,13 +217,13 @@ export default function UrlDownloadPage() {
             ))}
           </div>
           
-          {platforms.length > 8 && (
+          {platforms.length > 6 && (
             <div className="text-center mt-3">
               <button
                 onClick={() => setShowAllPlatforms(!showAllPlatforms)}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
-                {showAllPlatforms ? "Show Less" : `Show ${platforms.length - 8} More Platforms`}
+                {showAllPlatforms ? "Show Less" : `Show ${platforms.length - 6} More Platforms`}
               </button>
             </div>
           )}
@@ -273,8 +271,10 @@ export default function UrlDownloadPage() {
               <p className="text-sm font-medium text-red-600">Error</p>
               <p className="text-sm text-red-600/80">{error}</p>
               <p className="text-xs text-muted-foreground mt-2">
-                Tips: Make sure the URL is correct and the video is publicly accessible.
-                Some platforms may have changed their API.
+                💡 Tips: 
+                Make sure the URL is correct and the video is publicly accessible.
+                Some platforms may require the video to be public.
+                For YouTube, only thumbnails are available via this API.
               </p>
             </div>
           </div>
@@ -289,7 +289,6 @@ export default function UrlDownloadPage() {
                 Download Ready
               </h2>
               {result.title && <p className="text-sm text-muted-foreground mt-1">{result.title}</p>}
-              {result.duration && <p className="text-xs text-muted-foreground">Duration: {result.duration}</p>}
             </div>
             
             <div className="p-4 space-y-3">
@@ -336,11 +335,11 @@ export default function UrlDownloadPage() {
             <div>
               <p className="text-sm font-medium">How to Use</p>
               <p className="text-xs text-muted-foreground mt-1">
-                1. Select the platform of your media (TikTok, Facebook, Instagram, etc.)<br />
+                1. Select the platform of your media<br />
                 2. Paste the media URL in the input field<br />
                 3. Click Download and wait for processing<br />
                 4. Choose your preferred quality and download the file<br />
-                <span className="text-yellow-600">Note: If the API fails, the service might be temporarily unavailable. Try again later.</span>
+                <span className="text-yellow-600 mt-2 block">⚠️ Note: Due to API limitations, some platforms may only provide thumbnails or limited quality. For full video downloads, try using dedicated desktop software.</span>
               </p>
             </div>
           </div>
@@ -350,30 +349,30 @@ export default function UrlDownloadPage() {
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="p-3 text-center border rounded-lg">
             <Download className="size-5 mx-auto mb-1 text-green-500" />
-            <p className="text-xs font-medium">High Quality</p>
-            <p className="text-[10px] text-muted-foreground">HD videos & images</p>
+            <p className="text-xs font-medium">Easy Download</p>
+            <p className="text-[10px] text-muted-foreground">One click download</p>
           </div>
           <div className="p-3 text-center border rounded-lg">
             <Copy className="size-5 mx-auto mb-1 text-blue-500" />
             <p className="text-xs font-medium">Copy Links</p>
-            <p className="text-[10px] text-muted-foreground">Easy to share</p>
+            <p className="text-[10px] text-muted-foreground">Share with friends</p>
           </div>
           <div className="p-3 text-center border rounded-lg">
             <Globe className="size-5 mx-auto mb-1 text-purple-500" />
-            <p className="text-xs font-medium">15+ Platforms</p>
-            <p className="text-[10px] text-muted-foreground">All in one place</p>
+            <p className="text-xs font-medium">8+ Platforms</p>
+            <p className="text-[10px] text-muted-foreground">Popular social media</p>
           </div>
           <div className="p-3 text-center border rounded-lg">
             <RefreshCw className="size-5 mx-auto mb-1 text-orange-500" />
-            <p className="text-xs font-medium">Fast Processing</p>
-            <p className="text-[10px] text-muted-foreground">Quick downloads</p>
+            <p className="text-xs font-medium">Free Service</p>
+            <p className="text-[10px] text-muted-foreground">No registration needed</p>
           </div>
         </div>
 
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">
-            © 2026 Njabulo-Jb Downloader | Powered by Social Media APIs
+            © 2026 Njabulo-Jb Downloader | For personal use only. Respect copyright.
           </p>
         </div>
       </div>
