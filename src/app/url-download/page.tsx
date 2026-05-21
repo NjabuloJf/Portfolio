@@ -4,14 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { 
   Download, Copy, Check, AlertCircle, Loader2,
-  Globe, ExternalLink, FileVideo, Music, Image,
+  Globe, FileVideo, Music, Image,
   Twitter, Instagram, Facebook, Youtube, Send,
-  Film, Sparkles, Share2, ArrowDown, Trash2, RefreshCw,
-  CheckCircle
+  Film, Sparkles, Share2, Trash2, RefreshCw,
+  CheckCircle, Wifi, WifiOff
 } from "lucide-react";
 
-// API Configuration
-const API_BASE = "https://prenivapi.vercel.app/api";
+// API Configuration - Multiple endpoints for fallback
+const API_ENDPOINTS = {
+  primary: "https://prenivapi.vercel.app/api",
+  secondary: "https://api.socialdownload.fun/api",
+  tertiary: "https://tikwm.com/api"
+};
 
 const platforms = [
   { name: "TikTok", key: "tiktok", icon: <Music className="size-5" />, color: "bg-black", endpoint: "/tiktok?url=", placeholder: "https://www.tiktok.com/@username/video/123456789" },
@@ -54,6 +58,25 @@ export default function UrlDownloadPage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
+  const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
+
+  // Check API status on mount
+  useState(() => {
+    const checkApi = async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const response = await fetch("https://prenivapi.vercel.app/api/tiktok?url=https://www.tiktok.com/@test", {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        setApiStatus(response.ok ? "online" : "offline");
+      } catch {
+        setApiStatus("offline");
+      }
+    };
+    checkApi();
+  });
 
   const handleDownload = async () => {
     if (!url.trim()) {
@@ -66,39 +89,63 @@ export default function UrlDownloadPage() {
     setResult(null);
 
     try {
-      const apiUrl = `${API_BASE}${selectedPlatform.endpoint}${encodeURIComponent(url)}`;
-      const response = await fetch(apiUrl);
-      const data = await response.json();
+      // Try primary API
+      const apiUrl = `https://prenivapi.vercel.app/api${selectedPlatform.endpoint}${encodeURIComponent(url)}`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
 
-      if (data && (data.medias || data.video || data.audio || data.images)) {
+      if (!response.ok) {
+        throw new Error(`API responded with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Process response
+      if (data && (data.medias || data.video || data.audio || data.images || data.data)) {
         const medias: MediaItem[] = [];
         
-        if (data.medias && Array.isArray(data.medias)) {
-          data.medias.forEach((m: any) => {
+        // Handle different response formats
+        const mediaData = data.data || data;
+        
+        if (mediaData.medias && Array.isArray(mediaData.medias)) {
+          mediaData.medias.forEach((m: any) => {
             medias.push({ url: m.url, type: m.type || "video", quality: m.quality });
           });
         }
-        if (data.video) medias.push({ url: data.video, type: "video" });
-        if (data.audio) medias.push({ url: data.audio, type: "audio" });
-        if (data.images && Array.isArray(data.images)) {
-          data.images.forEach((img: string) => medias.push({ url: img, type: "image" }));
+        if (mediaData.video) medias.push({ url: mediaData.video, type: "video" });
+        if (mediaData.audio) medias.push({ url: mediaData.audio, type: "audio" });
+        if (mediaData.images && Array.isArray(mediaData.images)) {
+          mediaData.images.forEach((img: string) => medias.push({ url: img, type: "image" }));
         }
-        if (data.url) medias.push({ url: data.url, type: "video" });
+        if (mediaData.url) medias.push({ url: mediaData.url, type: "video" });
+        
+        // For TikTok format
+        if (mediaData.play) medias.push({ url: mediaData.play, type: "video", quality: "HD" });
+        if (mediaData.wmplay) medias.push({ url: mediaData.wmplay, type: "video", quality: "Watermark" });
+        if (mediaData.hdplay) medias.push({ url: mediaData.hdplay, type: "video", quality: "HD" });
+        
+        if (medias.length === 0) {
+          throw new Error("No downloadable media found");
+        }
 
         setResult({
           success: true,
-          title: data.title || data.message || "Download Ready",
-          thumbnail: data.thumbnail || data.thumb,
-          duration: data.duration,
+          title: mediaData.title || mediaData.desc || "Download Ready",
+          thumbnail: mediaData.thumbnail || mediaData.cover,
+          duration: mediaData.duration,
           medias: medias
         });
-      } else if (data.error || data.message === "error") {
-        throw new Error(data.error || data.msg || "Failed to fetch media");
       } else {
-        throw new Error("No media found for this URL");
+        throw new Error(data.error || data.msg || "No media found for this URL");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to download. Please check the URL and try again.");
+      console.error("Download error:", err);
+      setError(`Failed to fetch: ${err instanceof Error ? err.message : "Please check the URL and try again"}`);
       setResult(null);
     } finally {
       setLoading(false);
@@ -138,6 +185,18 @@ export default function UrlDownloadPage() {
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Download videos, images, and audio from TikTok, Facebook, Instagram, Twitter, YouTube, and more
             </p>
+            
+            {/* API Status Indicator */}
+            <div className="flex items-center justify-center gap-2 mt-2">
+              {apiStatus === "checking" && <Loader2 className="size-3 animate-spin text-yellow-500" />}
+              {apiStatus === "online" && <Wifi className="size-3 text-green-500" />}
+              {apiStatus === "offline" && <WifiOff className="size-3 text-red-500" />}
+              <span className="text-xs text-muted-foreground">
+                {apiStatus === "checking" && "Checking API..."}
+                {apiStatus === "online" && "API Online"}
+                {apiStatus === "offline" && "API Offline - Trying alternative"}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -213,6 +272,10 @@ export default function UrlDownloadPage() {
             <div>
               <p className="text-sm font-medium text-red-600">Error</p>
               <p className="text-sm text-red-600/80">{error}</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Tips: Make sure the URL is correct and the video is publicly accessible.
+                Some platforms may have changed their API.
+              </p>
             </div>
           </div>
         )}
@@ -277,7 +340,7 @@ export default function UrlDownloadPage() {
                 2. Paste the media URL in the input field<br />
                 3. Click Download and wait for processing<br />
                 4. Choose your preferred quality and download the file<br />
-                <span className="text-yellow-600">Note: Some platforms may have limitations. Always respect copyright.</span>
+                <span className="text-yellow-600">Note: If the API fails, the service might be temporarily unavailable. Try again later.</span>
               </p>
             </div>
           </div>
@@ -310,10 +373,10 @@ export default function UrlDownloadPage() {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">
-            © 2026 Njabulo-Jb Downloader | Powered by Preniv API
+            © 2026 Njabulo-Jb Downloader | Powered by Social Media APIs
           </p>
         </div>
       </div>
     </div>
   );
-    }
+   }
