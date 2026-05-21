@@ -34,7 +34,7 @@ function obfuscateCode(code: string, level: number): string {
   // Level 2: Standard Obfuscation
   if (level >= 2) {
     // Hex encode strings
-    result = result.replace(/`([^`]*)`/g, (match, str) => {
+    result = result.replace(/`([^`]*)`/g, (match: string, str: string) => {
       let hex = "String.fromCharCode(";
       for (let i = 0; i < str.length; i++) {
         hex += str.charCodeAt(i) + (i < str.length - 1 ? "," : "");
@@ -46,7 +46,7 @@ function obfuscateCode(code: string, level: number): string {
     // Variable name shortening
     const varNames = ['_0x', '_a', '_b', '_c', '_d', '_e', '_f', '_g', '_h', '_i', '_j', '_k', '_l', '_m', '_n'];
     let varCounter = 0;
-    result = result.replace(/\b(let|const|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match, keyword, name) => {
+    result = result.replace(/\b(let|const|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match: string, keyword: string, name: string) => {
       if (name.length > 2) {
         return `${keyword} ${varNames[varCounter++ % varNames.length]}`;
       }
@@ -54,7 +54,7 @@ function obfuscateCode(code: string, level: number): string {
     });
     
     // Function name shortening
-    result = result.replace(/\bfunction\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match, name) => {
+    result = result.replace(/\bfunction\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match: string, name: string) => {
       if (name.length > 4) {
         return `function ${varNames[varCounter++ % varNames.length]}`;
       }
@@ -69,9 +69,9 @@ function obfuscateCode(code: string, level: number): string {
   // Level 3: Advanced Obfuscation
   if (level >= 3) {
     // Array-based string encoding
-    const strings = [];
-    result = result.replace(/"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/g, (match, double, single) => {
-      const str = double || single;
+    const strings: string[] = [];
+    result = result.replace(/"[^"\\]*(\\.[^"\\]*)*"|'[^'\\]*(\\.[^'\\]*)*'/g, (match: string) => {
+      const str = match.slice(1, -1);
       strings.push(str);
       return `_0x${strings.length.toString(16)}`;
     });
@@ -84,18 +84,19 @@ function obfuscateCode(code: string, level: number): string {
     }
     
     // Number encoding
-    result = result.replace(/\b(\d+)\b/g, (match, num) => {
-      if (num > 9 && num < 1000) {
-        return `(0x${parseInt(num).toString(16)})`;
+    result = result.replace(/\b(\d+)\b/g, (match: string, num: string) => {
+      const n = parseInt(num);
+      if (n > 9 && n < 1000) {
+        return `(0x${n.toString(16)})`;
       }
       return match;
     });
     
     // Control flow flattening
-    const cases = [];
-    result = result.replace(/function\s*\([^)]*\)\s*\{([^}]+)\}/g, (match, body) => {
-      const statements = body.split(';').filter(s => s.trim());
-      statements.forEach((s, i) => {
+    result = result.replace(/function\s*\([^)]*\)\s*\{([^}]+)\}/g, (match: string, body: string) => {
+      const statements = body.split(';').filter((s: string) => s.trim());
+      const cases: string[] = [];
+      statements.forEach((s: string, i: number) => {
         cases.push(`case ${i}: ${s}; break;`);
       });
       return `function(){var _switch=0;while(true){switch(_switch){${cases.join('')}default:return;}_switch++;}}`;
@@ -103,8 +104,9 @@ function obfuscateCode(code: string, level: number): string {
   }
   
   // Add obfuscation header
+  const levelName = level === 1 ? "BASIC" : level === 2 ? "STANDARD" : "ADVANCED";
   const header = `// Obfuscated by Njabulo-Jb
-// Security Level: ${level === 1 ? "BASIC" : level === 2 ? "STANDARD" : "ADVANCED"}
+// Security Level: ${levelName}
 // Generated on: ${timestamp}
 // Repository: https://github.com/NjabuloJf
 // Protection: Anti-debug | Anti-tamper | Code Integrity
