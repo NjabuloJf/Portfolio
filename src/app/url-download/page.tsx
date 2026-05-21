@@ -7,15 +7,15 @@ import {
   Globe, FileVideo, Music, Image, 
   Twitter, Instagram, Facebook, Youtube, Send,
   Film, Sparkles, Share2, Trash2, RefreshCw,
-  CheckCircle, ExternalLink
+  CheckCircle, ExternalLink, Headphones, Video
 } from "lucide-react";
 
 const platforms = [
+  { name: "YouTube", key: "youtube", icon: <Youtube className="size-5" />, color: "bg-red-600", placeholder: "https://www.youtube.com/watch?v=ABC123XYZ" },
+  { name: "Facebook", key: "facebook", icon: <Facebook className="size-5" />, color: "bg-blue-600", placeholder: "https://www.facebook.com/watch?v=123456789" },
   { name: "TikTok", key: "tiktok", icon: <Music className="size-5" />, color: "bg-black", placeholder: "https://www.tiktok.com/@username/video/123456789" },
   { name: "Instagram", key: "instagram", icon: <Instagram className="size-5" />, color: "bg-pink-600", placeholder: "https://www.instagram.com/p/ABC123XYZ/" },
-  { name: "Facebook", key: "facebook", icon: <Facebook className="size-5" />, color: "bg-blue-600", placeholder: "https://www.facebook.com/watch?v=123456789" },
-  { name: "Twitter/X", key: "twitter", icon: <Twitter className="size-5" />, color: "bg-black", placeholder: "https://twitter.com/username/status/123456789" },
-  { name: "YouTube", key: "youtube", icon: <Youtube className="size-5" />, color: "bg-red-600", placeholder: "https://www.youtube.com/watch?v=ABC123XYZ" }
+  { name: "Twitter/X", key: "twitter", icon: <Twitter className="size-5" />, color: "bg-black", placeholder: "https://twitter.com/username/status/123456789" }
 ];
 
 export default function UrlDownloadPage() {
@@ -25,6 +25,7 @@ export default function UrlDownloadPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"video" | "audio">("video");
 
   const handleDownload = async () => {
     if (!url.trim()) {
@@ -53,7 +54,7 @@ export default function UrlDownloadPage() {
       if (data.success) {
         setResult(data);
       } else {
-        setError(data.error || "Failed to download");
+        setError(data.error || "Failed to download. Please check the URL.");
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -74,6 +75,10 @@ export default function UrlDownloadPage() {
     setError(null);
   };
 
+  const videos = result?.medias?.filter((m: any) => m.type === "video") || [];
+  const audios = result?.medias?.filter((m: any) => m.type === "audio") || [];
+  const images = result?.medias?.filter((m: any) => m.type === "image") || [];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
       <div className="max-w-6xl mx-auto">
@@ -91,7 +96,7 @@ export default function UrlDownloadPage() {
               Social Media Downloader
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Download videos from TikTok, Instagram, Facebook, Twitter, and YouTube
+              Download videos, audio, and images from YouTube, Facebook, TikTok, Instagram, and Twitter
             </p>
           </div>
         </div>
@@ -152,38 +157,76 @@ export default function UrlDownloadPage() {
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3">
-            <AlertCircle className="size-5 text-red-500 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-red-600">Error</p>
-              <p className="text-sm text-red-600/80">{error}</p>
-              <p className="text-xs text-muted-foreground mt-2">
-                Make sure the URL is correct and the content is publicly accessible.
-              </p>
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="size-5 text-red-500 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-600">Error</p>
+                <p className="text-sm text-red-600/80">{error}</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  💡 Tips:<br />
+                  • Make sure the video is publicly accessible<br />
+                  • Check if the URL is correct<br />
+                  • For Facebook, try copying the video URL from the address bar
+                </p>
+              </div>
             </div>
           </div>
         )}
 
         {/* Results */}
-        {result && result.medias && result.medias.length > 0 && (
+        {result && (
           <div className="border rounded-xl overflow-hidden bg-card/50">
             <div className="p-4 border-b bg-muted/30">
-              <h2 className="font-semibold flex items-center gap-2">
-                <CheckCircle className="size-5 text-green-500" />
-                Download Ready
-              </h2>
-              {result.title && <p className="text-sm text-muted-foreground mt-1">{result.title}</p>}
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <h2 className="font-semibold flex items-center gap-2">
+                  <CheckCircle className="size-5 text-green-500" />
+                  Download Ready
+                </h2>
+                {result.title && <p className="text-sm text-muted-foreground">{result.title}</p>}
+              </div>
             </div>
             
+            {/* Tabs for Video/Audio */}
+            {(videos.length > 0 || audios.length > 0) && (
+              <div className="flex border-b bg-muted/20">
+                {videos.length > 0 && (
+                  <button
+                    onClick={() => setActiveTab("video")}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm transition-all ${
+                      activeTab === "video"
+                        ? "border-b-2 border-primary text-primary font-medium"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    <Video className="size-4" />
+                    Videos ({videos.length})
+                  </button>
+                )}
+                {audios.length > 0 && (
+                  <button
+                    onClick={() => setActiveTab("audio")}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm transition-all ${
+                      activeTab === "audio"
+                        ? "border-b-2 border-primary text-primary font-medium"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    <Headphones className="size-4" />
+                    Audio ({audios.length})
+                  </button>
+                )}
+              </div>
+            )}
+            
             <div className="p-4 space-y-3">
-              {result.medias.map((media: any, idx: number) => (
+              {/* Videos */}
+              {activeTab === "video" && videos.map((media: any, idx: number) => (
                 <div key={idx} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
                   <div className="flex items-center gap-3">
-                    {media.type === "video" && <FileVideo className="size-5 text-blue-500" />}
-                    {media.type === "image" && <Image className="size-5 text-green-500" />}
-                    {media.type === "audio" && <Music className="size-5 text-purple-500" />}
+                    <FileVideo className="size-5 text-blue-500" />
                     <div>
-                      <span className="text-sm font-medium capitalize">{media.type}</span>
+                      <span className="text-sm font-medium capitalize">Video</span>
                       {media.quality && <span className="text-xs text-muted-foreground ml-2">{media.quality}</span>}
                     </div>
                   </div>
@@ -208,6 +251,73 @@ export default function UrlDownloadPage() {
                   </div>
                 </div>
               ))}
+              
+              {/* Audio */}
+              {activeTab === "audio" && audios.map((media: any, idx: number) => (
+                <div key={idx} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <Music className="size-5 text-purple-500" />
+                    <div>
+                      <span className="text-sm font-medium capitalize">Audio</span>
+                      {media.quality && <span className="text-xs text-muted-foreground ml-2">{media.quality}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleCopy(media.url)}
+                      className="p-2 rounded-lg border hover:bg-accent transition-colors"
+                      title="Copy Link"
+                    >
+                      {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4" />}
+                    </button>
+                    <a
+                      href={media.url}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      <Download className="size-4" />
+                      Download
+                    </a>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Images */}
+              {images.map((media: any, idx: number) => (
+                <div key={idx} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <Image className="size-5 text-green-500" />
+                    <span className="text-sm font-medium">Image</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleCopy(media.url)}
+                      className="p-2 rounded-lg border hover:bg-accent transition-colors"
+                      title="Copy Link"
+                    >
+                      {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4" />}
+                    </button>
+                    <a
+                      href={media.url}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      <Download className="size-4" />
+                      Download
+                    </a>
+                  </div>
+                </div>
+              ))}
+              
+              {videos.length === 0 && audios.length === 0 && images.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No downloadable media found. Try a different URL.
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -217,39 +327,18 @@ export default function UrlDownloadPage() {
           <div className="flex items-start gap-3">
             <AlertCircle className="size-5 text-blue-500 mt-0.5" />
             <div>
-              <p className="text-sm font-medium">How to Use</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                1. Select the platform (TikTok, Instagram, Facebook, Twitter, YouTube)<br />
-                2. Paste the video/post URL in the input field<br />
-                3. Click Download and wait for processing<br />
-                4. Choose your preferred quality and download the file<br />
-                <span className="text-yellow-600 mt-2 block">Note: For YouTube, only thumbnails are available for download.</span>
+              <p className="text-sm font-medium">Supported Platforms & Features</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 text-xs">
+                <div>✅ YouTube: Video (1080p, 720p, 480p, 360p) + Audio (MP3)</div>
+                <div>✅ Facebook: HD & SD video download</div>
+                <div>✅ TikTok: Video with/without watermark + Audio</div>
+                <div>✅ Instagram: Images & Thumbnails</div>
+                <div>✅ Twitter/X: Video download</div>
+              </div>
+              <p className="text-xs text-yellow-600 mt-2">
+                ⚠️ Note: For best results, use the direct video URL from the platform.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="p-3 text-center border rounded-lg">
-            <Download className="size-5 mx-auto mb-1 text-green-500" />
-            <p className="text-xs font-medium">Direct Download</p>
-            <p className="text-[10px] text-muted-foreground">Save to device</p>
-          </div>
-          <div className="p-3 text-center border rounded-lg">
-            <Copy className="size-5 mx-auto mb-1 text-blue-500" />
-            <p className="text-xs font-medium">Copy Links</p>
-            <p className="text-[10px] text-muted-foreground">Share with friends</p>
-          </div>
-          <div className="p-3 text-center border rounded-lg">
-            <Globe className="size-5 mx-auto mb-1 text-purple-500" />
-            <p className="text-xs font-medium">5+ Platforms</p>
-            <p className="text-[10px] text-muted-foreground">Popular social media</p>
-          </div>
-          <div className="p-3 text-center border rounded-lg">
-            <RefreshCw className="size-5 mx-auto mb-1 text-orange-500" />
-            <p className="text-xs font-medium">Fast Processing</p>
-            <p className="text-[10px] text-muted-foreground">Quick downloads</p>
           </div>
         </div>
 
@@ -262,4 +351,4 @@ export default function UrlDownloadPage() {
       </div>
     </div>
   );
-    }
+   }
