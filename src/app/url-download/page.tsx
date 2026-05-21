@@ -6,7 +6,8 @@ import {
   Download, Copy, Check, AlertCircle, Loader2,
   Globe, ExternalLink, FileVideo, Music, Image,
   Twitter, Instagram, Facebook, Youtube, Send,
-  Film, Sparkles, Share2, ArrowDown, Trash2, RefreshCw
+  Film, Sparkles, Share2, ArrowDown, Trash2, RefreshCw,
+  CheckCircle
 } from "lucide-react";
 
 // API Configuration
@@ -70,10 +71,8 @@ export default function UrlDownloadPage() {
       const data = await response.json();
 
       if (data && (data.medias || data.video || data.audio || data.images)) {
-        // Format the response
         const medias: MediaItem[] = [];
         
-        // Handle different response formats
         if (data.medias && Array.isArray(data.medias)) {
           data.medias.forEach((m: any) => {
             medias.push({ url: m.url, type: m.type || "video", quality: m.quality });
