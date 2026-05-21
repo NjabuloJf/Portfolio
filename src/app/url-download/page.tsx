@@ -63,7 +63,7 @@ export default function UrlDownloadPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"video" | "audio" | "lyrics">("video");
+  const [activeTab, setActiveTab] = useState<"video" | "audio" | "file">("video");
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const handleDownload = async () => {
@@ -105,7 +105,8 @@ export default function UrlDownloadPage() {
           success: true,
           title: `YouTube Video`,
           thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
-          medias: medias
+          medias: medias,
+          type: "media"
         });
       }
       // Handle Spotify URL
@@ -159,7 +160,7 @@ export default function UrlDownloadPage() {
           const medias = [];
           if (data.data.play) medias.push({ url: data.data.play, type: "video", quality: "HD" });
           if (data.data.music) medias.push({ url: data.data.music, type: "audio", quality: "Original" });
-          setResult({ success: true, title: data.data.title, medias: medias });
+          setResult({ success: true, title: data.data.title, medias: medias, type: "media" });
         } else {
           throw new Error("No media found");
         }
@@ -174,7 +175,7 @@ export default function UrlDownloadPage() {
           const medias = [];
           if (data.data.video) medias.push({ url: data.data.video, type: "video", quality: "HD" });
           if (data.data.images) data.data.images.forEach((img: string) => medias.push({ url: img, type: "image" }));
-          setResult({ success: true, title: "Instagram Post", medias: medias });
+          setResult({ success: true, title: "Instagram Post", medias: medias, type: "media" });
         } else {
           throw new Error("No media found");
         }
@@ -189,7 +190,7 @@ export default function UrlDownloadPage() {
           const medias = [];
           if (data.data.hd) medias.push({ url: data.data.hd, type: "video", quality: "HD" });
           if (data.data.sd) medias.push({ url: data.data.sd, type: "video", quality: "SD" });
-          setResult({ success: true, title: "Facebook Video", medias: medias });
+          setResult({ success: true, title: "Facebook Video", medias: medias, type: "media" });
         } else {
           throw new Error("No video found");
         }
@@ -204,7 +205,8 @@ export default function UrlDownloadPage() {
           setResult({
             success: true,
             title: data.data.file_name || "MediaFire File",
-            medias: [{ url: data.data.download_url, type: "file", quality: "Direct Download" }]
+            medias: [{ url: data.data.download_url, type: "file", quality: "Direct Download" }],
+            type: "media"
           });
         } else {
           throw new Error("No download link found");
@@ -229,7 +231,7 @@ export default function UrlDownloadPage() {
         const data = await response.json();
         
         if (data && data.video) {
-          setResult({ success: true, title: "Twitter Video", medias: [{ url: data.video, type: "video", quality: "HD" }] });
+          setResult({ success: true, title: "Twitter Video", medias: [{ url: data.video, type: "video", quality: "HD" }], type: "media" });
         } else {
           throw new Error("No video found");
         }
@@ -248,7 +250,8 @@ export default function UrlDownloadPage() {
       setResult({
         success: true,
         title: item.title || item.name,
-        medias: [{ url: item.url || item.preview_url, type: "audio", quality: "Preview" }]
+        medias: [{ url: item.url || item.preview_url, type: "audio", quality: "Preview" }],
+        type: "media"
       });
       setSearchResults([]);
     } else {
@@ -281,6 +284,7 @@ export default function UrlDownloadPage() {
   const videos = result?.medias?.filter((m: any) => m.type === "video") || [];
   const audios = result?.medias?.filter((m: any) => m.type === "audio") || [];
   const files = result?.medias?.filter((m: any) => m.type === "file") || [];
+  const isLyricsType = result?.type === "lyrics";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
@@ -416,14 +420,14 @@ export default function UrlDownloadPage() {
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="font-semibold flex items-center gap-2">
                   <CheckCircle className="size-5 text-green-500" />
-                  {result.type === "lyrics" ? "Lyrics" : "Download Ready"}
+                  {isLyricsType ? "Lyrics" : "Download Ready"}
                 </h2>
                 {result.title && <p className="text-sm text-muted-foreground">{result.title}</p>}
               </div>
             </div>
             
             {/* Lyrics Display */}
-            {result.type === "lyrics" && (
+            {isLyricsType && (
               <div className="p-4">
                 <div className="p-4 bg-muted/20 rounded-lg max-h-96 overflow-y-auto">
                   <pre className="text-sm whitespace-pre-wrap font-sans">{result.lyrics}</pre>
@@ -439,7 +443,7 @@ export default function UrlDownloadPage() {
             )}
             
             {/* Tabs for Video/Audio/File */}
-            {!result.type === "lyrics" && (
+            {!isLyricsType && (videos.length > 0 || audios.length > 0 || files.length > 0) && (
               <>
                 <div className="flex border-b bg-muted/20">
                   {videos.length > 0 && (
@@ -578,4 +582,4 @@ export default function UrlDownloadPage() {
       </div>
     </div>
   );
-                                               }
+}
