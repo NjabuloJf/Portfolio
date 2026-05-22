@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   Bot, Menu, Plus, Trash2, Edit2, MessageSquare,
   Copy, Check, Code, Cloud, Server, Clock, 
-  QrCode, Github, FileArchive, Download, Zap, Box
+  QrCode, Github, FileArchive, Download, Zap, Box, Shield
 } from "lucide-react";
 import { DATA } from "@/data/resume";
 import { ButtonsUiPairs } from "@/components/buttonsui-pairs";
@@ -26,21 +26,32 @@ function CheckIcon({ className }: { className?: string }) {
 }
 
 export default function NjabuloUiBotPage() {
-  const [chats, setChats] = useState<Chat[]>(() => {
-    const saved = localStorage.getItem("njabulo-uibot-chats");
-    return saved ? JSON.parse(saved) : [
-      { id: "1", name: "Welcome Chat", createdAt: new Date() },
-      { id: "2", name: "Deployment Guide", createdAt: new Date() },
-      { id: "3", name: "Code Examples", createdAt: new Date() }
-    ];
-  });
+  const [chats, setChats] = useState<Chat[]>([
+    { id: "1", name: "Welcome Chat", createdAt: new Date() },
+    { id: "2", name: "Deployment Guide", createdAt: new Date() },
+    { id: "3", name: "Code Examples", createdAt: new Date() }
+  ]);
   const [currentChatId, setCurrentChatId] = useState<string | null>("1");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
-  const saveChats = (newChats: Chat[]) => {
-    setChats(newChats);
-    localStorage.setItem("njabulo-uibot-chats", JSON.stringify(newChats));
-  };
+  // Load chats from localStorage only on client side
+  useEffect(() => {
+    setIsClient(true);
+    const saved = localStorage.getItem("njabulo-uibot-chats");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setChats(parsed);
+      if (parsed.length > 0) setCurrentChatId(parsed[0].id);
+    }
+  }, []);
+
+  // Save chats to localStorage
+  useEffect(() => {
+    if (isClient && chats.length > 0) {
+      localStorage.setItem("njabulo-uibot-chats", JSON.stringify(chats));
+    }
+  }, [chats, isClient]);
 
   const createNewChat = () => {
     const newChat: Chat = {
@@ -48,13 +59,13 @@ export default function NjabuloUiBotPage() {
       name: `Chat ${chats.length + 1}`,
       createdAt: new Date(),
     };
-    saveChats([newChat, ...chats]);
+    setChats([newChat, ...chats]);
     setCurrentChatId(newChat.id);
   };
 
   const deleteChat = (chatId: string) => {
     const updatedChats = chats.filter(chat => chat.id !== chatId);
-    saveChats(updatedChats);
+    setChats(updatedChats);
     if (currentChatId === chatId && updatedChats.length > 0) {
       setCurrentChatId(updatedChats[0].id);
     }
@@ -64,7 +75,7 @@ export default function NjabuloUiBotPage() {
     const updatedChats = chats.map(chat =>
       chat.id === chatId ? { ...chat, name: newName } : chat
     );
-    saveChats(updatedChats);
+    setChats(updatedChats);
   };
 
   const currentChat = chats.find(chat => chat.id === currentChatId);
@@ -292,7 +303,4 @@ export default function NjabuloUiBotPage() {
       <NjabuloUiFeatures />
     </div>
   );
-}
-
-// Missing Shield import
-import { Shield } from "lucide-react";
+      }
