@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, ReactElement } from "react";
 import Link from "next/link";
 import { 
   Search, Download, Heart, HeartOff, Image as ImageIcon,
@@ -55,7 +56,7 @@ export default function ImageSearchPage() {
     setLoading(true);
     setError(null);
     
-    const newStartIndex = (page - 1) * 10 + 1;
+    const newStartIndex = (page - 1) * 20 + 1;
     setStartIndex(newStartIndex);
 
     // Add to search history
@@ -204,24 +205,6 @@ export default function ImageSearchPage() {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const categoryIcons: Record<string, JSX.Element> = {
-    "bmw": <Car className="size-4" />,
-    "mercedes": <Car className="size-4" />,
-    "audi": <Car className="size-4" />,
-    "porsche": <Car className="size-4" />,
-    "ferrari": <Car className="size-4" />,
-    "lamborghini": <Car className="size-4" />,
-    "nature": <Mountain className="size-4" />,
-    "anime": <Sparkles className="size-4" />,
-    "cars": <Car className="size-4" />,
-    "dogs": <Dog className="size-4" />,
-    "cats": <Cat className="size-4" />,
-    "flowers": <Flower className="size-4" />,
-    "mountains": <Mountain className="size-4" />,
-    "beach": <Sun className="size-4" />,
-    "space": <Sparkles className="size-4" />
   };
 
   const quickSearches = [
