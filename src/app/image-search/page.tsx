@@ -1,78 +1,17 @@
-
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { 
   Search, Download, Heart, HeartOff, 
   Loader2, Grid3x3, LayoutGrid, X, TrendingUp,
-  Copy, Check, AlertCircle, Sparkles,
+  Copy, Check, AlertCircle, Sparkles, ChevronLeft, ChevronRight,
   Camera, Car, Dog, Cat, Flower, Mountain, Sun
 } from "lucide-react";
 
 // Google Custom Search API Keys
 const GCSE_KEY = 'AIzaSyDMbI3nvmQUrfjoCJYLS69Lej1hSXQjnWI';
 const GCSE_CX = 'baf9bdb0c631236e5';
-
-// Free fallback images API (no API key required)
-const getFallbackImages = (query: string) => {
-  const imageMap: Record<string, string[]> = {
-    "bmw": [
-      "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800",
-      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800",
-      "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=800"
-    ],
-    "mercedes": [
-      "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d5?w=800",
-      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800"
-    ],
-    "nature": [
-      "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800",
-      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800",
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
-    ],
-    "anime": [
-      "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800",
-      "https://images.unsplash.com/photo-1541562232579-512a21360020?w=800"
-    ],
-    "cars": [
-      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800",
-      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800"
-    ],
-    "dogs": [
-      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800",
-      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800"
-    ],
-    "cats": [
-      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800",
-      "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800"
-    ]
-  };
-
-  const lowerQuery = query.toLowerCase();
-  for (const [key, images] of Object.entries(imageMap)) {
-    if (lowerQuery.includes(key)) {
-      return images.map((url, i) => ({
-        link: url,
-        title: `${query} image ${i + 1}`,
-        snippet: `Beautiful ${query} image from Unsplash`,
-        displayLink: "unsplash.com",
-        image: { contextLink: url, height: 600, width: 800 }
-      }));
-    }
-  }
-  
-  // Default fallback
-  return [
-    {
-      link: `https://picsum.photos/id/${Math.floor(Math.random() * 200)}/800/600`,
-      title: `${query} image`,
-      snippet: `Random image for ${query}`,
-      displayLink: "picsum.photos",
-      image: { contextLink: "", height: 600, width: 800 }
-    }
-  ];
-};
 
 type ImageResult = {
   link: string;
@@ -103,33 +42,38 @@ export default function ImageSearchPage() {
   const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
   const [copied, setCopied] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [useFallback, setUseFallback] = useState(false);
+  const [startIndex, setStartIndex] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const [downloading, setDownloading] = useState<string | null>(null);
+  const imageRefs = useRef<Map<string, HTMLImageElement>>(new Map());
 
-  const searchImages = async (page: number = 1, query?: string) => {
-    const searchTerm = query || searchQuery;
-    if (!searchTerm.trim()) {
+  const searchImages = async (page: number = 1) => {
+    if (!searchQuery.trim()) {
       setError("Please enter a search term");
       return;
     }
 
     setLoading(true);
     setError(null);
-    setUseFallback(false);
+    
+    const newStartIndex = (page - 1) * 20 + 1;
+    setStartIndex(newStartIndex);
 
     // Add to search history
-    if (page === 1 && !searchHistory.includes(searchTerm.trim())) {
-      setSearchHistory(prev => [searchTerm.trim(), ...prev].slice(0, 10));
+    if (page === 1 && !searchHistory.includes(searchQuery.trim())) {
+      setSearchHistory(prev => [searchQuery.trim(), ...prev].slice(0, 10));
     }
 
     try {
       const params = new URLSearchParams({
         key: GCSE_KEY,
         cx: GCSE_CX,
-        q: searchTerm,
+        q: searchQuery,
         searchType: 'image',
-        num: '10',
-        start: '1',
-        safe: 'active'
+        num: '20',
+        start: newStartIndex.toString(),
+        safe: 'active',
+        alt: 'json'
       });
 
       const response = await fetch(`https://www.googleapis.com/customsearch/v1?${params.toString()}`);
@@ -137,34 +81,29 @@ export default function ImageSearchPage() {
 
       if (data.error) {
         console.error("API Error:", data.error);
-        // Use fallback images
-        setUseFallback(true);
-        const fallbackImages = getFallbackImages(searchTerm);
-        setImages(fallbackImages);
-        setError(null);
+        setError(`API Error: ${data.error.message || "Please try again"}`);
+        setImages([]);
         return;
       }
 
       if (data.items && data.items.length > 0) {
         setImages(data.items);
+        setTotalResults(parseInt(data.queries?.request?.[0]?.totalResults || "0"));
       } else {
-        // Use fallback images
-        setUseFallback(true);
-        const fallbackImages = getFallbackImages(searchTerm);
-        setImages(fallbackImages);
+        setError("No images found. Try a different search term.");
+        setImages([]);
       }
     } catch (err) {
       console.error("Search error:", err);
-      // Use fallback images on error
-      setUseFallback(true);
-      const fallbackImages = getFallbackImages(searchTerm);
-      setImages(fallbackImages);
+      setError("Failed to connect. Please try again.");
+      setImages([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSearch = () => {
+    setStartIndex(1);
     searchImages(1);
   };
 
@@ -174,7 +113,56 @@ export default function ImageSearchPage() {
     }
   };
 
+  const nextPage = () => {
+    const nextStart = startIndex + 20;
+    if (totalResults === 0 || nextStart <= totalResults) {
+      searchImages(Math.floor(startIndex / 20) + 2);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const prevPage = () => {
+    if (startIndex > 1) {
+      searchImages(Math.floor(startIndex / 20));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const downloadImage = async (url: string, title: string) => {
+    setDownloading(url);
+    try {
+      // Method 1: Try to fetch and download
+      const response = await fetch(url, {
+        mode: 'cors',
+        headers: {
+          'Accept': 'image/*'
+        }
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = `${title.substring(0, 50).replace(/[^a-z0-9]/gi, '_')}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      } else {
+        // Method 2: Open in new tab as fallback
+        window.open(url, "_blank");
+      }
+    } catch (err) {
+      console.error("Download error:", err);
+      // Method 3: Try to open in new tab
+      window.open(url, "_blank");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const downloadFromModal = async (url: string, title: string) => {
     try {
       const response = await fetch(url);
       const blob = await response.blob();
@@ -226,6 +214,9 @@ export default function ImageSearchPage() {
     { name: "Beach", query: "beach sunset" },
   ];
 
+  const currentPage = Math.floor(startIndex / 20) + 1;
+  const totalPages = Math.ceil(totalResults / 20);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-6 px-4">
       <div className="max-w-7xl mx-auto">
@@ -258,7 +249,7 @@ export default function ImageSearchPage() {
               key={item.name}
               onClick={() => {
                 setSearchQuery(item.query);
-                setTimeout(() => searchImages(1, item.query), 100);
+                setTimeout(() => searchImages(1), 100);
               }}
               className="px-3 py-1.5 text-xs bg-muted hover:bg-accent rounded-full transition-colors"
             >
@@ -289,16 +280,33 @@ export default function ImageSearchPage() {
           </div>
         </div>
 
-        {/* API Notice */}
-        {useFallback && images.length > 0 && (
-          <div className="max-w-2xl mx-auto mb-4 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-center">
-            <p className="text-xs text-yellow-600">
-              ⚡ Using demo images (Google API quota exceeded)
-            </p>
+        {/* Popular Searches (when no search) */}
+        {images.length === 0 && !loading && !error && !searchQuery && (
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="p-4 border rounded-xl bg-card/50">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingUp className="size-4 text-orange-500" />
+                <h3 className="text-sm font-semibold">Popular Searches</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {["BMW M4", "Mercedes AMG", "Porsche 911", "Nature", "Anime", "Cats", "Dogs", "Sunset", "Mountains", "Beach"].map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => {
+                      setSearchQuery(term);
+                      setTimeout(() => searchImages(1), 100);
+                    }}
+                    className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-full transition-colors"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Results Header */}
+        {/* Results Header with Pagination */}
         {images.length > 0 && (
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div className="flex items-center gap-2">
@@ -317,6 +325,27 @@ export default function ImageSearchPage() {
             </div>
             <div className="text-xs text-muted-foreground">
               {images.length} images for "{searchQuery}"
+              {totalResults > 0 && ` (${totalResults.toLocaleString()} total)`}
+            </div>
+            {/* Pagination Controls */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={prevPage}
+                disabled={startIndex <= 1}
+                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <span className="text-xs text-muted-foreground">
+                Page {currentPage} {totalPages > 0 && `of ${totalPages}`}
+              </span>
+              <button
+                onClick={nextPage}
+                disabled={totalResults > 0 && startIndex + 20 > totalResults}
+                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="size-4" />
+              </button>
             </div>
           </div>
         )}
@@ -329,29 +358,20 @@ export default function ImageSearchPage() {
           </div>
         )}
 
-        {/* Popular Searches (when no search) */}
-        {images.length === 0 && !loading && !error && !searchQuery && (
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="p-4 border rounded-xl bg-card/50">
-              <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="size-4 text-orange-500" />
-                <h3 className="text-sm font-semibold">Popular Searches</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["BMW M4", "Mercedes AMG", "Porsche 911", "Nature", "Anime", "Cats", "Dogs", "Sunset", "Mountains", "Beach"].map((term) => (
-                  <button
-                    key={term}
-                    onClick={() => {
-                      setSearchQuery(term);
-                      setTimeout(() => searchImages(1, term), 100);
-                    }}
-                    className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-full transition-colors"
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            </div>
+        {/* Error State */}
+        {error && (
+          <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
+            <AlertCircle className="size-10 text-red-500 mx-auto mb-3" />
+            <p className="text-sm text-red-600">{error}</p>
+            <button
+              onClick={() => {
+                setSearchQuery("BMW M4");
+                setTimeout(() => searchImages(1), 100);
+              }}
+              className="mt-3 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg"
+            >
+              Try "BMW M4"
+            </button>
           </div>
         )}
 
@@ -375,6 +395,9 @@ export default function ImageSearchPage() {
                     alt={image.title}
                     className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://placehold.co/600x400/e2e8f0/64748b?text=Image+Not+Found";
+                    }}
                   />
                   <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-black/50 text-white text-[9px] rounded-full">
                     {image.displayLink}
@@ -385,17 +408,22 @@ export default function ImageSearchPage() {
                         e.stopPropagation();
                         downloadImage(image.link, image.title);
                       }}
-                      className="p-1.5 bg-white rounded-full hover:bg-gray-100"
+                      disabled={downloading === image.link}
+                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
                       title="Download"
                     >
-                      <Download className="size-3 text-gray-800" />
+                      {downloading === image.link ? (
+                        <Loader2 className="size-3 animate-spin text-gray-800" />
+                      ) : (
+                        <Download className="size-3 text-gray-800" />
+                      )}
                     </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleLike(image);
                       }}
-                      className="p-1.5 bg-white rounded-full hover:bg-gray-100"
+                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors"
                       title={isLiked(image.link) ? "Unlike" : "Like"}
                     >
                       {isLiked(image.link) ? (
@@ -409,7 +437,7 @@ export default function ImageSearchPage() {
                         e.stopPropagation();
                         copyToClipboard(image.link);
                       }}
-                      className="p-1.5 bg-white rounded-full hover:bg-gray-100"
+                      className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors"
                       title="Copy Link"
                     >
                       {copied ? <Check className="size-3 text-green-500" /> : <Copy className="size-3 text-gray-800" />}
@@ -423,6 +451,31 @@ export default function ImageSearchPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Bottom Pagination */}
+        {!loading && images.length > 0 && (totalPages > 1 || startIndex + 20 <= totalResults) && (
+          <div className="flex items-center justify-center gap-4 mt-6">
+            <button
+              onClick={prevPage}
+              disabled={startIndex <= 1}
+              className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              <ChevronLeft className="size-4" />
+              Previous
+            </button>
+            <span className="text-sm text-muted-foreground">
+              Page {currentPage} {totalPages > 0 && `of ${totalPages}`}
+            </span>
+            <button
+              onClick={nextPage}
+              disabled={totalResults > 0 && startIndex + 20 > totalResults}
+              className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              Next
+              <ChevronRight className="size-4" />
+            </button>
           </div>
         )}
 
@@ -484,7 +537,7 @@ export default function ImageSearchPage() {
                   <p className="text-white text-xs">{selectedImage.snippet?.substring(0, 100) || selectedImage.title}</p>
                   <div className="flex gap-1.5">
                     <button
-                      onClick={() => downloadImage(selectedImage.link, selectedImage.title)}
+                      onClick={() => downloadFromModal(selectedImage.link, selectedImage.title)}
                       className="p-1.5 bg-white rounded-lg hover:bg-gray-100"
                     >
                       <Download className="size-3" />
@@ -515,7 +568,7 @@ export default function ImageSearchPage() {
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-border text-center">
           <p className="text-[10px] text-muted-foreground">
-            © 2026 Njabulo-Jb Image Search
+            © 2026 Njabulo-Jb Image Search | Powered by Google Custom Search
           </p>
         </div>
       </div>
