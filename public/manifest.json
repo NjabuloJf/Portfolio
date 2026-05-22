@@ -1,7 +1,7 @@
 {
   "name": "Njabulo Jb Portfolio",
   "short_name": "Njabulo Jb",
-  "description": "Njabulo Jb - WhatsApp Bot Developer, Tech Entrepreneur, and Software Engineer. Explore bots, scripts, and services.",
+  "description": "Njabulo Jb - WhatsApp Bot Developer, Tech Entrepreneur, and Software Engineer",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#000000",
@@ -59,41 +59,27 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshots/home.png",
-      "sizes": "1080x1920",
-      "type": "image/png"
-    }
-  ],
   "shortcuts": [
     {
       "name": "WhatsApp Bot",
       "short_name": "Bot",
       "description": "Go to WhatsApp Bot",
       "url": "/njabulobot",
-      "icons": [{ "src": "/icons/bot-icon.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Scripts Store",
       "short_name": "Store",
       "description": "Buy scripts",
       "url": "/business",
-      "icons": [{ "src": "/icons/store-icon.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Contact Me",
       "short_name": "Contact",
       "description": "Contact Njabulo Jb",
       "url": "/contacts",
-      "icons": [{ "src": "/icons/contact-icon.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }
-  ],
-  "related_applications": [
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.njabulojb.portfolio"
-    }
-  ],
-  "prefer_related_applications": false
-    }
+  ]
+    } 
