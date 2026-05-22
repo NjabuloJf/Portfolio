@@ -520,4 +520,4 @@ export default function ImageSearchPage() {
       </div>
     </div>
   );
-                        }
+      }
