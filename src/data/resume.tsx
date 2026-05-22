@@ -172,6 +172,27 @@ export const DATA = {
       image: "gmx-xmd.png",
     },
     {
+      title: "ɴᴊᴀʙᴜʟᴏ ᴜɪʙᴏᴛ",
+      href: "/njabulo-uibot",
+      dates: "last update may 2026 version ^2.12.9¬",
+      active: true,
+      description:
+        "NJABULO-UIBOT' WhatsApp bot multi-device repository (NjabuloJf/njabulo-uibot) has gained over 80 stars, showcasing its popularity among developers. This bot enables seamless WhatsApp interactions across multiple devices.",
+      technologies: [
+        "NJABULO UI",
+        "NJABULO TECH",
+        "WHATSAPP BOT",
+      ],
+      links: [
+        {
+          type: "NJABULOUIBOT",
+          href: "/njabulo-uibot",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
+      image: "gmx-xmd.png",
+    },
+    {
       title: "ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ",
       href: "/njabulo-telegrambot",
       dates: "last update Jeanunary 2026 version ^2.0.0¬",
