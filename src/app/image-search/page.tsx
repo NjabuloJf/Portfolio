@@ -4,93 +4,31 @@ import { useState } from "react";
 import Link from "next/link";
 import { 
   Search, Download, Heart, HeartOff, Image as ImageIcon,
-  Loader2, Grid3x3, LayoutGrid, X, ZoomIn, Share2,
-  ChevronLeft, ChevronRight, Star, TrendingUp, Clock,
-  Copy, Check, ExternalLink, AlertCircle, RefreshCw
+  Loader2, Grid3x3, LayoutGrid, X, TrendingUp, Clock,
+  Copy, Check, AlertCircle, ExternalLink
 } from "lucide-react";
+
+// Google Custom Search API Keys
+const GCSE_KEY = 'AIzaSyDMbI3nvmQUrfjoCJYLS69Lej1hSXQjnWI';
+const GCSE_CX = 'baf9bdb0c631236e5';
 
 type ImageResult = {
   link: string;
   title: string;
-  source: string;
-  width?: number;
-  height?: number;
-};
-
-// Free Image APIs (No API key required)
-const searchImagesViaUnsplash = async (query: string): Promise<ImageResult[]> => {
-  try {
-    const response = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=20&client_id=demo`);
-    if (!response.ok) throw new Error("Unsplash API failed");
-    const data = await response.json();
-    return data.results?.map((img: any) => ({
-      link: img.urls.regular,
-      title: img.alt_description || img.description || query,
-      source: "Unsplash",
-      width: img.width,
-      height: img.height
-    })) || [];
-  } catch {
-    return [];
-  }
-};
-
-const searchImagesViaPexels = async (query: string): Promise<ImageResult[]> => {
-  try {
-    const response = await fetch(`https://api.pexels.com/v1/search?query=${query}&per_page=20`, {
-      headers: { 'Authorization': '563492ad6f91700001000001d3e5e5b5e5e5e5e5e5e5e5e5e5e5e5e5' }
-    });
-    if (!response.ok) throw new Error("Pexels API failed");
-    const data = await response.json();
-    return data.photos?.map((img: any) => ({
-      link: img.src.large,
-      title: img.alt || query,
-      source: "Pexels",
-      width: img.width,
-      height: img.height
-    })) || [];
-  } catch {
-    return [];
-  }
-};
-
-const searchImagesViaPixabay = async (query: string): Promise<ImageResult[]> => {
-  try {
-    const response = await fetch(`https://pixabay.com/api/?key=46794731-c3c6d4b5e5e5e5e5e5e5e5e5e&q=${encodeURIComponent(query)}&image_type=photo&per_page=20`);
-    if (!response.ok) throw new Error("Pixabay API failed");
-    const data = await response.json();
-    return data.hits?.map((img: any) => ({
-      link: img.largeImageURL,
-      title: img.tags || query,
-      source: "Pixabay",
-      width: img.imageWidth,
-      height: img.imageHeight
-    })) || [];
-  } catch {
-    return [];
-  }
-};
-
-const searchImagesViaDummy = async (query: string): Promise<ImageResult[]> => {
-  // Fallback dummy images
-  const categories: Record<string, string[]> = {
-    nature: ["forest", "mountain", "ocean", "sunset", "flower", "tree", "lake", "river"],
-    anime: ["naruto", "sailor moon", "dragon ball", "demon slayer", "spirited away", "your name", "attack on titan"],
-    cars: ["ferrari", "lamborghini", "porsche", "bmw", "mercedes", "audi", "tesla", "ford"],
-    dogs: ["puppy", "golden retriever", "husky", "german shepherd", "poodle", "bulldog", "beagle"],
-    cats: ["kitten", "persian cat", "siamese cat", "maine coon", "bengal cat"],
-    flowers: ["rose", "tulip", "sunflower", "orchid", "lily", "daisy", "lavender"],
-    default: ["beautiful", "amazing", "stunning", "gorgeous", "wonderful", "incredible"]
+  snippet: string;
+  displayLink: string;
+  image: {
+    contextLink: string;
+    height: number;
+    width: number;
   };
+};
 
-  const keywords = categories[query.toLowerCase()] || categories.default;
-  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-  
-  return Array.from({ length: 15 }, (_, i) => ({
-    link: `https://picsum.photos/id/${Math.floor(Math.random() * 200) + 1}/800/600`,
-    title: `${query} image ${i + 1} - ${randomKeyword}`,
-    source: "Lorem Picsum (Demo)",
-  }));
+type LikedImage = {
+  link: string;
+  title: string;
+  snippet: string;
+  likedAt: Date;
 };
 
 export default function ImageSearchPage() {
@@ -99,13 +37,14 @@ export default function ImageSearchPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
-  const [likedImages, setLikedImages] = useState<ImageResult[]>([]);
+  const [likedImages, setLikedImages] = useState<LikedImage[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
   const [copied, setCopied] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [apiSource, setApiSource] = useState<string>("");
+  const [startIndex, setStartIndex] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
-  const searchImages = async () => {
+  const searchImages = async (page: number = 1) => {
     if (!searchQuery.trim()) {
       setError("Please enter a search term");
       return;
@@ -113,81 +52,77 @@ export default function ImageSearchPage() {
 
     setLoading(true);
     setError(null);
-    setImages([]);
-    setApiSource("");
+    
+    const newStartIndex = (page - 1) * 20 + 1;
+    setStartIndex(newStartIndex);
 
     // Add to search history
-    if (!searchHistory.includes(searchQuery.trim())) {
+    if (page === 1 && !searchHistory.includes(searchQuery.trim())) {
       setSearchHistory(prev => [searchQuery.trim(), ...prev].slice(0, 10));
     }
 
     try {
-      let results: ImageResult[] = [];
-      
-      // Try Unsplash first
-      results = await searchImagesViaUnsplash(searchQuery);
-      if (results.length > 0) {
-        setApiSource("Unsplash");
-        setImages(results);
-        setLoading(false);
+      // Using Google Custom Search API with proper parameters
+      const response = await fetch(
+        `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(searchQuery)}&key=${GCSE_KEY}&cx=${GCSE_CX}&searchType=image&num=20&start=${newStartIndex}&safe=active`
+      );
+
+      const data = await response.json();
+
+      if (data.error) {
+        console.error("API Error:", data.error);
+        setError(`API Error: ${data.error.message || "Please check API key"}`);
+        setImages([]);
         return;
       }
-      
-      // Try Pexels second
-      results = await searchImagesViaPexels(searchQuery);
-      if (results.length > 0) {
-        setApiSource("Pexels");
-        setImages(results);
-        setLoading(false);
-        return;
+
+      if (data.items && data.items.length > 0) {
+        setImages(data.items);
+        setTotalResults(parseInt(data.queries?.request?.[0]?.totalResults || "0"));
+      } else {
+        setError("No images found. Try a different search term.");
+        setImages([]);
       }
-      
-      // Try Pixabay third
-      results = await searchImagesViaPixabay(searchQuery);
-      if (results.length > 0) {
-        setApiSource("Pixabay");
-        setImages(results);
-        setLoading(false);
-        return;
-      }
-      
-      // Fallback to dummy images
-      results = await searchImagesViaDummy(searchQuery);
-      if (results.length > 0) {
-        setApiSource("Demo Images");
-        setImages(results);
-        setLoading(false);
-        return;
-      }
-      
-      setError("No images found. Try a different search term.");
     } catch (err) {
       console.error("Search error:", err);
-      setError("Failed to search images. Please try again.");
+      setError("Failed to connect to Google API. Please check your API key.");
+      setImages([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSearch = () => {
+    setStartIndex(1);
+    searchImages(1);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      searchImages();
+      handleSearch();
     }
+  };
+
+  const loadMore = () => {
+    const nextPage = Math.floor(startIndex / 20) + 1;
+    searchImages(nextPage);
   };
 
   const downloadImage = async (url: string, title: string) => {
     try {
+      // Try to fetch and download
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = blobUrl;
-      a.download = `${title.substring(0, 50)}.jpg`;
+      a.download = `${title.substring(0, 50).replace(/[^a-z0-9]/gi, '_')}.jpg`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
+      // Fallback: open in new tab
       window.open(url, "_blank");
     }
   };
@@ -197,7 +132,12 @@ export default function ImageSearchPage() {
     if (alreadyLiked) {
       setLikedImages(likedImages.filter(l => l.link !== image.link));
     } else {
-      setLikedImages([...likedImages, image]);
+      setLikedImages([...likedImages, { 
+        link: image.link, 
+        title: image.title, 
+        snippet: image.snippet,
+        likedAt: new Date() 
+      }]);
     }
   };
 
@@ -210,9 +150,9 @@ export default function ImageSearchPage() {
   };
 
   const popularSearches = [
-    "nature", "anime", "cars", "dogs", "cats", 
-    "flowers", "sunset", "mountains", "beach", "space",
-    "ocean", "forest", "birds", "butterfly", "moon"
+    "nature wallpaper", "anime art", "cars 4k", "cute dogs", 
+    "beautiful cats", "flowers garden", "sunset beach", "mountain view",
+    "space galaxy", "ocean waves", "forest trees", "birds flying"
   ];
 
   return (
@@ -225,14 +165,14 @@ export default function ImageSearchPage() {
           </Link>
           
           <div className="text-center">
-            <div className="inline-flex p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4">
+            <div className="inline-flex p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-4">
               <ImageIcon className="size-8 text-white" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Njabulo-Jb Image Search
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Google Image Search
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Search millions of high-quality images from Unsplash, Pexels, and Pixabay
+              Search millions of images using Google Custom Search API
             </p>
           </div>
         </div>
@@ -246,11 +186,11 @@ export default function ImageSearchPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Search for images... (e.g., nature, anime, cars, dogs)"
+              placeholder="Search for images... (e.g., nature wallpaper, anime art, cars 4k)"
               className="w-full pl-12 pr-24 py-3 border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <button
-              onClick={searchImages}
+              onClick={handleSearch}
               disabled={loading}
               className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
             >
@@ -273,7 +213,7 @@ export default function ImageSearchPage() {
                     key={term}
                     onClick={() => {
                       setSearchQuery(term);
-                      setTimeout(() => searchImages(), 100);
+                      setTimeout(() => handleSearch(), 100);
                     }}
                     className="px-3 py-1.5 text-sm bg-muted hover:bg-accent rounded-full transition-colors"
                   >
@@ -285,9 +225,9 @@ export default function ImageSearchPage() {
           </div>
         )}
 
-        {/* API Source Indicator */}
-        {images.length > 0 && apiSource && (
-          <div className="flex items-center justify-between mb-4">
+        {/* Results Header */}
+        {images.length > 0 && (
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode("grid")}
@@ -302,12 +242,9 @@ export default function ImageSearchPage() {
                 <LayoutGrid className="size-4" />
               </button>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Powered by:</span>
-              <span className="text-xs px-2 py-0.5 bg-green-500/10 text-green-600 rounded-full">{apiSource}</span>
-              <span className="text-sm text-muted-foreground">
-                Found {images.length} images for "{searchQuery}"
-              </span>
+            <div className="text-sm text-muted-foreground">
+              Found {totalResults.toLocaleString()} results for "{searchQuery}"
+              <span className="text-xs ml-2">(Page {Math.floor(startIndex / 20) + 1})</span>
             </div>
           </div>
         )}
@@ -316,7 +253,7 @@ export default function ImageSearchPage() {
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="size-12 animate-spin text-primary mb-4" />
-            <p className="text-muted-foreground">Searching for images...</p>
+            <p className="text-muted-foreground">Searching Google Images...</p>
           </div>
         )}
 
@@ -328,30 +265,21 @@ export default function ImageSearchPage() {
             <div className="flex gap-2 justify-center mt-3">
               <button
                 onClick={() => {
-                  setSearchQuery("nature");
-                  setTimeout(() => searchImages(), 100);
+                  setSearchQuery("nature wallpaper");
+                  setTimeout(() => handleSearch(), 100);
                 }}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg"
               >
-                Try "nature"
+                Try "nature wallpaper"
               </button>
               <button
                 onClick={() => {
-                  setSearchQuery("anime");
-                  setTimeout(() => searchImages(), 100);
+                  setSearchQuery("anime art");
+                  setTimeout(() => handleSearch(), 100);
                 }}
                 className="px-4 py-2 border rounded-lg hover:bg-accent"
               >
-                Try "anime"
-              </button>
-              <button
-                onClick={() => {
-                  setSearchQuery("cars");
-                  setTimeout(() => searchImages(), 100);
-                }}
-                className="px-4 py-2 border rounded-lg hover:bg-accent"
-              >
-                Try "cars"
+                Try "anime art"
               </button>
             </div>
           </div>
@@ -359,91 +287,120 @@ export default function ImageSearchPage() {
 
         {/* Image Grid */}
         {!loading && images.length > 0 && (
-          <div className={viewMode === "grid" 
-            ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" 
-            : "columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4"
-          }>
-            {images.map((image, index) => (
-              <div
-                key={index}
-                className="group relative overflow-hidden rounded-xl bg-card border hover:shadow-xl transition-all duration-300 break-inside-avoid"
-              >
-                {/* Image */}
-                <div 
-                  className="relative cursor-pointer overflow-hidden"
-                  onClick={() => setSelectedImage(image)}
+          <>
+            <div className={viewMode === "grid" 
+              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" 
+              : "columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4"
+            }>
+              {images.map((image, index) => (
+                <div
+                  key={`${image.link}-${index}`}
+                  className="group relative overflow-hidden rounded-xl bg-card border hover:shadow-xl transition-all duration-300 break-inside-avoid"
                 >
-                  <img
-                    src={image.link}
-                    alt={image.title}
-                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  {/* Source Badge */}
-                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/50 text-white text-[10px] rounded-full">
-                    {image.source}
+                  {/* Image */}
+                  <div 
+                    className="relative cursor-pointer overflow-hidden"
+                    onClick={() => setSelectedImage(image)}
+                  >
+                    <img
+                      src={image.link}
+                      alt={image.title}
+                      className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400/e2e8f0/64748b?text=Image+Not+Found";
+                      }}
+                    />
+                    {/* Source Badge */}
+                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/50 text-white text-[10px] rounded-full">
+                      {image.displayLink}
+                    </div>
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadImage(image.link, image.title);
+                        }}
+                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        title="Download"
+                      >
+                        <Download className="size-4 text-gray-800" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleLike(image);
+                        }}
+                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        title={isLiked(image.link) ? "Unlike" : "Like"}
+                      >
+                        {isLiked(image.link) ? (
+                          <Heart className="size-4 text-red-500 fill-red-500" />
+                        ) : (
+                          <Heart className="size-4 text-gray-800" />
+                        )}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyToClipboard(image.link);
+                        }}
+                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        title="Copy Link"
+                      >
+                        {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4 text-gray-800" />}
+                      </button>
+                      <a
+                        href={image.image?.contextLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        title="View Source"
+                      >
+                        <ExternalLink className="size-4 text-gray-800" />
+                      </a>
+                    </div>
                   </div>
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        downloadImage(image.link, image.title);
-                      }}
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-                      title="Download"
-                    >
-                      <Download className="size-4 text-gray-800" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleLike(image);
-                      }}
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-                      title={isLiked(image.link) ? "Unlike" : "Like"}
-                    >
-                      {isLiked(image.link) ? (
-                        <Heart className="size-4 text-red-500 fill-red-500" />
-                      ) : (
-                        <Heart className="size-4 text-gray-800" />
-                      )}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        copyToClipboard(image.link);
-                      }}
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-                      title="Copy Link"
-                    >
-                      {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4 text-gray-800" />}
-                    </button>
+                  
+                  {/* Image Info */}
+                  <div className="p-2">
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {image.snippet || image.title}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-[10px] text-muted-foreground">{image.displayLink}</span>
+                      <button
+                        onClick={() => toggleLike(image)}
+                        className="p-1"
+                      >
+                        {isLiked(image.link) ? (
+                          <Heart className="size-3 text-red-500 fill-red-500" />
+                        ) : (
+                          <Heart className="size-3 text-muted-foreground hover:text-red-500 transition-colors" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                
-                {/* Image Info */}
-                <div className="p-2">
-                  <p className="text-xs text-muted-foreground truncate">
-                    {image.title.substring(0, 60)}
-                  </p>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-[10px] text-muted-foreground">{image.source}</span>
-                    <button
-                      onClick={() => toggleLike(image)}
-                      className="p-1"
-                    >
-                      {isLiked(image.link) ? (
-                        <Heart className="size-3 text-red-500 fill-red-500" />
-                      ) : (
-                        <Heart className="size-3 text-muted-foreground hover:text-red-500 transition-colors" />
-                      )}
-                    </button>
-                  </div>
-                </div>
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {images.length > 0 && totalResults > startIndex + 19 && (
+              <div className="text-center mt-8">
+                <button
+                  onClick={loadMore}
+                  disabled={loading}
+                  className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="size-4 animate-spin inline mr-2" /> : null}
+                  Load More Images
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
 
         {/* Liked Images Section */}
@@ -456,18 +413,28 @@ export default function ImageSearchPage() {
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2">
               {likedImages.map((liked, idx) => (
-                <div key={idx} className="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer" onClick={() => setSelectedImage(liked)}>
+                <div 
+                  key={idx} 
+                  className="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer group"
+                  onClick={() => {
+                    const fullImage = { link: liked.link, title: liked.title, snippet: liked.snippet, displayLink: "", image: { contextLink: "", height: 0, width: 0 } };
+                    setSelectedImage(fullImage);
+                  }}
+                >
                   <img
                     src={liked.link}
                     alt={liked.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://placehold.co/100x100/e2e8f0/64748b?text=Image";
+                    }}
                   />
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setLikedImages(likedImages.filter(l => l.link !== liked.link));
                     }}
-                    className="absolute top-1 right-1 p-0.5 bg-red-500 rounded-full text-white hover:bg-red-600"
+                    className="absolute top-1 right-1 p-0.5 bg-red-500 rounded-full text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <HeartOff className="size-3" />
                   </button>
@@ -491,12 +458,15 @@ export default function ImageSearchPage() {
                 src={selectedImage.link}
                 alt={selectedImage.title}
                 className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://placehold.co/800x600/e2e8f0/64748b?text=Image+Not+Found";
+                }}
               />
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
-                    <p className="text-white text-sm">{selectedImage.title}</p>
-                    <p className="text-white/60 text-xs">{selectedImage.source}</p>
+                    <p className="text-white text-sm">{selectedImage.snippet || selectedImage.title}</p>
+                    <p className="text-white/60 text-xs">{selectedImage.displayLink}</p>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -529,6 +499,15 @@ export default function ImageSearchPage() {
                       {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
                       Copy Link
                     </button>
+                    <a
+                      href={selectedImage.image?.contextLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 text-sm"
+                    >
+                      <ExternalLink className="size-4" />
+                      Source
+                    </a>
                   </div>
                 </div>
               </div>
@@ -549,7 +528,7 @@ export default function ImageSearchPage() {
                   key={idx}
                   onClick={() => {
                     setSearchQuery(term);
-                    setTimeout(() => searchImages(), 100);
+                    setTimeout(() => handleSearch(), 100);
                   }}
                   className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-full"
                 >
@@ -563,10 +542,10 @@ export default function ImageSearchPage() {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">
-            Powered by Unsplash, Pexels, Pixabay | © 2026 Njabulo-Jb Image Search
+            Powered by Google Custom Search API | © 2026 Njabulo-Jb Image Search
           </p>
         </div>
       </div>
     </div>
   );
-                                       }
+}
