@@ -1,21 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { 
-  Bot, Menu, Plus, Trash2, Edit2, MessageSquare,
-  Copy, Check, Code, Cloud, Server, Clock, 
-  QrCode, Github, FileArchive, Download, Zap, Box, Shield
+  Bot, Menu, Copy, Code, Cloud, Server, Clock, 
+  QrCode, Github, FileArchive, Download, Zap, Box, Shield,
+  Check, ChevronRight, Star, Heart
 } from "lucide-react";
 import { DATA } from "@/data/resume";
 import { ButtonsUiPairs } from "@/components/buttonsui-pairs";
 import { NjabuloUiFeatures } from "@/components/njabuloui-features";
-
-type Chat = {
-  id: string;
-  name: string;
-  createdAt: Date;
-};
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -26,64 +20,12 @@ function CheckIcon({ className }: { className?: string }) {
 }
 
 export default function NjabuloUiBotPage() {
-  const [chats, setChats] = useState<Chat[]>([
-    { id: "1", name: "Welcome Chat", createdAt: new Date() },
-    { id: "2", name: "Deployment Guide", createdAt: new Date() },
-    { id: "3", name: "Code Examples", createdAt: new Date() }
-  ]);
-  const [currentChatId, setCurrentChatId] = useState<string | null>("1");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isClient, setIsClient] = useState(false);
-
-  // Load chats from localStorage only on client side
-  useEffect(() => {
-    setIsClient(true);
-    const saved = localStorage.getItem("njabulo-uibot-chats");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setChats(parsed);
-      if (parsed.length > 0) setCurrentChatId(parsed[0].id);
-    }
-  }, []);
-
-  // Save chats to localStorage
-  useEffect(() => {
-    if (isClient && chats.length > 0) {
-      localStorage.setItem("njabulo-uibot-chats", JSON.stringify(chats));
-    }
-  }, [chats, isClient]);
-
-  const createNewChat = () => {
-    const newChat: Chat = {
-      id: Date.now().toString(),
-      name: `Chat ${chats.length + 1}`,
-      createdAt: new Date(),
-    };
-    setChats([newChat, ...chats]);
-    setCurrentChatId(newChat.id);
-  };
-
-  const deleteChat = (chatId: string) => {
-    const updatedChats = chats.filter(chat => chat.id !== chatId);
-    setChats(updatedChats);
-    if (currentChatId === chatId && updatedChats.length > 0) {
-      setCurrentChatId(updatedChats[0].id);
-    }
-  };
-
-  const renameChat = (chatId: string, newName: string) => {
-    const updatedChats = chats.map(chat =>
-      chat.id === chatId ? { ...chat, name: newName } : chat
-    );
-    setChats(updatedChats);
-  };
-
-  const currentChat = chats.find(chat => chat.id === currentChatId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex">
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? "w-80" : "w-16"} border-r border-border transition-all duration-300 flex flex-col bg-card/50`}>
+      {/* Sidebar - Simplified */}
+      <div className={`${sidebarOpen ? "w-64" : "w-16"} border-r border-border transition-all duration-300 flex flex-col bg-card/50`}>
         <div className="p-4 border-b border-border flex items-center justify-between">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
@@ -99,52 +41,24 @@ export default function NjabuloUiBotPage() {
           </button>
         </div>
 
-        <button
-          onClick={createNewChat}
-          className="m-3 flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
-        >
-          <Plus className="size-4" />
-          {sidebarOpen && <span>New Chat</span>}
-        </button>
-
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {chats.map((chat) => (
-            <div
-              key={chat.id}
-              className={`group flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${
-                currentChatId === chat.id ? "bg-accent" : "hover:bg-accent/50"
-              }`}
-              onClick={() => setCurrentChatId(chat.id)}
-            >
-              <MessageSquare className="size-4 shrink-0 text-muted-foreground" />
-              {sidebarOpen && (
-                <>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{chat.name}</div>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const newName = prompt("Enter new chat name:", chat.name);
-                      if (newName) renameChat(chat.id, newName);
-                    }}
-                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-accent rounded"
-                  >
-                    <Edit2 className="size-3" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (confirm("Delete this chat?")) deleteChat(chat.id);
-                    }}
-                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/20 rounded text-red-500"
-                  >
-                    <Trash2 className="size-3" />
-                  </button>
-                </>
-              )}
-            </div>
-          ))}
+        {/* Sidebar Menu */}
+        <div className="flex-1 p-3 space-y-2">
+          <a href="/" className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors">
+            <Bot className="size-4" />
+            {sidebarOpen && <span className="text-sm">Home</span>}
+          </a>
+          <a href="/njabulobot" className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors">
+            <Bot className="size-4" />
+            {sidebarOpen && <span className="text-sm">WhatsApp Bot</span>}
+          </a>
+          <a href="/gwmxmd" className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors">
+            <Bot className="size-4" />
+            {sidebarOpen && <span className="text-sm">GWM-XMD</span>}
+          </a>
+          <a href="/business" className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors">
+            <Download className="size-4" />
+            {sidebarOpen && <span className="text-sm">Scripts Store</span>}
+          </a>
         </div>
 
         {sidebarOpen && (
@@ -177,7 +91,9 @@ export default function NjabuloUiBotPage() {
         {/* Header with ButtonsUiPairs */}
         <div className="p-4 border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
           <div className="mb-3">
-            <h1 className="text-lg font-semibold">{currentChat?.name || "Njabulo UI Bot"}</h1>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Njabulo UI Bot
+            </h1>
             <p className="text-xs text-muted-foreground">Code Generator • Deployment Helper • Bot Tools</p>
           </div>
           <ButtonsUiPairs />
@@ -199,7 +115,7 @@ export default function NjabuloUiBotPage() {
 
             {/* Quick Start Grid */}
             <div className="grid md:grid-cols-2 gap-4 mb-8">
-              <div className="p-4 border rounded-xl bg-card/30">
+              <div className="p-4 border rounded-xl bg-card/30 hover:shadow-lg transition-all">
                 <div className="flex items-center gap-2 mb-2">
                   <Code className="size-5 text-blue-500" />
                   <h3 className="font-semibold">Code Generation</h3>
@@ -215,7 +131,7 @@ export default function NjabuloUiBotPage() {
                 </div>
               </div>
 
-              <div className="p-4 border rounded-xl bg-card/30">
+              <div className="p-4 border rounded-xl bg-card/30 hover:shadow-lg transition-all">
                 <div className="flex items-center gap-2 mb-2">
                   <Cloud className="size-5 text-green-500" />
                   <h3 className="font-semibold">Deployment</h3>
@@ -230,7 +146,7 @@ export default function NjabuloUiBotPage() {
                 </div>
               </div>
 
-              <div className="p-4 border rounded-xl bg-card/30">
+              <div className="p-4 border rounded-xl bg-card/30 hover:shadow-lg transition-all">
                 <div className="flex items-center gap-2 mb-2">
                   <Bot className="size-5 text-purple-500" />
                   <h3 className="font-semibold">Bot Development</h3>
@@ -241,11 +157,11 @@ export default function NjabuloUiBotPage() {
                 <div className="flex flex-wrap gap-2">
                   <span className="text-xs px-2 py-1 bg-purple-500/10 rounded-full">WhatsApp</span>
                   <span className="text-xs px-2 py-1 bg-purple-500/10 rounded-full">Telegram</span>
-                  <span className="text-xs px-2 py-1 bg-purple-500/10 rounded-full">AI Chat</span>
+                  <span className="text-xs px-2 py-1 bg-purple-500/10 rounded-full">WhatsApp Bots</span>
                 </div>
               </div>
 
-              <div className="p-4 border rounded-xl bg-card/30">
+              <div className="p-4 border rounded-xl bg-card/30 hover:shadow-lg transition-all">
                 <div className="flex items-center gap-2 mb-2">
                   <Shield className="size-5 text-red-500" />
                   <h3 className="font-semibold">Security & Tools</h3>
@@ -288,13 +204,33 @@ export default function NjabuloUiBotPage() {
                 </div>
               </div>
             </div>
+
+            {/* Features Summary */}
+            <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="p-3 text-center border rounded-lg">
+                <Star className="size-5 text-yellow-500 mx-auto mb-1" />
+                <p className="text-xs font-medium">12+ Features</p>
+              </div>
+              <div className="p-3 text-center border rounded-lg">
+                <Heart className="size-5 text-red-500 mx-auto mb-1" />
+                <p className="text-xs font-medium">Free to Use</p>
+              </div>
+              <div className="p-3 text-center border rounded-lg">
+                <Zap className="size-5 text-yellow-500 mx-auto mb-1" />
+                <p className="text-xs font-medium">Fast & Light</p>
+              </div>
+              <div className="p-3 text-center border rounded-lg">
+                <Shield className="size-5 text-green-500 mx-auto mb-1" />
+                <p className="text-xs font-medium">Secure</p>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Footer */}
         <div className="p-3 border-t border-border text-center">
           <p className="text-[10px] text-muted-foreground">
-            Njabulo UI Bot • Code Generator • Deployment Helper • Bot Tools
+            © 2026 Njabulo UI Bot • Code Generator • Deployment Helper • Bot Tools
           </p>
         </div>
       </div>
@@ -303,4 +239,4 @@ export default function NjabuloUiBotPage() {
       <NjabuloUiFeatures />
     </div>
   );
-      }
+    }
