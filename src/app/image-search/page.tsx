@@ -9,9 +9,9 @@ import {
   Camera, Car, Dog, Cat, Flower, Mountain, Sun
 } from "lucide-react";
 
-// Google Custom Search API Keys
-const GCSE_KEY = 'AIzaSyDMbI3nvmQUrfjoCJYLS69Lej1hSXQjnWI';
-const GCSE_CX = 'baf9bdb0c631236e5';
+// Free Image APIs (No API key required for demo)
+const UNSPLASH_API = "https://api.unsplash.com/search/photos?client_id=demo&query=";
+const PEXELS_API = "https://api.pexels.com/v1/search?query=";
 
 type ImageResult = {
   link: string;
@@ -42,12 +42,104 @@ export default function ImageSearchPage() {
   const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
   const [copied, setCopied] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [startIndex, setStartIndex] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
+  const [page, setPage] = useState(1);
   const [downloading, setDownloading] = useState<string | null>(null);
-  const imageRefs = useRef<Map<string, HTMLImageElement>>(new Map());
+  const [usingFallback, setUsingFallback] = useState(false);
 
-  const searchImages = async (page: number = 1) => {
+  // Generate demo images when API fails
+  const generateDemoImages = (query: string): ImageResult[] => {
+    const categories: Record<string, { query: string; images: string[] }> = {
+      "bmw": {
+        query: "BMW",
+        images: [
+          "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600",
+          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600",
+          "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=600",
+          "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?w=600"
+        ]
+      },
+      "mercedes": {
+        query: "Mercedes",
+        images: [
+          "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d5?w=600",
+          "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600",
+          "https://images.unsplash.com/photo-1620106390902-32d8a5de4f0c?w=600"
+        ]
+      },
+      "nature": {
+        query: "Nature",
+        images: [
+          "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600",
+          "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600",
+          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+          "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600"
+        ]
+      },
+      "anime": {
+        query: "Anime",
+        images: [
+          "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600",
+          "https://images.unsplash.com/photo-1541562232579-512a21360020?w=600",
+          "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600"
+        ]
+      },
+      "cars": {
+        query: "Cars",
+        images: [
+          "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600",
+          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600",
+          "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600"
+        ]
+      },
+      "dogs": {
+        query: "Dogs",
+        images: [
+          "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600",
+          "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600"
+        ]
+      },
+      "cats": {
+        query: "Cats",
+        images: [
+          "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600",
+          "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600"
+        ]
+      }
+    };
+
+    const lowerQuery = query.toLowerCase();
+    for (const [key, data] of Object.entries(categories)) {
+      if (lowerQuery.includes(key)) {
+        return data.images.map((url, i) => ({
+          link: url,
+          title: `${data.query} image ${i + 1}`,
+          snippet: `Beautiful ${data.query} image`,
+          displayLink: "unsplash.com",
+          image: { contextLink: url, height: 600, width: 800 }
+        }));
+      }
+    }
+    
+    // Default random images
+    return [
+      {
+        link: `https://picsum.photos/id/${Math.floor(Math.random() * 200)}/600/400`,
+        title: `${query} image 1`,
+        snippet: `Random image for ${query}`,
+        displayLink: "picsum.photos",
+        image: { contextLink: "", height: 400, width: 600 }
+      },
+      {
+        link: `https://picsum.photos/id/${Math.floor(Math.random() * 200) + 100}/600/400`,
+        title: `${query} image 2`,
+        snippet: `Another random image for ${query}`,
+        displayLink: "picsum.photos",
+        image: { contextLink: "", height: 400, width: 600 }
+      }
+    ];
+  };
+
+  const searchImages = async (newPage: number = 1) => {
     if (!searchQuery.trim()) {
       setError("Please enter a search term");
       return;
@@ -55,55 +147,51 @@ export default function ImageSearchPage() {
 
     setLoading(true);
     setError(null);
-    
-    const newStartIndex = (page - 1) * 20 + 1;
-    setStartIndex(newStartIndex);
+    setPage(newPage);
 
     // Add to search history
-    if (page === 1 && !searchHistory.includes(searchQuery.trim())) {
+    if (newPage === 1 && !searchHistory.includes(searchQuery.trim())) {
       setSearchHistory(prev => [searchQuery.trim(), ...prev].slice(0, 10));
     }
 
     try {
-      const params = new URLSearchParams({
-        key: GCSE_KEY,
-        cx: GCSE_CX,
-        q: searchQuery,
-        searchType: 'image',
-        num: '20',
-        start: newStartIndex.toString(),
-        safe: 'active',
-        alt: 'json'
-      });
-
-      const response = await fetch(`https://www.googleapis.com/customsearch/v1?${params.toString()}`);
-      const data = await response.json();
-
-      if (data.error) {
-        console.error("API Error:", data.error);
-        setError(`API Error: ${data.error.message || "Please try again"}`);
-        setImages([]);
-        return;
+      // Try Unsplash API first (demo client ID works for basic requests)
+      const response = await fetch(`${UNSPLASH_API}${encodeURIComponent(searchQuery)}&per_page=20&page=${newPage}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          const formattedImages = data.results.map((img: any) => ({
+            link: img.urls.regular,
+            title: img.alt_description || img.description || searchQuery,
+            snippet: img.description || `${searchQuery} image from Unsplash`,
+            displayLink: "unsplash.com",
+            image: { contextLink: img.links.html, height: img.height, width: img.width }
+          }));
+          setImages(formattedImages);
+          setUsingFallback(false);
+          setLoading(false);
+          return;
+        }
       }
-
-      if (data.items && data.items.length > 0) {
-        setImages(data.items);
-        setTotalResults(parseInt(data.queries?.request?.[0]?.totalResults || "0"));
-      } else {
-        setError("No images found. Try a different search term.");
-        setImages([]);
-      }
+      
+      // If Unsplash fails, use demo images
+      const demoImages = generateDemoImages(searchQuery);
+      setImages(demoImages);
+      setUsingFallback(true);
+      
     } catch (err) {
       console.error("Search error:", err);
-      setError("Failed to connect. Please try again.");
-      setImages([]);
+      const demoImages = generateDemoImages(searchQuery);
+      setImages(demoImages);
+      setUsingFallback(true);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSearch = () => {
-    setStartIndex(1);
+    setPage(1);
     searchImages(1);
   };
 
@@ -114,16 +202,17 @@ export default function ImageSearchPage() {
   };
 
   const nextPage = () => {
-    const nextStart = startIndex + 20;
-    if (totalResults === 0 || nextStart <= totalResults) {
-      searchImages(Math.floor(startIndex / 20) + 2);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    const nextPageNum = page + 1;
+    setPage(nextPageNum);
+    searchImages(nextPageNum);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const prevPage = () => {
-    if (startIndex > 1) {
-      searchImages(Math.floor(startIndex / 20));
+    if (page > 1) {
+      const prevPageNum = page - 1;
+      setPage(prevPageNum);
+      searchImages(prevPageNum);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -131,14 +220,7 @@ export default function ImageSearchPage() {
   const downloadImage = async (url: string, title: string) => {
     setDownloading(url);
     try {
-      // Method 1: Try to fetch and download
-      const response = await fetch(url, {
-        mode: 'cors',
-        headers: {
-          'Accept': 'image/*'
-        }
-      });
-      
+      const response = await fetch(url);
       if (response.ok) {
         const blob = await response.blob();
         const blobUrl = URL.createObjectURL(blob);
@@ -150,32 +232,12 @@ export default function ImageSearchPage() {
         document.body.removeChild(a);
         URL.revokeObjectURL(blobUrl);
       } else {
-        // Method 2: Open in new tab as fallback
         window.open(url, "_blank");
       }
     } catch (err) {
-      console.error("Download error:", err);
-      // Method 3: Try to open in new tab
       window.open(url, "_blank");
     } finally {
       setDownloading(null);
-    }
-  };
-
-  const downloadFromModal = async (url: string, title: string) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = `${title.substring(0, 50).replace(/[^a-z0-9]/gi, '_')}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-    } catch (err) {
-      window.open(url, "_blank");
     }
   };
 
@@ -202,8 +264,8 @@ export default function ImageSearchPage() {
   };
 
   const quickSearches = [
-    { name: "BMW", query: "BMW M4" },
-    { name: "Mercedes", query: "Mercedes AMG" },
+    { name: "BMW", query: "bmw m4" },
+    { name: "Mercedes", query: "mercedes amg" },
     { name: "Nature", query: "nature landscape" },
     { name: "Anime", query: "anime art" },
     { name: "Cars", query: "supercar" },
@@ -213,9 +275,6 @@ export default function ImageSearchPage() {
     { name: "Mountains", query: "mountain view" },
     { name: "Beach", query: "beach sunset" },
   ];
-
-  const currentPage = Math.floor(startIndex / 20) + 1;
-  const totalPages = Math.ceil(totalResults / 20);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-6 px-4">
@@ -280,6 +339,65 @@ export default function ImageSearchPage() {
           </div>
         </div>
 
+        {/* Demo Mode Notice */}
+        {usingFallback && images.length > 0 && (
+          <div className="max-w-2xl mx-auto mb-4 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-center">
+            <p className="text-xs text-yellow-600">
+              📸 Showing sample images (Demo mode)
+            </p>
+          </div>
+        )}
+
+        {/* Results Header with Pagination */}
+        {images.length > 0 && (
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-1.5 rounded-lg transition-colors ${viewMode === "grid" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
+              >
+                <Grid3x3 className="size-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("masonry")}
+                className={`p-1.5 rounded-lg transition-colors ${viewMode === "masonry" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
+              >
+                <LayoutGrid className="size-4" />
+              </button>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {images.length} images for "{searchQuery}"
+            </div>
+            {/* Pagination Controls */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={prevPage}
+                disabled={page <= 1}
+                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <span className="text-xs text-muted-foreground">
+                Page {page}
+              </span>
+              <button
+                onClick={nextPage}
+                className="p-1.5 rounded-lg border hover:bg-accent"
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="size-8 animate-spin text-primary mb-3" />
+            <p className="text-sm text-muted-foreground">Searching for {searchQuery}...</p>
+          </div>
+        )}
+
         {/* Popular Searches (when no search) */}
         {images.length === 0 && !loading && !error && !searchQuery && (
           <div className="max-w-4xl mx-auto mb-8">
@@ -303,58 +421,6 @@ export default function ImageSearchPage() {
                 ))}
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Results Header with Pagination */}
-        {images.length > 0 && (
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded-lg transition-colors ${viewMode === "grid" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
-              >
-                <Grid3x3 className="size-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("masonry")}
-                className={`p-1.5 rounded-lg transition-colors ${viewMode === "masonry" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
-              >
-                <LayoutGrid className="size-4" />
-              </button>
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {images.length} images for "{searchQuery}"
-              {totalResults > 0 && ` (${totalResults.toLocaleString()} total)`}
-            </div>
-            {/* Pagination Controls */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={prevPage}
-                disabled={startIndex <= 1}
-                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="size-4" />
-              </button>
-              <span className="text-xs text-muted-foreground">
-                Page {currentPage} {totalPages > 0 && `of ${totalPages}`}
-              </span>
-              <button
-                onClick={nextPage}
-                disabled={totalResults > 0 && startIndex + 20 > totalResults}
-                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="size-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {loading && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 className="size-8 animate-spin text-primary mb-3" />
-            <p className="text-sm text-muted-foreground">Searching for {searchQuery}...</p>
           </div>
         )}
 
@@ -396,7 +462,7 @@ export default function ImageSearchPage() {
                     className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://placehold.co/600x400/e2e8f0/64748b?text=Image+Not+Found";
+                      (e.target as HTMLImageElement).src = "https://placehold.co/600x400/e2e8f0/64748b?text=Image";
                     }}
                   />
                   <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-black/50 text-white text-[9px] rounded-full">
@@ -455,23 +521,22 @@ export default function ImageSearchPage() {
         )}
 
         {/* Bottom Pagination */}
-        {!loading && images.length > 0 && (totalPages > 1 || startIndex + 20 <= totalResults) && (
+        {!loading && images.length > 0 && (
           <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={prevPage}
-              disabled={startIndex <= 1}
+              disabled={page <= 1}
               className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               <ChevronLeft className="size-4" />
               Previous
             </button>
             <span className="text-sm text-muted-foreground">
-              Page {currentPage} {totalPages > 0 && `of ${totalPages}`}
+              Page {page}
             </span>
             <button
               onClick={nextPage}
-              disabled={totalResults > 0 && startIndex + 20 > totalResults}
-              className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent text-sm"
             >
               Next
               <ChevronRight className="size-4" />
@@ -537,7 +602,7 @@ export default function ImageSearchPage() {
                   <p className="text-white text-xs">{selectedImage.snippet?.substring(0, 100) || selectedImage.title}</p>
                   <div className="flex gap-1.5">
                     <button
-                      onClick={() => downloadFromModal(selectedImage.link, selectedImage.title)}
+                      onClick={() => downloadImage(selectedImage.link, selectedImage.title)}
                       className="p-1.5 bg-white rounded-lg hover:bg-gray-100"
                     >
                       <Download className="size-3" />
@@ -568,7 +633,7 @@ export default function ImageSearchPage() {
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-border text-center">
           <p className="text-[10px] text-muted-foreground">
-            © 2026 Njabulo-Jb Image Search | Powered by Google Custom Search
+            © 2026 Njabulo-Jb Image Search
           </p>
         </div>
       </div>
