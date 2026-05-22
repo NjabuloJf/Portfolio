@@ -5,7 +5,8 @@ import Link from "next/link";
 import { 
   Search, Download, Heart, HeartOff, Image as ImageIcon,
   Loader2, Grid3x3, LayoutGrid, X, TrendingUp, Clock,
-  Copy, Check, AlertCircle, ExternalLink
+  Copy, Check, AlertCircle, ExternalLink, Sparkles,
+  Camera, Car, Dog, Cat, Flower, Mountain, Sun, Coffee
 } from "lucide-react";
 
 // Google Custom Search API Keys
@@ -42,9 +43,11 @@ export default function ImageSearchPage() {
   const [copied, setCopied] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [startIndex, setStartIndex] = useState(1);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  const searchImages = async (page: number = 1) => {
-    if (!searchQuery.trim()) {
+  const searchImages = async (page: number = 1, query?: string) => {
+    const searchTerm = query || searchQuery;
+    if (!searchTerm.trim()) {
       setError("Please enter a search term");
       return;
     }
@@ -56,18 +59,17 @@ export default function ImageSearchPage() {
     setStartIndex(newStartIndex);
 
     // Add to search history
-    if (page === 1 && !searchHistory.includes(searchQuery.trim())) {
-      setSearchHistory(prev => [searchQuery.trim(), ...prev].slice(0, 10));
+    if (page === 1 && !searchHistory.includes(searchTerm.trim())) {
+      setSearchHistory(prev => [searchTerm.trim(), ...prev].slice(0, 10));
     }
 
     try {
-      // Correct Google Custom Search API parameters
       const params = new URLSearchParams({
         key: GCSE_KEY,
         cx: GCSE_CX,
-        q: searchQuery,
+        q: searchTerm,
         searchType: 'image',
-        num: '10',
+        num: '20',
         start: newStartIndex.toString(),
         safe: 'active',
         alt: 'json'
@@ -79,7 +81,7 @@ export default function ImageSearchPage() {
       if (data.error) {
         console.error("API Error:", data.error);
         if (data.error.code === 403) {
-          setError("API key invalid or quota exceeded. Please check your API key.");
+          setError("API key invalid or quota exceeded.");
         } else if (data.error.code === 400) {
           setError("Invalid request. Please check your search terms.");
         } else {
@@ -91,6 +93,8 @@ export default function ImageSearchPage() {
 
       if (data.items && data.items.length > 0) {
         setImages(data.items);
+        // Generate suggestions based on search term
+        generateSuggestions(searchTerm);
       } else {
         setError("No images found. Try a different search term.");
         setImages([]);
@@ -104,6 +108,44 @@ export default function ImageSearchPage() {
     }
   };
 
+  const generateSuggestions = (term: string) => {
+    const lowerTerm = term.toLowerCase();
+    const suggestionMap: Record<string, string[]> = {
+      "bmw": ["BMW M3", "BMW M4", "BMW X5", "BMW i8", "BMW M5 Competition", "BMW 7 Series", "BMW Z4"],
+      "mercedes": ["Mercedes AMG", "Mercedes S-Class", "Mercedes G-Wagon", "Mercedes E-Class", "Mercedes C63"],
+      "audi": ["Audi R8", "Audi RS7", "Audi Q8", "Audi e-tron", "Audi TT"],
+      "porsche": ["Porsche 911", "Porsche Cayenne", "Porsche Taycan", "Porsche Panamera"],
+      "ferrari": ["Ferrari F40", "Ferrari LaFerrari", "Ferrari 488", "Ferrari SF90"],
+      "lamborghini": ["Lamborghini Aventador", "Lamborghini Huracan", "Lamborghini Urus"],
+      "nature": ["Mountain landscape", "Forest waterfall", "Ocean sunset", "Desert dunes", "Northern lights"],
+      "anime": ["Naruto", "Dragon Ball Z", "Attack on Titan", "Demon Slayer", "One Piece", "Jujutsu Kaisen"],
+      "cars": ["Sports car", "Luxury car", "Supercar", "Classic car", "Electric car"],
+      "dogs": ["Puppy", "Golden Retriever", "Husky", "German Shepherd", "Bulldog", "Poodle"],
+      "cats": ["Kitten", "Persian cat", "Siamese cat", "Maine Coon", "Bengal cat"],
+      "flowers": ["Rose", "Tulip", "Sunflower", "Orchid", "Lily", "Daisy"],
+      "mountains": ["Rocky Mountains", "Himalayas", "Alps", "Andes", "Mount Fuji"],
+      "beach": ["Maldives beach", "Hawaii beach", "Caribbean beach", "Australia beach"],
+      "space": ["Galaxy", "Nebula", "Planet Earth", "Black hole", "Astronaut", "Rocket launch"]
+    };
+
+    for (const [key, value] of Object.entries(suggestionMap)) {
+      if (lowerTerm.includes(key)) {
+        setSuggestions(value);
+        return;
+      }
+    }
+    
+    // Default suggestions
+    setSuggestions([
+      `${term} HD wallpaper`,
+      `${term} 4K`,
+      `${term} photography`,
+      `beautiful ${term}`,
+      `${term} art`,
+      `${term} background`
+    ]);
+  };
+
   const handleSearch = () => {
     setStartIndex(1);
     searchImages(1);
@@ -115,8 +157,13 @@ export default function ImageSearchPage() {
     }
   };
 
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setTimeout(() => searchImages(1, suggestion), 100);
+  };
+
   const loadMore = () => {
-    const nextPage = Math.floor(startIndex / 10) + 1;
+    const nextPage = Math.floor(startIndex / 20) + 1;
     searchImages(nextPage);
   };
 
@@ -159,72 +206,138 @@ export default function ImageSearchPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const popularSearches = [
-    "nature", "anime", "cars", "dogs", "cats", 
-    "flowers", "sunset", "mountains", "beach", "space"
+  const categoryIcons: Record<string, JSX.Element> = {
+    "bmw": <Car className="size-4" />,
+    "mercedes": <Car className="size-4" />,
+    "audi": <Car className="size-4" />,
+    "porsche": <Car className="size-4" />,
+    "ferrari": <Car className="size-4" />,
+    "lamborghini": <Car className="size-4" />,
+    "nature": <Mountain className="size-4" />,
+    "anime": <Sparkles className="size-4" />,
+    "cars": <Car className="size-4" />,
+    "dogs": <Dog className="size-4" />,
+    "cats": <Cat className="size-4" />,
+    "flowers": <Flower className="size-4" />,
+    "mountains": <Mountain className="size-4" />,
+    "beach": <Sun className="size-4" />,
+    "space": <Sparkles className="size-4" />
+  };
+
+  const quickSearches = [
+    { name: "BMW", icon: <Car className="size-4" />, query: "BMW M4" },
+    { name: "Mercedes", icon: <Car className="size-4" />, query: "Mercedes AMG" },
+    { name: "Nature", icon: <Mountain className="size-4" />, query: "nature landscape" },
+    { name: "Anime", icon: <Sparkles className="size-4" />, query: "anime art" },
+    { name: "Cars", icon: <Car className="size-4" />, query: "supercar" },
+    { name: "Dogs", icon: <Dog className="size-4" />, query: "cute dog" },
+    { name: "Cats", icon: <Cat className="size-4" />, query: "cute cat" },
+    { name: "Flowers", icon: <Flower className="size-4" />, query: "beautiful flowers" },
+    { name: "Mountains", icon: <Mountain className="size-4" />, query: "mountain view" },
+    { name: "Beach", icon: <Sun className="size-4" />, query: "beach sunset" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-6 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4">
-            ← Back to Home
-          </Link>
-          
-          <div className="text-center">
-            <div className="inline-flex p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-4">
-              <ImageIcon className="size-8 text-white" />
+        {/* Header - Small Njabulo Jb text */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm">
+              ← Back
+            </Link>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-muted-foreground">Powered by</span>
+              <span className="text-xs font-medium text-primary">Njabulo Jb</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Google Image Search
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Search millions of images using Google Custom Search API
-            </p>
           </div>
+        </div>
+
+        {/* Main Title - Small */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center gap-2 mb-2">
+            <Camera className="size-5 text-primary" />
+            <h1 className="text-xl font-semibold">Image Search</h1>
+          </div>
+          <p className="text-xs text-muted-foreground">Search any image - BMW, Nature, Anime, Cars & more</p>
+        </div>
+
+        {/* Quick Search Categories */}
+        <div className="flex flex-wrap gap-2 justify-center mb-6">
+          {quickSearches.map((item) => (
+            <button
+              key={item.name}
+              onClick={() => {
+                setSearchQuery(item.query);
+                setTimeout(() => searchImages(1, item.query), 100);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-muted hover:bg-accent rounded-full transition-colors"
+            >
+              {item.icon}
+              {item.name}
+            </button>
+          ))}
         </div>
 
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-6">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Search for images... (e.g., nature, anime, cars, dogs)"
-              className="w-full pl-12 pr-24 py-3 border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="Search images... (e.g., BMW M3, nature wallpaper, anime art)"
+              className="w-full pl-10 pr-24 py-2.5 text-sm border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
             >
               {loading ? <Loader2 className="size-4 animate-spin" /> : "Search"}
             </button>
           </div>
         </div>
 
-        {/* Popular Searches */}
-        {images.length === 0 && !loading && !error && (
+        {/* Suggestions */}
+        {suggestions.length > 0 && images.length === 0 && !loading && !error && (
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="p-3 border rounded-xl bg-card/30">
+              <p className="text-xs text-muted-foreground mb-2">Try these searches:</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestions.map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-full transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Popular Searches (when no search) */}
+        {images.length === 0 && !loading && !error && !searchQuery && (
           <div className="max-w-4xl mx-auto mb-8">
             <div className="p-4 border rounded-xl bg-card/50">
               <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="size-5 text-orange-500" />
-                <h3 className="font-semibold">Popular Searches</h3>
+                <TrendingUp className="size-4 text-orange-500" />
+                <h3 className="text-sm font-semibold">Popular Searches</h3>
               </div>
               <div className="flex flex-wrap gap-2">
-                {popularSearches.map((term) => (
+                {["BMW M4", "Mercedes AMG", "Porsche 911", "Ferrari", "Lamborghini", "Nature", "Anime", "Cats", "Dogs", "Sunset", "Mountains", "Beach", "Space", "Flowers"].map((term) => (
                   <button
                     key={term}
                     onClick={() => {
                       setSearchQuery(term);
-                      setTimeout(() => handleSearch(), 100);
+                      setTimeout(() => searchImages(1, term), 100);
                     }}
-                    className="px-3 py-1.5 text-sm bg-muted hover:bg-accent rounded-full transition-colors"
+                    className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-full transition-colors"
                   >
                     {term}
                   </button>
@@ -240,58 +353,54 @@ export default function ImageSearchPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-colors ${viewMode === "grid" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
+                className={`p-1.5 rounded-lg transition-colors ${viewMode === "grid" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
               >
                 <Grid3x3 className="size-4" />
               </button>
               <button
                 onClick={() => setViewMode("masonry")}
-                className={`p-2 rounded-lg transition-colors ${viewMode === "masonry" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
+                className={`p-1.5 rounded-lg transition-colors ${viewMode === "masonry" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-accent"}`}
               >
                 <LayoutGrid className="size-4" />
               </button>
             </div>
-            <div className="text-sm text-muted-foreground">
-              Found {images.length} images for "{searchQuery}"
+            <div className="text-xs text-muted-foreground">
+              {images.length} images for "{searchQuery}"
             </div>
           </div>
         )}
 
         {/* Loading State */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="size-12 animate-spin text-primary mb-4" />
-            <p className="text-muted-foreground">Searching Google Images...</p>
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="size-8 animate-spin text-primary mb-3" />
+            <p className="text-sm text-muted-foreground">Searching for {searchQuery}...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && (
           <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
-            <AlertCircle className="size-12 text-red-500 mx-auto mb-3" />
-            <p className="text-red-600">{error}</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              Note: Google Custom Search API requires a valid API key and Search Engine ID.
-              Make sure you have enabled the API in Google Cloud Console.
-            </p>
+            <AlertCircle className="size-10 text-red-500 mx-auto mb-3" />
+            <p className="text-sm text-red-600">{error}</p>
             <div className="flex gap-2 justify-center mt-3">
               <button
                 onClick={() => {
-                  setSearchQuery("nature");
-                  setTimeout(() => handleSearch(), 100);
+                  setSearchQuery("BMW M4");
+                  setTimeout(() => searchImages(1, "BMW M4"), 100);
                 }}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg"
+                className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg"
               >
-                Try "nature"
+                Try "BMW M4"
               </button>
               <button
                 onClick={() => {
-                  setSearchQuery("anime");
-                  setTimeout(() => handleSearch(), 100);
+                  setSearchQuery("nature");
+                  setTimeout(() => searchImages(1, "nature"), 100);
                 }}
-                className="px-4 py-2 border rounded-lg hover:bg-accent"
+                className="px-3 py-1.5 text-sm border rounded-lg hover:bg-accent"
               >
-                Try "anime"
+                Try "nature"
               </button>
             </div>
           </div>
@@ -301,15 +410,14 @@ export default function ImageSearchPage() {
         {!loading && images.length > 0 && (
           <>
             <div className={viewMode === "grid" 
-              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" 
-              : "columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4"
+              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" 
+              : "columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3"
             }>
               {images.map((image, index) => (
                 <div
                   key={`${image.link}-${index}`}
-                  className="group relative overflow-hidden rounded-xl bg-card border hover:shadow-xl transition-all duration-300 break-inside-avoid"
+                  className="group relative overflow-hidden rounded-lg bg-card border hover:shadow-lg transition-all duration-300 break-inside-avoid"
                 >
-                  {/* Image */}
                   <div 
                     className="relative cursor-pointer overflow-hidden"
                     onClick={() => setSelectedImage(image)}
@@ -320,37 +428,35 @@ export default function ImageSearchPage() {
                       className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
                       loading="lazy"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400/e2e8f0/64748b?text=Image+Not+Found";
+                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400/e2e8f0/64748b?text=No+Image";
                       }}
                     />
-                    {/* Source Badge */}
-                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/50 text-white text-[10px] rounded-full">
+                    <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-black/50 text-white text-[9px] rounded-full">
                       {image.displayLink}
                     </div>
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-1.5">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           downloadImage(image.link, image.title);
                         }}
-                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors"
                         title="Download"
                       >
-                        <Download className="size-4 text-gray-800" />
+                        <Download className="size-3 text-gray-800" />
                       </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleLike(image);
                         }}
-                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors"
                         title={isLiked(image.link) ? "Unlike" : "Like"}
                       >
                         {isLiked(image.link) ? (
-                          <Heart className="size-4 text-red-500 fill-red-500" />
+                          <Heart className="size-3 text-red-500 fill-red-500" />
                         ) : (
-                          <Heart className="size-4 text-gray-800" />
+                          <Heart className="size-3 text-gray-800" />
                         )}
                       </button>
                       <button
@@ -358,57 +464,32 @@ export default function ImageSearchPage() {
                           e.stopPropagation();
                           copyToClipboard(image.link);
                         }}
-                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                        className="p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors"
                         title="Copy Link"
                       >
-                        {copied ? <Check className="size-4 text-green-500" /> : <Copy className="size-4 text-gray-800" />}
+                        {copied ? <Check className="size-3 text-green-500" /> : <Copy className="size-3 text-gray-800" />}
                       </button>
-                      <a
-                        href={image.image?.contextLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
-                        title="View Source"
-                      >
-                        <ExternalLink className="size-4 text-gray-800" />
-                      </a>
                     </div>
                   </div>
-                  
-                  {/* Image Info */}
-                  <div className="p-2">
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {image.snippet || image.title}
+                  <div className="p-1.5">
+                    <p className="text-xs text-muted-foreground line-clamp-1">
+                      {image.snippet?.substring(0, 60) || image.title?.substring(0, 60)}
                     </p>
-                    <div className="flex items-center justify-between mt-1">
-                      <span className="text-[10px] text-muted-foreground">{image.displayLink}</span>
-                      <button
-                        onClick={() => toggleLike(image)}
-                        className="p-1"
-                      >
-                        {isLiked(image.link) ? (
-                          <Heart className="size-3 text-red-500 fill-red-500" />
-                        ) : (
-                          <Heart className="size-3 text-muted-foreground hover:text-red-500 transition-colors" />
-                        )}
-                      </button>
-                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Load More Button */}
-            {images.length >= 10 && (
-              <div className="text-center mt-8">
+            {images.length >= 20 && (
+              <div className="text-center mt-6">
                 <button
                   onClick={loadMore}
                   disabled={loading}
-                  className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                  className="px-4 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
                 >
-                  {loading ? <Loader2 className="size-4 animate-spin inline mr-2" /> : null}
-                  Load More Images
+                  {loading ? <Loader2 className="size-3 animate-spin inline mr-1" /> : null}
+                  Load More
                 </button>
               </div>
             )}
@@ -417,17 +498,17 @@ export default function ImageSearchPage() {
 
         {/* Liked Images Section */}
         {likedImages.length > 0 && (
-          <div className="mt-8 p-4 border rounded-xl bg-card/30">
-            <div className="flex items-center gap-2 mb-4">
-              <Heart className="size-5 text-red-500 fill-red-500" />
-              <h2 className="text-lg font-semibold">Your Liked Images</h2>
+          <div className="mt-6 p-3 border rounded-xl bg-card/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Heart className="size-4 text-red-500 fill-red-500" />
+              <h2 className="text-sm font-semibold">Liked Images</h2>
               <span className="text-xs text-muted-foreground">({likedImages.length})</span>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="flex gap-2 overflow-x-auto pb-2">
               {likedImages.map((liked, idx) => (
                 <div 
                   key={idx} 
-                  className="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer group"
+                  className="relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden cursor-pointer group"
                   onClick={() => {
                     const fullImage = { link: liked.link, title: liked.title, snippet: liked.snippet, displayLink: "", image: { contextLink: "", height: 0, width: 0 } };
                     setSelectedImage(fullImage);
@@ -446,9 +527,9 @@ export default function ImageSearchPage() {
                       e.stopPropagation();
                       setLikedImages(likedImages.filter(l => l.link !== liked.link));
                     }}
-                    className="absolute top-1 right-1 p-0.5 bg-red-500 rounded-full text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-0.5 right-0.5 p-0.5 bg-red-500 rounded-full text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <HeartOff className="size-3" />
+                    <HeartOff className="size-2" />
                   </button>
                 </div>
               ))}
@@ -459,12 +540,12 @@ export default function ImageSearchPage() {
         {/* Image Modal */}
         {selectedImage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm" onClick={() => setSelectedImage(null)}>
-            <div className="relative max-w-5xl max-h-[90vh] p-4" onClick={(e) => e.stopPropagation()}>
+            <div className="relative max-w-4xl max-h-[90vh] p-4" onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={() => setSelectedImage(null)}
-                className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300"
+                className="absolute -top-10 right-0 p-1 text-white hover:text-gray-300"
               >
-                <X className="size-6" />
+                <X className="size-5" />
               </button>
               <img
                 src={selectedImage.link}
@@ -474,52 +555,32 @@ export default function ImageSearchPage() {
                   (e.target as HTMLImageElement).src = "https://placehold.co/800x600/e2e8f0/64748b?text=Image+Not+Found";
                 }}
               />
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg">
+              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent rounded-b-lg">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div>
-                    <p className="text-white text-sm">{selectedImage.snippet || selectedImage.title}</p>
-                    <p className="text-white/60 text-xs">{selectedImage.displayLink}</p>
-                  </div>
-                  <div className="flex gap-2">
+                  <p className="text-white text-xs">{selectedImage.snippet?.substring(0, 100) || selectedImage.title}</p>
+                  <div className="flex gap-1.5">
                     <button
                       onClick={() => downloadImage(selectedImage.link, selectedImage.title)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 text-sm"
+                      className="p-1.5 bg-white rounded-lg hover:bg-gray-100"
                     >
-                      <Download className="size-4" />
-                      Download
+                      <Download className="size-3" />
                     </button>
                     <button
                       onClick={() => toggleLike(selectedImage)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 text-sm"
+                      className="p-1.5 bg-white rounded-lg hover:bg-gray-100"
                     >
                       {isLiked(selectedImage.link) ? (
-                        <>
-                          <Heart className="size-4 text-red-500 fill-red-500" />
-                          Liked
-                        </>
+                        <Heart className="size-3 text-red-500 fill-red-500" />
                       ) : (
-                        <>
-                          <Heart className="size-4" />
-                          Like
-                        </>
+                        <Heart className="size-3" />
                       )}
                     </button>
                     <button
                       onClick={() => copyToClipboard(selectedImage.link)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 text-sm"
+                      className="p-1.5 bg-white rounded-lg hover:bg-gray-100"
                     >
-                      {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-                      Copy Link
+                      {copied ? <Check className="size-3 text-green-500" /> : <Copy className="size-3" />}
                     </button>
-                    <a
-                      href={selectedImage.image?.contextLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 text-sm"
-                    >
-                      <ExternalLink className="size-4" />
-                      Source
-                    </a>
                   </div>
                 </div>
               </div>
@@ -528,9 +589,9 @@ export default function ImageSearchPage() {
         )}
 
         {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-border text-center">
-          <p className="text-xs text-muted-foreground">
-            Powered by Google Custom Search API | © 2026 Njabulo-Jb Image Search
+        <div className="mt-6 pt-4 border-t border-border text-center">
+          <p className="text-[10px] text-muted-foreground">
+            © 2026 Njabulo-Jb Image Search | Powered by Google Custom Search
           </p>
         </div>
       </div>
