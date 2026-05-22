@@ -13,6 +13,9 @@ import {
 const GCSE_KEY = 'AIzaSyDMbI3nvmQUrfjoCJYLS69Lej1hSXQjnWI';
 const GCSE_CX = 'baf9bdb0c631236e5';
 
+// Images per page
+const IMAGES_PER_PAGE = 100; // Show 100 images per page
+
 type ImageResult = {
   link: string;
   title: string;
@@ -33,62 +36,82 @@ type LikedImage = {
 };
 
 // Fallback images when API fails
-const getFallbackImages = (query: string) => {
+const getFallbackImages = (query: string, count: number = 100) => {
   const imageMap: Record<string, string[]> = {
     "bmw": [
-      "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800",
-      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800",
-      "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=800"
+      "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600",
+      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600",
+      "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=600",
+      "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?w=600",
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600",
+      "https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?w=600"
     ],
     "mercedes": [
-      "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d5?w=800",
-      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800"
+      "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d5?w=600",
+      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600",
+      "https://images.unsplash.com/photo-1620106390902-32d8a5de4f0c?w=600",
+      "https://images.unsplash.com/photo-1592160543405-61d2ab96c1bb?w=600"
     ],
     "nature": [
-      "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800",
-      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800",
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
+      "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600",
+      "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=600"
     ],
     "anime": [
-      "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800",
-      "https://images.unsplash.com/photo-1541562232579-512a21360020?w=800"
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600",
+      "https://images.unsplash.com/photo-1541562232579-512a21360020?w=600",
+      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600"
     ],
     "cars": [
-      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800",
-      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800"
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600",
+      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600",
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600",
+      "https://images.unsplash.com/photo-1542362567-b07e54358753?w=600"
     ],
     "dogs": [
-      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800",
-      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800"
+      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600",
+      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600",
+      "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=600"
     ],
     "cats": [
-      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800",
-      "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800"
+      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600",
+      "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600",
+      "https://images.unsplash.com/photo-1577023311546-cdc077a0c4c4?w=600"
     ]
   };
 
   const lowerQuery = query.toLowerCase();
   for (const [key, images] of Object.entries(imageMap)) {
     if (lowerQuery.includes(key)) {
-      return images.map((url, i) => ({
-        link: url,
-        title: `${query} image ${i + 1}`,
-        snippet: `Beautiful ${query} image`,
-        displayLink: "unsplash.com",
-        image: { contextLink: url, height: 600, width: 800 }
-      }));
+      // Repeat images to reach desired count
+      const repeatedImages = [];
+      for (let i = 0; i < count; i++) {
+        repeatedImages.push({
+          link: images[i % images.length],
+          title: `${query} image ${i + 1}`,
+          snippet: `Beautiful ${query} image`,
+          displayLink: "unsplash.com",
+          image: { contextLink: "", height: 600, width: 800 }
+        });
+      }
+      return repeatedImages.slice(0, count);
     }
   }
   
-  return [
-    {
-      link: `https://picsum.photos/id/${Math.floor(Math.random() * 200)}/800/600`,
-      title: `${query} image`,
+  // Default fallback with many images
+  const defaultImages = [];
+  for (let i = 1; i <= Math.min(count, 100); i++) {
+    defaultImages.push({
+      link: `https://picsum.photos/id/${(i * 7) % 200}/600/400`,
+      title: `${query} image ${i}`,
       snippet: `Random image for ${query}`,
       displayLink: "picsum.photos",
-      image: { contextLink: "", height: 600, width: 800 }
-    }
-  ];
+      image: { contextLink: "", height: 400, width: 600 }
+    });
+  }
+  return defaultImages;
 };
 
 export default function ImageSearchPage() {
@@ -104,8 +127,9 @@ export default function ImageSearchPage() {
   const [startIndex, setStartIndex] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [useFallback, setUseFallback] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const searchImages = async (newStartIndex: number = 1) => {
+  const searchImages = async (page: number = 1) => {
     if (!searchQuery.trim()) {
       setError("Please enter a search term");
       return;
@@ -114,56 +138,75 @@ export default function ImageSearchPage() {
     setLoading(true);
     setError(null);
     setUseFallback(false);
+    setCurrentPage(page);
+    
+    const newStartIndex = (page - 1) * IMAGES_PER_PAGE + 1;
     setStartIndex(newStartIndex);
 
     // Add to search history
-    if (newStartIndex === 1 && !searchHistory.includes(searchQuery.trim())) {
+    if (page === 1 && !searchHistory.includes(searchQuery.trim())) {
       setSearchHistory(prev => [searchQuery.trim(), ...prev].slice(0, 10));
     }
 
     try {
-      const params = new URLSearchParams({
-        key: GCSE_KEY,
-        cx: GCSE_CX,
-        q: searchQuery,
-        searchType: 'image',
-        num: '20',
-        start: newStartIndex.toString(),
-        safe: 'active',
-        alt: 'json'
-      });
+      // Google API max is 10 per request, so we need multiple requests
+      const numRequests = Math.ceil(IMAGES_PER_PAGE / 10);
+      let allItems: ImageResult[] = [];
+      
+      for (let i = 0; i < numRequests; i++) {
+        const requestStart = newStartIndex + (i * 10);
+        
+        const params = new URLSearchParams({
+          key: GCSE_KEY,
+          cx: GCSE_CX,
+          q: searchQuery,
+          searchType: 'image',
+          num: '10',
+          start: requestStart.toString(),
+          safe: 'active',
+          alt: 'json'
+        });
 
-      const response = await fetch(`https://www.googleapis.com/customsearch/v1?${params.toString()}`);
-      const data = await response.json();
+        const response = await fetch(`https://www.googleapis.com/customsearch/v1?${params.toString()}`);
+        const data = await response.json();
 
-      if (data.error) {
-        console.error("API Error:", data.error);
-        setUseFallback(true);
-        const fallbackImages = getFallbackImages(searchQuery);
-        setImages(fallbackImages);
-        setTotalResults(0);
-        setLoading(false);
-        return;
+        if (data.error) {
+          console.error("API Error:", data.error);
+          // Use fallback images
+          setUseFallback(true);
+          const fallbackImages = getFallbackImages(searchQuery, IMAGES_PER_PAGE);
+          setImages(fallbackImages);
+          setTotalResults(0);
+          setLoading(false);
+          return;
+        }
+
+        if (data.items && data.items.length > 0) {
+          allItems = [...allItems, ...data.items];
+          if (data.queries?.request?.[0]?.totalResults) {
+            setTotalResults(parseInt(data.queries.request[0].totalResults));
+          }
+        }
       }
 
-      if (data.items && data.items.length > 0) {
-        setImages(data.items);
-        setTotalResults(parseInt(data.queries?.request?.[0]?.totalResults || "0"));
+      if (allItems.length > 0) {
+        setImages(allItems.slice(0, IMAGES_PER_PAGE));
       } else {
         setError("No images found. Try a different search term.");
         setImages([]);
       }
     } catch (err) {
       console.error("Search error:", err);
-      setError("Failed to connect. Please try again.");
-      setImages([]);
+      setUseFallback(true);
+      const fallbackImages = getFallbackImages(searchQuery, IMAGES_PER_PAGE);
+      setImages(fallbackImages);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSearch = () => {
-    setStartIndex(1);
+    setCurrentPage(1);
     searchImages(1);
   };
 
@@ -174,17 +217,22 @@ export default function ImageSearchPage() {
   };
 
   const nextPage = () => {
-    const nextStart = startIndex + 20;
-    searchImages(nextStart);
+    const nextPageNum = currentPage + 1;
+    searchImages(nextPageNum);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const prevPage = () => {
-    if (startIndex > 1) {
-      const prevStart = startIndex - 20;
-      searchImages(prevStart);
+    if (currentPage > 1) {
+      const prevPageNum = currentPage - 1;
+      searchImages(prevPageNum);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  };
+
+  const goToPage = (page: number) => {
+    searchImages(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const downloadImage = async (url: string, title: string) => {
@@ -239,8 +287,21 @@ export default function ImageSearchPage() {
     { name: "Beach", query: "beach sunset" },
   ];
 
-  const currentPage = Math.floor(startIndex / 20) + 1;
-  const totalPages = Math.ceil(totalResults / 20);
+  const totalPages = Math.ceil(totalResults / IMAGES_PER_PAGE);
+  const maxVisiblePages = 5;
+  
+  const getPageNumbers = () => {
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-6 px-4">
@@ -309,7 +370,7 @@ export default function ImageSearchPage() {
         {useFallback && images.length > 0 && (
           <div className="max-w-2xl mx-auto mb-4 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-center">
             <p className="text-xs text-yellow-600">
-              ⚡ Using demo images (Google API quota exceeded)
+              📸 Showing {images.length} sample images (Demo mode)
             </p>
           </div>
         )}
@@ -332,28 +393,8 @@ export default function ImageSearchPage() {
               </button>
             </div>
             <div className="text-xs text-muted-foreground">
-              {images.length} images for "{searchQuery}"
+              Showing {images.length} images for "{searchQuery}"
               {totalResults > 0 && ` (${totalResults.toLocaleString()} total)`}
-            </div>
-            {/* Pagination Controls */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={prevPage}
-                disabled={startIndex <= 1}
-                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="size-4" />
-              </button>
-              <span className="text-xs text-muted-foreground">
-                Page {currentPage} {totalPages > 0 && `of ${totalPages}`}
-              </span>
-              <button
-                onClick={nextPage}
-                disabled={totalResults > 0 && startIndex + 20 > totalResults}
-                className="p-1.5 rounded-lg border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="size-4" />
-              </button>
             </div>
           </div>
         )}
@@ -363,6 +404,7 @@ export default function ImageSearchPage() {
           <div className="flex flex-col items-center justify-center py-16">
             <Loader2 className="size-8 animate-spin text-primary mb-3" />
             <p className="text-sm text-muted-foreground">Searching for {searchQuery}...</p>
+            <p className="text-xs text-muted-foreground mt-1">Loading {IMAGES_PER_PAGE} images...</p>
           </div>
         )}
 
@@ -409,12 +451,12 @@ export default function ImageSearchPage() {
           </div>
         )}
 
-        {/* Image Grid */}
+        {/* Image Grid - Shows up to 100 images */}
         {!loading && images.length > 0 && (
           <>
             <div className={viewMode === "grid" 
-              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" 
-              : "columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3"
+              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" 
+              : "columns-2 md:columns-3 lg:columns-5 gap-3 space-y-3"
             }>
               {images.map((image, index) => (
                 <div
@@ -483,28 +525,49 @@ export default function ImageSearchPage() {
               ))}
             </div>
 
-            {/* Bottom Pagination */}
-            {(totalPages > 1 || images.length >= 20) && (
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <button
-                  onClick={prevPage}
-                  disabled={startIndex <= 1}
-                  className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                >
-                  <ChevronLeft className="size-4" />
-                  Previous
-                </button>
-                <span className="text-sm text-muted-foreground">
-                  Page {currentPage} {totalPages > 0 && `of ${totalPages}`}
-                </span>
-                <button
-                  onClick={nextPage}
-                  disabled={totalResults > 0 && startIndex + 20 > totalResults}
-                  className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                >
-                  Next
-                  <ChevronRight className="size-4" />
-                </button>
+            {/* Pagination Controls */}
+            {(totalPages > 1 || images.length >= IMAGES_PER_PAGE) && (
+              <div className="flex flex-col items-center gap-3 mt-6">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={prevPage}
+                    disabled={currentPage <= 1}
+                    className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  >
+                    <ChevronLeft className="size-4" />
+                    Previous
+                  </button>
+                  
+                  {/* Page Numbers */}
+                  <div className="flex items-center gap-1">
+                    {getPageNumbers().map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => goToPage(page)}
+                        className={`w-8 h-8 rounded-lg text-sm transition-colors ${
+                          currentPage === page
+                            ? "bg-primary text-primary-foreground"
+                            : "border hover:bg-accent"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={nextPage}
+                    disabled={totalResults > 0 && currentPage >= totalPages}
+                    className="flex items-center gap-1 px-3 py-1.5 border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  >
+                    Next
+                    <ChevronRight className="size-4" />
+                  </button>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Page {currentPage} of {totalPages || 1} | {images.length} images on this page
+                  {totalResults > 0 && ` | ${totalResults.toLocaleString()} total images`}
+                </div>
               </div>
             )}
           </>
@@ -519,7 +582,7 @@ export default function ImageSearchPage() {
               <span className="text-xs text-muted-foreground">({likedImages.length})</span>
             </div>
             <div className="flex gap-2 overflow-x-auto pb-2">
-              {likedImages.map((liked, idx) => (
+              {likedImages.slice(0, 20).map((liked, idx) => (
                 <div 
                   key={idx} 
                   className="relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden cursor-pointer group"
@@ -599,7 +662,7 @@ export default function ImageSearchPage() {
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-border text-center">
           <p className="text-[10px] text-muted-foreground">
-            © 2026 Njabulo-Jb Image Search | Powered by Google Custom Search
+            © 2026 Njabulo-Jb Image Search | Showing up to {IMAGES_PER_PAGE} images per page
           </p>
         </div>
       </div>
