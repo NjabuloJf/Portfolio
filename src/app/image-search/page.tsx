@@ -42,7 +42,6 @@ export default function ImageSearchPage() {
   const [copied, setCopied] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [startIndex, setStartIndex] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
 
   const searchImages = async (page: number = 1) => {
     if (!searchQuery.trim()) {
@@ -53,7 +52,7 @@ export default function ImageSearchPage() {
     setLoading(true);
     setError(null);
     
-    const newStartIndex = (page - 1) * 20 + 1;
+    const newStartIndex = (page - 1) * 10 + 1;
     setStartIndex(newStartIndex);
 
     // Add to search history
@@ -62,30 +61,43 @@ export default function ImageSearchPage() {
     }
 
     try {
-      // Using Google Custom Search API with proper parameters
-      const response = await fetch(
-        `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(searchQuery)}&key=${GCSE_KEY}&cx=${GCSE_CX}&searchType=image&num=20&start=${newStartIndex}&safe=active`
-      );
+      // Correct Google Custom Search API parameters
+      const params = new URLSearchParams({
+        key: GCSE_KEY,
+        cx: GCSE_CX,
+        q: searchQuery,
+        searchType: 'image',
+        num: '10',
+        start: newStartIndex.toString(),
+        safe: 'active',
+        alt: 'json'
+      });
 
+      const response = await fetch(`https://www.googleapis.com/customsearch/v1?${params.toString()}`);
       const data = await response.json();
 
       if (data.error) {
         console.error("API Error:", data.error);
-        setError(`API Error: ${data.error.message || "Please check API key"}`);
+        if (data.error.code === 403) {
+          setError("API key invalid or quota exceeded. Please check your API key.");
+        } else if (data.error.code === 400) {
+          setError("Invalid request. Please check your search terms.");
+        } else {
+          setError(`API Error: ${data.error.message || "Unknown error"}`);
+        }
         setImages([]);
         return;
       }
 
       if (data.items && data.items.length > 0) {
         setImages(data.items);
-        setTotalResults(parseInt(data.queries?.request?.[0]?.totalResults || "0"));
       } else {
         setError("No images found. Try a different search term.");
         setImages([]);
       }
     } catch (err) {
       console.error("Search error:", err);
-      setError("Failed to connect to Google API. Please check your API key.");
+      setError("Failed to connect to Google API. Please try again.");
       setImages([]);
     } finally {
       setLoading(false);
@@ -104,13 +116,12 @@ export default function ImageSearchPage() {
   };
 
   const loadMore = () => {
-    const nextPage = Math.floor(startIndex / 20) + 1;
+    const nextPage = Math.floor(startIndex / 10) + 1;
     searchImages(nextPage);
   };
 
   const downloadImage = async (url: string, title: string) => {
     try {
-      // Try to fetch and download
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
@@ -122,7 +133,6 @@ export default function ImageSearchPage() {
       document.body.removeChild(a);
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
-      // Fallback: open in new tab
       window.open(url, "_blank");
     }
   };
@@ -150,9 +160,8 @@ export default function ImageSearchPage() {
   };
 
   const popularSearches = [
-    "nature wallpaper", "anime art", "cars 4k", "cute dogs", 
-    "beautiful cats", "flowers garden", "sunset beach", "mountain view",
-    "space galaxy", "ocean waves", "forest trees", "birds flying"
+    "nature", "anime", "cars", "dogs", "cats", 
+    "flowers", "sunset", "mountains", "beach", "space"
   ];
 
   return (
@@ -186,7 +195,7 @@ export default function ImageSearchPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Search for images... (e.g., nature wallpaper, anime art, cars 4k)"
+              placeholder="Search for images... (e.g., nature, anime, cars, dogs)"
               className="w-full pl-12 pr-24 py-3 border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <button
@@ -243,8 +252,7 @@ export default function ImageSearchPage() {
               </button>
             </div>
             <div className="text-sm text-muted-foreground">
-              Found {totalResults.toLocaleString()} results for "{searchQuery}"
-              <span className="text-xs ml-2">(Page {Math.floor(startIndex / 20) + 1})</span>
+              Found {images.length} images for "{searchQuery}"
             </div>
           </div>
         )}
@@ -262,24 +270,28 @@ export default function ImageSearchPage() {
           <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
             <AlertCircle className="size-12 text-red-500 mx-auto mb-3" />
             <p className="text-red-600">{error}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Note: Google Custom Search API requires a valid API key and Search Engine ID.
+              Make sure you have enabled the API in Google Cloud Console.
+            </p>
             <div className="flex gap-2 justify-center mt-3">
               <button
                 onClick={() => {
-                  setSearchQuery("nature wallpaper");
+                  setSearchQuery("nature");
                   setTimeout(() => handleSearch(), 100);
                 }}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg"
               >
-                Try "nature wallpaper"
+                Try "nature"
               </button>
               <button
                 onClick={() => {
-                  setSearchQuery("anime art");
+                  setSearchQuery("anime");
                   setTimeout(() => handleSearch(), 100);
                 }}
                 className="px-4 py-2 border rounded-lg hover:bg-accent"
               >
-                Try "anime art"
+                Try "anime"
               </button>
             </div>
           </div>
@@ -388,7 +400,7 @@ export default function ImageSearchPage() {
             </div>
 
             {/* Load More Button */}
-            {images.length > 0 && totalResults > startIndex + 19 && (
+            {images.length >= 10 && (
               <div className="text-center mt-8">
                 <button
                   onClick={loadMore}
@@ -515,30 +527,6 @@ export default function ImageSearchPage() {
           </div>
         )}
 
-        {/* Search History */}
-        {searchHistory.length > 0 && images.length === 0 && !loading && !error && (
-          <div className="max-w-2xl mx-auto mt-6 p-4 border rounded-xl bg-card/30">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="size-4 text-muted-foreground" />
-              <h3 className="text-sm font-medium">Recent Searches</h3>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {searchHistory.map((term, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setSearchQuery(term);
-                    setTimeout(() => handleSearch(), 100);
-                  }}
-                  className="px-2 py-1 text-xs bg-muted hover:bg-accent rounded-full"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">
@@ -548,4 +536,4 @@ export default function ImageSearchPage() {
       </div>
     </div>
   );
-}
+  }
