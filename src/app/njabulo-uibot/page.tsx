@@ -32,6 +32,15 @@ type Chat = {
   updatedAt: Date;
 };
 
+// Helper component - renamed to avoid conflict
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
 export default function NjabuloUiBotPage() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
@@ -520,7 +529,7 @@ What specific help do you need? ✨`;
                 <div className="flex items-center gap-1">
                   <span className="text-sm font-medium">{DATA.name}</span>
                   <div className="bg-blue-500 rounded-full p-0.5">
-                    <Check className="size-2 text-white" />
+                    <CheckIcon className="size-2 text-white" />
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">UI Bot Developer</p>
@@ -668,14 +677,5 @@ What specific help do you need? ✨`;
       {/* Features Component */}
       <NjabuloUiFeatures />
     </div>
-  );
-}
-
-// Helper component for Check icon
-function Check({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-    </svg>
   );
   }
