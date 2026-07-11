@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -118,7 +118,7 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// Bottom Buttons Component
+// Bottom Buttons Component - UPDATED WITH DOWNLOAD APK
 function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   const scrollToProjects = () => {
     const projectsSection = document.getElementById("projects");
@@ -129,6 +129,7 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
 
   return (
     <div className="fixed bottom-32 right-8 z-50 flex flex-col gap-3">
+      {/* Music Button */}
       <button
         onClick={onOpenMusic}
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/40 hover:from-green-500/30 hover:to-emerald-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
@@ -138,6 +139,18 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
         <span className="text-sm font-medium text-green-600 hidden sm:inline">Music Player</span>
       </button>
       
+      {/* DOWNLOAD APK BUTTON - NEW */}
+      <a
+        href="/downloads/Njabulo-Jb.apk"
+        download
+        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/40 hover:from-blue-500/30 hover:to-purple-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
+        aria-label="Download APK"
+      >
+        <Smartphone className="size-5 text-blue-500 group-hover:scale-110 transition-transform" />
+        <span className="text-sm font-medium text-blue-600 hidden sm:inline">Download APK</span>
+      </a>
+      
+      {/* Projects Button */}
       <button
         onClick={scrollToProjects}
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-orange-500/20 border border-orange-500/40 hover:bg-orange-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
@@ -416,4 +429,4 @@ export default function Page() {
       )}
     </main>
   );
-}
+      }
