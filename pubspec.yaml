@@ -1,0 +1,29 @@
+name: Njabulo Jb
+description: "Njabulo Jb - WhatsApp Bot Developer App"
+publish_to: 'none'
+version: 2.1.0+3
+
+environment:
+  sdk: '>=3.2.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  video_player: ^2.8.2
+  http: ^1.2.0
+  chewie: ^1.5.0
+  animated_text_kit: ^4.2.2
+  wakelock: ^0.6.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/njabuloapk.png
+
