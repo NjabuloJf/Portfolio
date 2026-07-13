@@ -16,29 +16,26 @@ import {
   Volume2, VolumeX, Mic, MicOff, MonitorPlay, Radio, Waves,
   ArrowUp, ArrowDown, Minus, Plus, Maximize2, Minimize2,
   Square, Circle, AlertTriangle, Info, HelpCircle,
-  Rocket, Sparkles, Award as AwardIcon, Crown, Diamond,
-  Flame, Zap as ZapIcon, Brain, Cpu as CpuIcon,
-  Gauge, GaugeCircle, GaugeLow, GaugeMedium, GaugeHigh,
-  ChartLine, ChartBar, ChartScatter, ChartPie,
+  Rocket, Sparkles, Crown, Diamond, Flame, Zap as ZapIcon,
+  Brain, Cpu as CpuIcon, ChartLine, ChartBar, ChartScatter, ChartPie,
   Clock4, Clock8, Clock12, AlarmClock, Timer,
   Cloud, CloudRain, CloudSnow, CloudSun, CloudMoon,
-  Sun, Moon, Star as StarIcon, Heart, ThumbsUp,
-  ThumbsDown, MessageCircle, MessageSquare, Send,
-  MailPlus, PhoneCall, Video, Camera, Film,
-  Music, Headphones, Mic as MicIcon, Radio as RadioIcon,
+  Sun, Moon, Heart, ThumbsUp, ThumbsDown,
+  MessageCircle, MessageSquare, Send, MailPlus, PhoneCall,
+  Video, Camera, Film, Music, Headphones,
   Tv, Monitor, Smartphone, Tablet, Laptop,
   Watch, Glasses, Briefcase, ShoppingBag, Coffee,
   Book, BookOpen, GraduationCap, School, University,
   Building, Factory, Warehouse, Truck, Car, Bus,
   Train, Plane, Rocket as RocketIcon, Satellite,
-  Compass, Map, MapPin as MapPinIcon, Navigation,
-  Anchor, Ship, Sailboat, Waves as WavesIcon,
+  Compass, Map, Navigation, Anchor, Ship, Sailboat,
   Fish, Bird, Dog, Cat, Tree, Flower, Leaf,
   Mountain, Cloud as CloudIcon, Sun as SunIcon,
   Moon as MoonIcon, Star as StarIcon2, Heart as HeartIcon,
   Award as AwardIcon2, Trophy, Medal, Ribbon,
   Gift, Gem, Crown as CrownIcon, Diamond as DiamondIcon,
-  Sparkles as SparklesIcon, Zap as ZapIcon2
+  Sparkles as SparklesIcon, Zap as ZapIcon2,
+  Loader2
 } from "lucide-react";
 
 type Trade = {
@@ -169,13 +166,13 @@ export default function MT5Page() {
   ]);
 
   const [logs, setLogs] = useState<LogEntry[]>([
-    { id: "1", time: "14:32:15", message: "✅ Njabulo Trend Bot started successfully", type: "success" },
-    { id: "2", time: "14:30:22", message: "📈 BUY signal detected on EURUSD at 1.09845", type: "signal" },
-    { id: "3", time: "14:28:10", message: "🔄 Trailing Stop updated to 1.09750", type: "info" },
-    { id: "4", time: "14:25:33", message: "💰 Profit target reached on GBPUSD +$45.20", type: "success" },
-    { id: "5", time: "14:20:18", message: "⚠️ Stop Loss hit on XAUUSD -$22.10", type: "warning" },
-    { id: "6", time: "14:15:05", message: "❌ Connection lost to server, reconnecting...", type: "error" },
-    { id: "7", time: "14:10:00", message: "✅ Server reconnected successfully", type: "success" },
+    { id: "1", time: "14:32:15", message: "✓ Njabulo Trend Bot started successfully", type: "success" },
+    { id: "2", time: "14:30:22", message: "▲ BUY signal detected on EURUSD at 1.09845", type: "signal" },
+    { id: "3", time: "14:28:10", message: "⟳ Trailing Stop updated to 1.09750", type: "info" },
+    { id: "4", time: "14:25:33", message: "● Profit target reached on GBPUSD +$45.20", type: "success" },
+    { id: "5", time: "14:20:18", message: "⚠ Stop Loss hit on XAUUSD -$22.10", type: "warning" },
+    { id: "6", time: "14:15:05", message: "✕ Connection lost to server, reconnecting...", type: "error" },
+    { id: "7", time: "14:10:00", message: "✓ Server reconnected successfully", type: "success" },
   ]);
 
   const [trends, setTrends] = useState<TrendData[]>([
@@ -234,7 +231,7 @@ export default function MT5Page() {
     const log: LogEntry = {
       id: Date.now().toString(),
       time: new Date().toLocaleTimeString(),
-      message: newStatus ? "✅ Njabulo Trend Bot started successfully" : "⏹️ Njabulo Trend Bot stopped",
+      message: newStatus ? "✓ Njabulo Trend Bot started successfully" : "⏹ Njabulo Trend Bot stopped",
       type: newStatus ? "success" : "warning"
     };
     setLogs([log, ...logs]);
@@ -260,7 +257,6 @@ export default function MT5Page() {
         setShowImageUpload(false);
         addLog("📸 Chart screenshot uploaded successfully", "success");
         
-        // AI Analysis after upload
         setTimeout(() => {
           setIsAnalyzing(true);
           const insights = [
@@ -293,10 +289,10 @@ export default function MT5Page() {
     addLog("📊 Scanning all symbols for entry signals...", "info");
     
     setTimeout(() => {
-      addLog("✅ Signal detected on EURUSD - STRONG BUY", "signal");
-      addLog("✅ Signal detected on XAUUSD - BUY", "signal");
-      addLog("✅ Signal detected on GBPUSD - SELL", "signal");
-      addLog("💰 Trade executed on EURUSD at 1.09845", "success");
+      addLog("✓ Signal detected on EURUSD - STRONG BUY", "signal");
+      addLog("✓ Signal detected on XAUUSD - BUY", "signal");
+      addLog("✓ Signal detected on GBPUSD - SELL", "signal");
+      addLog("● Trade executed on EURUSD at 1.09845", "success");
       setIsAnalyzing(false);
     }, 3000);
   };
@@ -365,7 +361,6 @@ export default function MT5Page() {
           </div>
           
           <div className="flex items-center gap-2">
-            {/* Run Button */}
             <button onClick={runAnalysis} className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 text-sm">
               <Rocket className="size-4" /> Run
             </button>
@@ -706,7 +701,4 @@ export default function MT5Page() {
       </div>
     </div>
   );
-}
-
-// Missing imports
-import { Loader2 } from "lucide-react";
+  }
