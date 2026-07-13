@@ -268,6 +268,15 @@ int CountTrades()
   }
 
 //+------------------------------------------------------------------+
+//| Get Win Rate                                                     |
+//+------------------------------------------------------------------+
+double GetWinRate()
+  {
+   if(totalTrades == 0) return 0;
+   return NormalizeDouble((double)winCount / totalTrades * 100, 2);
+  }
+
+//+------------------------------------------------------------------+
 //| Deinitialization                                                 |
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
@@ -278,14 +287,5 @@ void OnDeinit(const int reason)
    Print("║           Win Rate: ", GetWinRate(), "%                       ║");
    Print("║           Total Profit: $", totalProfit, "                           ║");
    Print("╚═══════════════════════════════════════════════════════════════════╝");
-  }
-
-//+------------------------------------------------------------------+
-//| Get Win Rate                                                     |
-//+------------------------------------------------------------------+
-double GetWinRate()
-  {
-   if(totalTrades == 0) return 0;
-   return NormalizeDouble((double)winCount / totalTrades * 100, 2);
   }
 //+------------------------------------------------------------------+
