@@ -12,25 +12,22 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, X as CloseIcon } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
 const BLUR_FADE_DELAY = 0.04;
 
-// Loading Screen ONLY - No WhatsApp icon, just avatar
+// Loading Screen
 function LoadingScreen() {
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center">
       {/* Round Avatar with Verified Badge */}
       <div className="relative mb-4">
-        {/* Green Status Ring */}
         <div className="absolute -inset-1.5 rounded-full">
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse" />
           <div className="absolute inset-0 rounded-full bg-green-500/40 animate-ping" />
         </div>
-        
-        {/* Round Avatar Image */}
         <div className="relative rounded-full overflow-hidden">
           <div className="relative w-24 h-24 rounded-full overflow-hidden">
             <img 
@@ -39,16 +36,12 @@ function LoadingScreen() {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          
-          {/* Green Online Status Dot */}
           <div className="absolute bottom-1 right-1 z-10">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
               <div className="relative w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" />
             </div>
           </div>
-          
-          {/* Verified Badge on Avatar */}
           <div className="absolute -bottom-1 -right-1 z-20">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/40 blur-sm" />
@@ -59,28 +52,17 @@ function LoadingScreen() {
           </div>
         </div>
       </div>
-      
-      {/* Name with Verified Badge */}
       <div className="flex items-center gap-2 mb-2">
-        <h2 className="text-xl font-semibold text-foreground">
-          ɳʝαႦυʅσ
-        </h2>
+        <h2 className="text-xl font-semibold text-foreground">ɳʝαႦυʅσ</h2>
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
           <CheckCircle className="size-3 text-white" />
         </div>
-        <span className="text-[8px] font-medium text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded-full">
-          Meta Verified
-        </span>
+        <span className="text-[8px] font-medium text-blue-600 bg-blue-500/10 px-1.5 py-0.5 rounded-full">Meta Verified</span>
       </div>
-      
-      {/* Loading Text */}
       <p className="text-xs text-muted-foreground mb-4">Loading your dashboard...</p>
-      
-      {/* Green Loading Line */}
       <div className="w-48 h-1 bg-muted rounded-full overflow-hidden">
         <div className="h-full bg-green-500 rounded-full animate-loading-line" />
       </div>
-      
       <style jsx>{`
         @keyframes loading-line {
           0% { width: 0%; opacity: 1; }
@@ -118,7 +100,80 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// Bottom Buttons Component - UPDATED WITH DOWNLOAD APK
+// 🆕 Install App Notification Component
+function InstallAppNotification() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    // Check if it's a mobile device
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    if (/android/i.test(userAgent)) {
+      setIsMobile(true);
+    }
+
+    // Check if already installed (PWA)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      setIsVisible(false);
+    }
+
+    // Check if notification was dismissed
+    const dismissed = localStorage.getItem('install-notification-dismissed');
+    if (dismissed === 'true') {
+      setIsVisible(false);
+    }
+  }, []);
+
+  const handleDismiss = () => {
+    setIsVisible(false);
+    localStorage.setItem('install-notification-dismissed', 'true');
+  };
+
+  if (!isVisible || !isMobile || isInstalled) return null;
+
+  return (
+    <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-4 shadow-2xl border border-white/20">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+              <Smartphone className="size-6 text-white" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <h4 className="text-white font-semibold text-sm">Install Njabulo Jb App</h4>
+            <p className="text-white/80 text-xs mt-1">
+              Get the best experience with our Android app
+            </p>
+            <div className="flex gap-2 mt-2">
+              <a
+                href="/downloads/Njabulo-Jb.apk"
+                download
+                className="px-3 py-1.5 bg-white text-purple-600 rounded-lg text-xs font-medium hover:bg-white/90 transition-colors"
+              >
+                <Download className="size-3 inline mr-1" />
+                Download APK
+              </a>
+              <button
+                onClick={handleDismiss}
+                className="px-3 py-1.5 bg-white/20 text-white rounded-lg text-xs hover:bg-white/30 transition-colors"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+          <button onClick={handleDismiss} className="text-white/60 hover:text-white">
+            <CloseIcon className="size-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Bottom Buttons Component
 function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   const scrollToProjects = () => {
     const projectsSection = document.getElementById("projects");
@@ -128,7 +183,7 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   };
 
   return (
-    <div className="fixed bottom-32 right-8 z-50 flex flex-col gap-3">
+    <div className="fixed bottom-32 right-8 z-40 flex flex-col gap-3">
       {/* Music Button */}
       <button
         onClick={onOpenMusic}
@@ -139,7 +194,7 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
         <span className="text-sm font-medium text-green-600 hidden sm:inline">Music Player</span>
       </button>
       
-      {/* DOWNLOAD APK BUTTON - NEW */}
+      {/* Download APK Button */}
       <a
         href="/downloads/Njabulo-Jb.apk"
         download
@@ -201,7 +256,7 @@ function AvatarWithMetaBadge() {
   );
 }
 
-// Section Header with Verified Badge only (no avatar image)
+// Section Header with Verified Badge
 function SectionHeader({ title, id }: { title: string; id: string }) {
   return (
     <div className="flex items-center gap-2 mb-4">
@@ -209,40 +264,17 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
       <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
         <CheckCircle className="size-3.5 text-white" />
       </div>
-      <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
-        Meta Verified
-      </span>
+      <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">Meta Verified</span>
     </div>
   );
 }
 
-// 5 Images from public folder
 const carouselImages = [
-  {
-    src: "/images/image1.png",
-    alt: "Njabulo Jb Project 1",
-    link: "/business",
-  },
-  {
-    src: "/images/image2.png",
-    alt: "Njabulo Jb Project 2",
-    link: "https://github.com/NjabuloJf/Njabulo-Jb",
-  },
-  {
-    src: "images/image3.png",
-    alt: "Njabulo Jb Project 3",
-    link: "https://github.com/NjabuloJf/GWM-XMD",
-  },
-  {
-    src: "images/image4.png",
-    alt: "Njabulo Jb Project 4",
-    link: "https://t.me/njabulojbbot",
-  },
-  {
-    src: "images/image5.png",
-    alt: "Njabulo Jb Project 5",
-    link: "https://wa.me/27791234567",
-  },
+  { src: "/images/image1.png", alt: "Njabulo Jb Project 1", link: "/business" },
+  { src: "/images/image2.png", alt: "Njabulo Jb Project 2", link: "https://github.com/NjabuloJf/Njabulo-Jb" },
+  { src: "images/image3.png", alt: "Njabulo Jb Project 3", link: "https://github.com/NjabuloJf/GWM-XMD" },
+  { src: "images/image4.png", alt: "Njabulo Jb Project 4", link: "https://t.me/njabulojbbot" },
+  { src: "images/image5.png", alt: "Njabulo Jb Project 5", link: "https://wa.me/27791234567" },
 ];
 
 export default function Page() {
@@ -284,9 +316,7 @@ export default function Page() {
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full p-0.5 shadow-lg">
                   <CheckCircle className="size-3.5 md:size-4 text-white" />
                 </div>
-                <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
-                  Meta Verified
-                </span>
+                <span className="text-[10px] font-medium text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">Meta Verified</span>
               </div>
               <BlurFadeText
                 className="text-muted-foreground max-w-[600px] md:text-base lg:text-lg mt-2 text-left"
@@ -309,9 +339,7 @@ export default function Page() {
         <div className="container mx-auto px-4">
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
             <h2 className="text-xl font-bold text-center mb-3">ᴍʏ ᴘʀᴏᴊᴇᴄᴛs ɢᴀʟʟᴇʀʏ</h2>
-            <p className="text-center text-muted-foreground text-sm mb-5">
-              Click on any image to view the project
-            </p>
+            <p className="text-center text-muted-foreground text-sm mb-5">Click on any image to view the project</p>
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 2.5}>
             <ImageCarousel images={carouselImages} autoScrollInterval={4000} />
@@ -319,7 +347,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* About Section with Verified Badge only */}
+      {/* About Section */}
       <section id="about">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
@@ -333,7 +361,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Work Section with Verified Badge only */}
+      {/* Work Section */}
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-4">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
@@ -379,7 +407,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Skills Section with Verified Badge only */}
+      {/* Skills Section */}
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
@@ -398,7 +426,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Projects Section with Verified Badge only */}
+      {/* Projects Section */}
       <section id="projects">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
           <SectionHeader title="ᴘʀᴏᴊᴇᴄᴛs" id="projects" />
@@ -420,6 +448,9 @@ export default function Page() {
         </BlurFade>
       </section>
 
+      {/* 🆕 Install App Notification */}
+      <InstallAppNotification />
+
       <BottomButtons onOpenMusic={() => setIsMusicPlayerOpen(true)} />
 
       {searchQuery && (
@@ -429,4 +460,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+        }
