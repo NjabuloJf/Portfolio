@@ -139,7 +139,7 @@ class HomePage extends StatelessWidget {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
-                      _buildFeatureCard(Icons.whatsapp, 'WhatsApp Bot', 'Bot integration', Colors.green),
+                      _buildFeatureCard(Icons.chat, 'WhatsApp Bot', 'Bot integration', Colors.green),
                       _buildFeatureCard(Icons.code, 'Code Generator', 'Generate scripts', Colors.blue),
                       _buildFeatureCard(Icons.cloud_upload, 'Deployment', 'Deploy easily', Colors.orange),
                       _buildFeatureCard(Icons.security, 'Secure', 'Safe & private', Colors.purple),
