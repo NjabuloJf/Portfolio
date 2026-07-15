@@ -4,18 +4,16 @@ workflows:
     max_build_duration: 30
     instance_type: mac_mini_m1
     environment:
-      groups:
-        - flutter
       flutter: stable
       xcode: latest
     scripts:
+      - name: Delete old lock file
+        script: rm -f pubspec.lock
       - name: Get Flutter packages
         script: flutter pub get
       - name: Build Android APK
-        script: flutter build apk --release
+        script: |
+          flutter build apk --release
+          cp build/app/outputs/flutter-apk/app-release.apk Njabulo-Jb.apk
     artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
-    publishing:
-      email:
-        recipients:
-          - your-email@example.com
+      - Njabulo-Jb.apk
