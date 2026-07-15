@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,50 +22,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  late VideoPlayerController _videoController;
-  ChewieController? _chewieController;
-
-  @override
-  void initState() {
-    super.initState();
-    
-    // Initialize video player
-    _videoController = VideoPlayerController.networkUrl(
-      Uri.parse('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'),
-    );
-    _chewieController = ChewieController(
-      videoPlayerController: _videoController,
-      autoPlay: false,
-      looping: true,
-      materialProgressColors: ChewieProgressColors(
-        playedColor: Colors.purple,
-        handleColor: Colors.pink,
-        backgroundColor: Colors.grey,
-        bufferedColor: Colors.lightGreen,
-      ),
-      placeholder: Container(
-        color: Colors.grey[900],
-        child: const Center(
-          child: CircularProgressIndicator(color: Colors.purple),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _videoController.dispose();
-    _chewieController?.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +37,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
-            onPressed: () {
-              // Open download page
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -92,7 +46,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // App Logo Image
+            // App Logo
             Container(
               width: 120,
               height: 120,
@@ -168,7 +122,7 @@ class _HomePageState extends State<HomePage> {
             
             const SizedBox(height: 8),
             
-            // Description Animation
+            // Animated Text
             AnimatedTextKit(
               animatedTexts: [
                 TypewriterAnimatedText(
@@ -201,7 +155,7 @@ class _HomePageState extends State<HomePage> {
             
             const SizedBox(height: 24),
             
-            // Features Grid
+            // Features
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -225,62 +179,15 @@ class _HomePageState extends State<HomePage> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
-                      _buildFeatureCard(
-                        Icons.whatsapp, 
-                        'WhatsApp Bot', 
-                        'Bot integration',
-                        Colors.green,
-                      ),
-                      _buildFeatureCard(
-                        Icons.code, 
-                        'Code Generator', 
-                        'Generate scripts',
-                        Colors.blue,
-                      ),
-                      _buildFeatureCard(
-                        Icons.cloud_upload, 
-                        'Deployment', 
-                        'Deploy easily',
-                        Colors.orange,
-                      ),
-                      _buildFeatureCard(
-                        Icons.security, 
-                        'Secure', 
-                        'Safe & private',
-                        Colors.purple,
-                      ),
-                      _buildFeatureCard(
-                        Icons.download, 
-                        'Offline Mode', 
-                        'Works offline',
-                        Colors.teal,
-                      ),
-                      _buildFeatureCard(
-                        Icons.star, 
-                        'Premium', 
-                        'All features',
-                        Colors.amber,
-                      ),
+                      _buildFeatureCard(Icons.whatsapp, 'WhatsApp Bot', 'Bot integration', Colors.green),
+                      _buildFeatureCard(Icons.code, 'Code Generator', 'Generate scripts', Colors.blue),
+                      _buildFeatureCard(Icons.cloud_upload, 'Deployment', 'Deploy easily', Colors.orange),
+                      _buildFeatureCard(Icons.security, 'Secure', 'Safe & private', Colors.purple),
+                      _buildFeatureCard(Icons.download, 'Offline Mode', 'Works offline', Colors.teal),
+                      _buildFeatureCard(Icons.star, 'Premium', 'All features', Colors.amber),
                     ],
                   ),
                 ],
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Video Player
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.black,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Chewie(controller: _chewieController!),
-                ),
               ),
             ),
             
@@ -290,9 +197,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  // Open download page
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
                   foregroundColor: Colors.white,
@@ -315,7 +220,7 @@ class _HomePageState extends State<HomePage> {
             
             const SizedBox(height: 12),
             
-            // Info Text
+            // Info
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
