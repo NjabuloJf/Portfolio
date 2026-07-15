@@ -10,9 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  video_player: ^2.8.3
   http: ^1.2.0
-  chewie: ^1.7.0  # ← Downgraded from 1.8.7
   animated_text_kit: ^4.2.2
 
 dev_dependencies:
