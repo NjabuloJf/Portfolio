@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 30
     instance_type: mac_mini_m1
     environment:
-      flutter: 3.16.0  # ← Use a version with Dart 3.4+
+      flutter: 3.16.0
       xcode: latest
     scripts:
       - name: Delete old lock file
