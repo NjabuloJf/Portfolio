@@ -9,29 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
-  # UI Icons
   cupertino_icons: ^1.0.8
-  
-  # Video Player
   video_player: ^2.8.3
-  
-  # HTTP Requests
   http: ^1.2.0
-  
-  # Video Player with controls (Use older version that works)
-  chewie: ^1.5.0
-  
-  # Animated Text
+  chewie: ^1.7.5
   animated_text_kit: ^4.2.2
-  
-  # Keep screen awake (Use older version that works)
-  wakelock: ^0.5.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
   flutter_lints: ^4.0.0
 
 flutter:
