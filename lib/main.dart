@@ -40,10 +40,10 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Simple Icon (No image)
+              // App Icon
               Container(
-                width: 120,
-                height: 120,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Colors.purple, Colors.pink],
@@ -54,20 +54,24 @@ class HomePage extends StatelessWidget {
                 ),
                 child: const Icon(
                   Icons.android,
-                  size: 60,
+                  size: 50,
                   color: Colors.white,
                 ),
               ),
               const SizedBox(height: 20),
+              
+              // App Name
               const Text(
                 'Njabulo Jb',
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.purple,
                 ),
               ),
               const SizedBox(height: 8),
+              
+              // Version
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
@@ -84,6 +88,8 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
+              
+              // Description
               const Text(
                 'WhatsApp Bot Developer',
                 style: TextStyle(
@@ -91,41 +97,62 @@ class HomePage extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               const Text(
                 'Bot Scripts & Deployment',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Colors.grey,
                 ),
               ),
               const SizedBox(height: 30),
+              
+              // Features
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildChip('WhatsApp Bot', Colors.green),
+                  _buildChip('Code Generator', Colors.blue),
+                  _buildChip('Deployment', Colors.orange),
+                  _buildChip('Secure', Colors.purple),
+                  _buildChip('Offline', Colors.teal),
+                  _buildChip('Premium', Colors.amber),
+                ],
+              ),
+              const SizedBox(height: 30),
+              
+              // Download Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Show a message when pressed
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Download APK from website!'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Download APK', style: TextStyle(fontSize: 16)),
+                  child: const Text(
+                    'Download APK',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Android 5.0+ • No Root Required',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 30),
-              const Divider(),
-              const SizedBox(height: 10),
+              
+              // Footer
               const Text(
                 '© 2026 Njabulo Jb',
                 style: TextStyle(
@@ -135,6 +162,25 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChip(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          color: color,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
