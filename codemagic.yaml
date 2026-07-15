@@ -7,16 +7,7 @@ workflows:
       flutter: 3.16.0
       xcode: latest
     scripts:
-      - name: Delete all invalid files
-        script: |
-          find android -name "njabulo" -type f -delete
-      - name: Delete old lock file
-        script: rm -f pubspec.lock
-      - name: Clean dependencies
-        script: flutter clean
-      - name: Get Flutter packages
-        script: flutter pub get
-      - name: Build Android APK
+      - name: Build Release APK
         script: |
           flutter build apk --release
           cp build/app/outputs/flutter-apk/app-release.apk Njabulo-Jb.apk
