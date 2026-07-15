@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,16 +32,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late VideoPlayerController _videoController;
+  ChewieController? _chewieController;
+
   @override
   void initState() {
     super.initState();
-    // Keep screen awake
-    Wakelock.enable();
+    
+    // Initialize video player
+    _videoController = VideoPlayerController.networkUrl(
+      Uri.parse('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'),
+    );
+    _chewieController = ChewieController(
+      videoPlayerController: _videoController,
+      autoPlay: false,
+      looping: true,
+      materialProgressColors: ChewieProgressColors(
+        playedColor: Colors.purple,
+        handleColor: Colors.pink,
+        backgroundColor: Colors.grey,
+        bufferedColor: Colors.lightGreen,
+      ),
+      placeholder: Container(
+        color: Colors.grey[900],
+        child: const Center(
+          child: CircularProgressIndicator(color: Colors.purple),
+        ),
+      ),
+    );
   }
 
   @override
   void dispose() {
-    Wakelock.disable();
+    _videoController.dispose();
+    _chewieController?.dispose();
     super.dispose();
   }
 
@@ -53,6 +78,14 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () {
+              // Open download page
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -231,6 +264,23 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ],
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Video Player
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.black,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Chewie(controller: _chewieController!),
+                ),
               ),
             ),
             
