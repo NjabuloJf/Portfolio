@@ -1,22 +1,20 @@
 name: njabulo_jb
-description: "Njabulo Jb - WhatsApp Bot Developer App"
+description: "Njabulo Jb App"
 publish_to: 'none'
 version: 2.1.0+3
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'  # ← Changed from 3.4.0 to 3.2.0
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  http: ^1.2.0
-  animated_text_kit: ^4.2.2
+  cupertino_icons: ^1.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
