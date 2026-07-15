@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,12 +33,6 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -120,39 +113,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 8),
-            
-            // Animated Text
-            AnimatedTextKit(
-              animatedTexts: [
-                TypewriterAnimatedText(
-                  'WhatsApp Bot Developer',
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                  speed: const Duration(milliseconds: 50),
-                ),
-                TypewriterAnimatedText(
-                  'Bot Scripts & Deployment',
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                  speed: const Duration(milliseconds: 50),
-                ),
-                TypewriterAnimatedText(
-                  'Code Generator & Tools',
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                  speed: const Duration(milliseconds: 50),
-                ),
-              ],
-              totalRepeatCount: 1,
-            ),
-            
             const SizedBox(height: 24),
             
             // Features
@@ -165,7 +125,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 children: [
                   const Text(
-                    '✨ Features',
+                    'Features',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -229,7 +189,7 @@ class HomePage extends StatelessWidget {
                 border: Border.all(color: Colors.blue.withOpacity(0.1)),
               ),
               child: const Text(
-                '📱 Android 5.0+ • No Root Required • 18.5 MB',
+                'Android 5.0+ • No Root Required • 18.5 MB',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
@@ -252,7 +212,7 @@ class HomePage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const Text(
-              'Built with Flutter ❤️',
+              'Built with Flutter',
               style: TextStyle(
                 fontSize: 10,
                 color: Colors.grey,
