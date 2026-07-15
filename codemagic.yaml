@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 30
     instance_type: mac_mini_m1
     environment:
-      flutter: stable
+      flutter: 3.22.0
       xcode: latest
     scripts:
       - name: Delete old lock file
