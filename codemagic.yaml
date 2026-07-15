@@ -1,19 +1,27 @@
-workflows:
-  njabulo-app:
-    name: Njabulo Jb App
-    max_build_duration: 30
-    instance_type: mac_mini_m1
-    environment:
-      flutter: 3.22.0
-      xcode: latest
-    scripts:
-      - name: Delete old lock file
-        script: rm -f pubspec.lock
-      - name: Get Flutter packages
-        script: flutter pub get
-      - name: Build Android APK
-        script: |
-          flutter build apk --release
-          cp build/app/outputs/flutter-apk/app-release.apk Njabulo-Jb.apk
-    artifacts:
-      - Njabulo-Jb.apk
+name: njabulo_jb
+description: "Njabulo Jb - WhatsApp Bot Developer App"
+publish_to: 'none'
+version: 2.1.0+3
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  video_player: ^2.8.3
+  http: ^1.2.0
+  chewie: ^1.7.0  # ← Downgraded from 1.8.7
+  animated_text_kit: ^4.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/njabuloapk.png
