@@ -93,13 +93,13 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Notification Ads Component - With Random Reappear Timing
+// 🆕 Notification Ads Component - With Countdown Timer & All Ads Rotating
 function NotificationAds() {
-  const [activeAd, setActiveAd] = useState<number | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [dismissedAds, setDismissedAds] = useState<number[]>([]);
+  const [activeAdIndex, setActiveAdIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [reappearTimers, setReappearTimers] = useState<NodeJS.Timeout[]>([]);
+  const [countdown, setCountdown] = useState(0);
+  const [isCountdownActive, setIsCountdownActive] = useState(false);
 
   const ads = [
     {
@@ -127,102 +127,56 @@ function NotificationAds() {
       type: "channel",
       icon: <Bell className="size-6 text-yellow-500" />,
       title: "🔔 Join Njabulo Jb Channel",
-      description: "Get notifications & updates",
+      description: "Get notifications & updates on Telegram",
       buttonText: "📢 Join Channel",
       color: "from-yellow-600 to-orange-600",
-      action: () => window.open("/contacts", "_blank")
+      action: () => window.open("https://t.me/njabulojbbot", "_blank")
     }
   ];
 
-  // Function to get random time between 20-30 seconds
+  // Get random time between 20-30 seconds
   const getRandomReappearTime = () => {
-    return Math.floor(Math.random() * (30 - 20 + 1) + 20) * 1000; // 20-30 seconds in milliseconds
+    return Math.floor(Math.random() * (30 - 20 + 1) + 20);
   };
 
-  // Function to schedule reappearance of a specific ad
-  const scheduleReappear = (adId: number) => {
-    const delay = getRandomReappearTime();
-    console.log(`Ad ${adId} will reappear in ${delay/1000} seconds`);
-    
-    const timer = setTimeout(() => {
-      // Check if this ad is already showing or dismissed
-      if (activeAd !== adId && !dismissedAds.includes(adId)) {
-        setActiveAd(adId);
-        setIsVisible(true);
-        console.log(`Ad ${adId} reappeared`);
-      }
-    }, delay);
-    
-    setReappearTimers(prev => [...prev, timer]);
-  };
-
-  // Clean up timers on unmount
+  // Start countdown timer
   useEffect(() => {
-    return () => {
-      reappearTimers.forEach(timer => clearTimeout(timer));
-    };
-  }, [reappearTimers]);
+    let countdownInterval: NodeJS.Timeout | null = null;
 
-  // Check which ads to show on initial load
-  useEffect(() => {
-    // Check if ads have been dismissed before
-    const dismissed = localStorage.getItem('dismissed-ads');
-    if (dismissed) {
-      try {
-        const parsed = JSON.parse(dismissed);
-        setDismissedAds(parsed);
-      } catch (e) {
-        setDismissedAds([]);
-      }
-    }
-
-    // Find first undismissed ad
-    const nextAd = ads.find(ad => !dismissedAds.includes(ad.id));
-    if (nextAd) {
-      setActiveAd(nextAd.id);
+    if (isCountdownActive && countdown > 0) {
+      countdownInterval = setInterval(() => {
+        setCountdown(prev => prev - 1);
+      }, 1000);
+    } else if (countdown === 0 && isCountdownActive) {
+      // Time's up - show next notification
+      setIsCountdownActive(false);
       setIsVisible(true);
-    } else {
-      setIsVisible(false);
+      // Move to next ad
+      setActiveAdIndex((prev) => (prev + 1) % ads.length);
     }
-  }, []);
 
-  const currentAd = ads.find(ad => ad.id === activeAd);
+    return () => {
+      if (countdownInterval) clearInterval(countdownInterval);
+    };
+  }, [countdown, isCountdownActive, ads.length]);
+
+  const currentAd = ads[activeAdIndex];
 
   const handleDismiss = () => {
-    if (currentAd) {
-      // Don't add to permanently dismissed - we want it to reappear
-      // Just hide it and schedule reappearance
-      setIsVisible(false);
-      
-      // Schedule this ad to reappear after random time
-      scheduleReappear(currentAd.id);
-      
-      // Also check if there's another ad to show immediately
-      const nextAd = ads.find(ad => ad.id !== currentAd.id && !dismissedAds.includes(ad.id));
-      if (nextAd) {
-        // Show next ad after a short delay
-        setTimeout(() => {
-          setActiveAd(nextAd.id);
-          setIsVisible(true);
-        }, 500);
-      }
-    }
+    // Hide current notification
+    setIsVisible(false);
+    
+    // Start countdown with random time (20-30 seconds)
+    const randomTime = getRandomReappearTime();
+    setCountdown(randomTime);
+    setIsCountdownActive(true);
   };
 
-  // Reset all ads (make them all reappear)
-  const resetAllAds = () => {
-    // Clear all existing timers
-    reappearTimers.forEach(timer => clearTimeout(timer));
-    setReappearTimers([]);
-    
-    // Reset dismissed ads
-    setDismissedAds([]);
-    localStorage.removeItem('dismissed-ads');
-    
-    // Show first ad
-    const firstAd = ads[0];
-    setActiveAd(firstAd.id);
-    setIsVisible(true);
+  // Handle ad action
+  const handleAction = () => {
+    currentAd.action();
+    // After action, dismiss and start countdown
+    handleDismiss();
   };
 
   return (
@@ -245,9 +199,9 @@ function NotificationAds() {
               <div className="flex-1">
                 <h4 className="text-white font-semibold text-sm">{currentAd.title}</h4>
                 <p className="text-white/80 text-xs mt-1">{currentAd.description}</p>
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-2 mt-2 flex-wrap">
                   <button
-                    onClick={currentAd.action}
+                    onClick={handleAction}
                     className="px-3 py-1.5 bg-white text-purple-600 rounded-lg text-xs font-medium hover:bg-white/90 transition-colors"
                   >
                     {currentAd.buttonText}
@@ -264,9 +218,42 @@ function NotificationAds() {
                 <X className="size-4" />
               </button>
             </div>
-            {/* Small timer indicator */}
-            <div className="mt-2 text-white/40 text-[10px] text-center">
-              Will reappear in 20-30 seconds
+            {/* Countdown Timer */}
+            <div className="mt-2 text-white/60 text-[10px] text-center flex items-center justify-center gap-1">
+              <span>⏱️ Next notification in</span>
+              <span className="font-bold text-white">{countdown}s</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Countdown Overlay (when notification is hidden) */}
+      {!isVisible && isCountdownActive && (
+        <div className="fixed bottom-24 left-4 right-4 z-40 md:left-auto md:right-4 md:w-96">
+          <div className="bg-black/60 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Bell className="size-5 text-white/60" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs">Next notification</p>
+                  <p className="text-white font-bold text-lg">{countdown}s</p>
+                </div>
+              </div>
+              <div className="w-16 h-16 rounded-full border-4 border-white/20 flex items-center justify-center">
+                <span className="text-white font-bold text-xl">{countdown}</span>
+              </div>
+            </div>
+            {/* Progress bar */}
+            <div className="mt-3 h-1 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-1000"
+                style={{ 
+                  width: `${(countdown / 30) * 100}%`,
+                  transition: 'width 1s linear'
+                }}
+              />
             </div>
           </div>
         </div>
@@ -424,7 +411,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - With Random Reappear Timing */}
+      {/* Notification Ads - With Countdown Timer */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -583,4 +570,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+  }
