@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Send, Bell, Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Send } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -76,22 +76,20 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Rotating Ads Component
-function RotatingAds() {
-  const [currentAdIndex, setCurrentAdIndex] = useState(0);
-  const [countdown, setCountdown] = useState(60);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [progress, setProgress] = useState(0);
+// 🆕 Notification Ads Component - Shows once and disappears
+function NotificationAds() {
+  const [activeAd, setActiveAd] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   const ads = [
     {
       id: 1,
       type: "music",
-      icon: <Music className="size-8 text-green-500" />,
+      icon: <Music className="size-6 text-green-500" />,
       title: "🎵 Listen to Njabulo Jb Music",
-      description: "Enjoy the latest tracks from Njabulo Jb",
-      buttonText: "▶ Play Music",
-      buttonLink: "#",
+      description: "Enjoy the latest tracks",
+      buttonText: "▶ Play",
       color: "from-green-500/20 to-emerald-500/20",
       duration: 60,
       action: () => alert("🎵 Playing music...")
@@ -99,11 +97,10 @@ function RotatingAds() {
     {
       id: 2,
       type: "download",
-      icon: <Download className="size-8 text-blue-500" />,
+      icon: <Download className="size-6 text-blue-500" />,
       title: "📱 Download Njabulo Jb App",
-      description: "Get the official app for Android",
-      buttonText: "⬇ Download APK",
-      buttonLink: "/downloads/Njabulo-Jb.apk",
+      description: "Get the official Android app",
+      buttonText: "⬇ Download",
       color: "from-blue-500/20 to-purple-500/20",
       duration: 30,
       action: () => window.open("/downloads/Njabulo-Jb.apk", "_blank")
@@ -111,123 +108,107 @@ function RotatingAds() {
     {
       id: 3,
       type: "channel",
-      icon: <Bell className="size-8 text-yellow-500" />,
+      icon: <Bell className="size-6 text-yellow-500" />,
       title: "🔔 Join Njabulo Jb Channel",
-      description: "Get notifications and updates",
-      buttonText: "📢 Join Channel",
-      buttonLink: "/contacts",
+      description: "Get notifications & updates",
+      buttonText: "📢 Join",
       color: "from-yellow-500/20 to-orange-500/20",
       duration: 20,
       action: () => window.open("/contacts", "_blank")
     }
   ];
 
-  const currentAd = ads[currentAdIndex];
-  const totalDuration = currentAd.duration;
-
+  // Show ads one by one
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    let progressTimer: NodeJS.Timeout;
-
-    if (isPlaying) {
-      setCountdown(totalDuration);
-      setProgress(0);
-
-      timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            // Move to next ad
-            setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
-            return ads[(currentAdIndex + 1) % ads.length].duration;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      progressTimer = setInterval(() => {
-        setProgress((prev) => {
-          const newProgress = prev + (100 / totalDuration);
-          return newProgress >= 100 ? 0 : newProgress;
-        });
-      }, 1000);
-    }
-
-    return () => {
-      clearInterval(timer);
-      clearInterval(progressTimer);
+    let adIndex = 0;
+    
+    const showNextAd = () => {
+      if (adIndex < ads.length) {
+        setActiveAd(adIndex);
+        setCountdown(ads[adIndex].duration);
+        setIsVisible(true);
+        adIndex++;
+      } else {
+        // All ads shown, hide completely
+        setIsVisible(false);
+        setActiveAd(null);
+      }
     };
-  }, [isPlaying, currentAdIndex, totalDuration, ads]);
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
+    // Start showing ads after 3 seconds
+    const startTimer = setTimeout(() => {
+      showNextAd();
+    }, 3000);
 
-  const skipAd = () => {
-    setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
-    setCountdown(ads[(currentAdIndex + 1) % ads.length].duration);
-    setProgress(0);
-  };
+    return () => clearTimeout(startTimer);
+  }, []);
 
-  const handleAction = () => {
-    currentAd.action();
-  };
+  // Handle countdown for each ad
+  useEffect(() => {
+    if (!isVisible || activeAd === null) return;
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Move to next ad
+          const nextAd = activeAd + 1;
+          if (nextAd < ads.length) {
+            setActiveAd(nextAd);
+            return ads[nextAd].duration;
+          } else {
+            // All ads done
+            setIsVisible(false);
+            setActiveAd(null);
+            return 0;
+          }
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isVisible, activeAd, ads]);
+
+  if (!isVisible || activeAd === null) return null;
+
+  const currentAd = ads[activeAd];
 
   return (
-    <div className="mb-6">
-      <div className={`bg-gradient-to-r ${currentAd.color} border border-border rounded-2xl p-6 relative overflow-hidden`}>
+    <div className="mb-4 animate-in slide-in-from-top-4 duration-300">
+      <div className={`bg-gradient-to-r ${currentAd.color} border border-border rounded-xl p-4 relative overflow-hidden shadow-lg`}>
         {/* Progress Bar */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-muted">
           <div 
             className="h-full bg-primary transition-all duration-1000"
-            style={{ width: `${progress}%` }}
+            style={{ width: `${(countdown / currentAd.duration) * 100}%` }}
           />
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          {/* Ad Icon */}
+        <div className="flex items-center gap-4">
+          {/* Icon */}
           <div className="flex-shrink-0">
-            <div className="w-16 h-16 rounded-full bg-background/50 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-background/50 flex items-center justify-center">
               {currentAd.icon}
             </div>
           </div>
 
-          {/* Ad Content */}
-          <div className="flex-1 text-center md:text-left">
-            <h3 className="text-lg font-semibold text-foreground">{currentAd.title}</h3>
-            <p className="text-sm text-muted-foreground">{currentAd.description}</p>
+          {/* Content */}
+          <div className="flex-1">
+            <h4 className="text-sm font-semibold text-foreground">{currentAd.title}</h4>
+            <p className="text-xs text-muted-foreground">{currentAd.description}</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-muted-foreground">⏱ {countdown}s</span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs text-muted-foreground">Ad {currentAdIndex + 1}/{ads.length}</span>
+              <span className="text-[10px] text-muted-foreground">⏱ {countdown}s</span>
             </div>
           </div>
 
-          {/* Ad Buttons */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={handleAction}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
-            >
-              {currentAd.buttonText}
-            </button>
-            <button
-              onClick={skipAd}
-              className="p-2 hover:bg-accent rounded-full transition-colors text-muted-foreground hover:text-foreground"
-              title="Skip Ad"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
+          {/* Action Button */}
+          <button
+            onClick={currentAd.action}
+            className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-xs font-medium whitespace-nowrap"
+          >
+            {currentAd.buttonText}
+          </button>
         </div>
-
-        {/* Play/Pause */}
-        <button
-          onClick={togglePlay}
-          className="absolute bottom-2 right-2 p-1.5 hover:bg-accent rounded-full transition-colors text-muted-foreground hover:text-foreground"
-          title={isPlaying ? "Pause Ads" : "Play Ads"}
-        >
-          {isPlaying ? <Pause className="size-3" /> : <Play className="size-3" />}
-        </button>
       </div>
     </div>
   );
@@ -382,8 +363,8 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* 🆕 Rotating Ads Section */}
-      <RotatingAds />
+      {/* 🆕 Notification Ads - Shows once and disappears */}
+      <NotificationAds />
 
       {/* Hero Section */}
       <section id="hero" className="py-4">
@@ -541,4 +522,4 @@ export default function Page() {
       )}
     </main>
   );
-}
+    }
