@@ -45,35 +45,35 @@ export default function BotAIPage() {
   const slides: SlideImage[] = [
     {
       id: 1,
-      src: "/images/image5.png",
+      src: "images/image5.png",
       alt: "Njabulo Jb Bot AI",
       title: "Njabulo Jb Bot AI",
       description: "The most powerful WhatsApp bot with advanced AI capabilities"
     },
     {
       id: 2,
-      src: "/images/image4.png",
+      src: "images/image4.png",
       alt: "GWM-XMD Bot",
       title: "GWM-XMD Bot",
       description: "Next generation WhatsApp bot with premium features"
     },
     {
       id: 3,
-      src: "/images/image3.png",
+      src: "images/image3.png",
       alt: "Njabulo Jb Telegram Bot",
       title: "Njabulo Jb Telegram Bot",
       description: "Advanced Telegram bot with channel management"
     },
     {
       id: 4,
-      src: "/images/image2.png",
+      src: "images/image2.png",
       alt: "AI Assistant",
       title: "AI Assistant",
       description: "Intelligent AI powered by Njabulo Jb"
     },
     {
       id: 5,
-      src: "/images/image1.png",
+      src: "images/image1.png",
       alt: "Bot Ecosystem",
       title: "Bot Ecosystem",
       description: "Complete ecosystem of bots and tools"
@@ -95,7 +95,7 @@ export default function BotAIPage() {
         "Do not share inappropriate content",
         "Follow WhatsApp terms of service"
       ],
-      image: "/images/image2.png",
+      image: "images/image2.png",
       link: "/njabulobot"
     },
     {
