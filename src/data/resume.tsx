@@ -131,7 +131,7 @@ export const DATA = {
   projects: [
     {
       title: "ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ",
-      href: "/njabulobot",
+      href: "/botai",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
