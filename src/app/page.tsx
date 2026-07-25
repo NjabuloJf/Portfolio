@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Send } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, CloseIcon } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -76,11 +76,11 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Notification Ads Component - Shows once and disappears
+// 🆕 Notification Ads Component - Like Install App Notification
 function NotificationAds() {
   const [activeAd, setActiveAd] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [dismissedAds, setDismissedAds] = useState<number[]>([]);
 
   const ads = [
     {
@@ -89,9 +89,8 @@ function NotificationAds() {
       icon: <Music className="size-6 text-green-500" />,
       title: "🎵 Listen to Njabulo Jb Music",
       description: "Enjoy the latest tracks",
-      buttonText: "▶ Play",
-      color: "from-green-500/20 to-emerald-500/20",
-      duration: 60,
+      buttonText: "▶ Play Music",
+      color: "from-green-600 to-emerald-600",
       action: () => alert("🎵 Playing music...")
     },
     {
@@ -100,9 +99,8 @@ function NotificationAds() {
       icon: <Download className="size-6 text-blue-500" />,
       title: "📱 Download Njabulo Jb App",
       description: "Get the official Android app",
-      buttonText: "⬇ Download",
-      color: "from-blue-500/20 to-purple-500/20",
-      duration: 30,
+      buttonText: "⬇ Download APK",
+      color: "from-blue-600 to-purple-600",
       action: () => window.open("/downloads/Njabulo-Jb.apk", "_blank")
     },
     {
@@ -111,102 +109,85 @@ function NotificationAds() {
       icon: <Bell className="size-6 text-yellow-500" />,
       title: "🔔 Join Njabulo Jb Channel",
       description: "Get notifications & updates",
-      buttonText: "📢 Join",
-      color: "from-yellow-500/20 to-orange-500/20",
-      duration: 20,
+      buttonText: "📢 Join Channel",
+      color: "from-yellow-600 to-orange-600",
       action: () => window.open("/contacts", "_blank")
     }
   ];
 
-  // Show ads one by one
+  // Check which ads to show
   useEffect(() => {
-    let adIndex = 0;
-    
-    const showNextAd = () => {
-      if (adIndex < ads.length) {
-        setActiveAd(adIndex);
-        setCountdown(ads[adIndex].duration);
-        setIsVisible(true);
-        adIndex++;
+    // Check if ads have been dismissed before
+    const dismissed = localStorage.getItem('dismissed-ads');
+    if (dismissed) {
+      try {
+        const parsed = JSON.parse(dismissed);
+        setDismissedAds(parsed);
+      } catch (e) {
+        setDismissedAds([]);
+      }
+    }
+
+    // Find first undismissed ad
+    const nextAd = ads.find(ad => !dismissedAds.includes(ad.id));
+    if (nextAd) {
+      setActiveAd(nextAd.id);
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  }, []);
+
+  const currentAd = ads.find(ad => ad.id === activeAd);
+
+  const handleDismiss = () => {
+    if (currentAd) {
+      const newDismissed = [...dismissedAds, currentAd.id];
+      setDismissedAds(newDismissed);
+      localStorage.setItem('dismissed-ads', JSON.stringify(newDismissed));
+      
+      // Show next ad if available
+      const nextAd = ads.find(ad => !newDismissed.includes(ad.id));
+      if (nextAd) {
+        setActiveAd(nextAd.id);
       } else {
-        // All ads shown, hide completely
         setIsVisible(false);
         setActiveAd(null);
       }
-    };
+    }
+  };
 
-    // Start showing ads after 3 seconds
-    const startTimer = setTimeout(() => {
-      showNextAd();
-    }, 3000);
-
-    return () => clearTimeout(startTimer);
-  }, []);
-
-  // Handle countdown for each ad
-  useEffect(() => {
-    if (!isVisible || activeAd === null) return;
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          // Move to next ad
-          const nextAd = activeAd + 1;
-          if (nextAd < ads.length) {
-            setActiveAd(nextAd);
-            return ads[nextAd].duration;
-          } else {
-            // All ads done
-            setIsVisible(false);
-            setActiveAd(null);
-            return 0;
-          }
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isVisible, activeAd, ads]);
-
-  if (!isVisible || activeAd === null) return null;
-
-  const currentAd = ads[activeAd];
+  if (!isVisible || !currentAd) return null;
 
   return (
-    <div className="mb-4 animate-in slide-in-from-top-4 duration-300">
-      <div className={`bg-gradient-to-r ${currentAd.color} border border-border rounded-xl p-4 relative overflow-hidden shadow-lg`}>
-        {/* Progress Bar */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-muted">
-          <div 
-            className="h-full bg-primary transition-all duration-1000"
-            style={{ width: `${(countdown / currentAd.duration) * 100}%` }}
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          {/* Icon */}
+    <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
+      <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
+        <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 rounded-full bg-background/50 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
               {currentAd.icon}
             </div>
           </div>
-
-          {/* Content */}
           <div className="flex-1">
-            <h4 className="text-sm font-semibold text-foreground">{currentAd.title}</h4>
-            <p className="text-xs text-muted-foreground">{currentAd.description}</p>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-[10px] text-muted-foreground">⏱ {countdown}s</span>
+            <h4 className="text-white font-semibold text-sm">{currentAd.title}</h4>
+            <p className="text-white/80 text-xs mt-1">{currentAd.description}</p>
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={currentAd.action}
+                className="px-3 py-1.5 bg-white text-purple-600 rounded-lg text-xs font-medium hover:bg-white/90 transition-colors"
+              >
+                {currentAd.buttonText}
+              </button>
+              <button
+                onClick={handleDismiss}
+                className="px-3 py-1.5 bg-white/20 text-white rounded-lg text-xs hover:bg-white/30 transition-colors"
+              >
+                Dismiss
+              </button>
             </div>
           </div>
-
-          {/* Action Button */}
-          <button
-            onClick={currentAd.action}
-            className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-xs font-medium whitespace-nowrap"
-          >
-            {currentAd.buttonText}
+          <button onClick={handleDismiss} className="text-white/60 hover:text-white">
+            <X className="size-4" />
           </button>
         </div>
       </div>
@@ -363,7 +344,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* 🆕 Notification Ads - Shows once and disappears */}
+      {/* 🆕 Notification Ads - Like Install App Notification */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -522,4 +503,4 @@ export default function Page() {
       )}
     </main>
   );
-    }
+}
