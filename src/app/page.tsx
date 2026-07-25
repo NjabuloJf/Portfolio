@@ -93,13 +93,11 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Notification Ads Component - Dismiss hides, comes back after random time
+// 🆕 Notification Ads Component - Dismiss hides completely, comes back after random time
 function NotificationAds() {
   const [activeAdIndex, setActiveAdIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(0);
-  const [isCountdownActive, setIsCountdownActive] = useState(false);
   const [reappearTimer, setReappearTimer] = useState<NodeJS.Timeout | null>(null);
 
   const ads = [
@@ -137,7 +135,7 @@ function NotificationAds() {
 
   // Get random time between 20-30 seconds
   const getRandomReappearTime = () => {
-    return Math.floor(Math.random() * (30 - 20 + 1) + 20);
+    return Math.floor(Math.random() * (30 - 20 + 1) + 20) * 1000; // in milliseconds
   };
 
   // Clean up timer on unmount
@@ -146,27 +144,6 @@ function NotificationAds() {
       if (reappearTimer) clearTimeout(reappearTimer);
     };
   }, [reappearTimer]);
-
-  // Start countdown timer
-  useEffect(() => {
-    let countdownInterval: NodeJS.Timeout | null = null;
-
-    if (isCountdownActive && countdown > 0) {
-      countdownInterval = setInterval(() => {
-        setCountdown(prev => prev - 1);
-      }, 1000);
-    } else if (countdown === 0 && isCountdownActive) {
-      // Time's up - show notification again
-      setIsCountdownActive(false);
-      setIsVisible(true);
-      // Move to next ad (or stay on same one)
-      setActiveAdIndex((prev) => (prev + 1) % ads.length);
-    }
-
-    return () => {
-      if (countdownInterval) clearInterval(countdownInterval);
-    };
-  }, [countdown, isCountdownActive, ads.length]);
 
   const currentAd = ads[activeAdIndex];
 
@@ -177,13 +154,19 @@ function NotificationAds() {
       setReappearTimer(null);
     }
 
-    // Hide notification immediately
+    // Hide notification completely
     setIsVisible(false);
     
-    // Get random time for reappear
+    // Set timer to show next notification after random time (20-30 seconds)
     const randomTime = getRandomReappearTime();
-    setCountdown(randomTime);
-    setIsCountdownActive(true);
+    const timer = setTimeout(() => {
+      // Move to next ad
+      setActiveAdIndex((prev) => (prev + 1) % ads.length);
+      // Show notification
+      setIsVisible(true);
+    }, randomTime);
+    
+    setReappearTimer(timer);
   };
 
   // Handle ad action
@@ -200,7 +183,7 @@ function NotificationAds() {
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* Ad Banner - Only show when visible */}
+      {/* Ad Banner - Only show when visible, NO countdown shown */}
       {isVisible && currentAd && (
         <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
           <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
@@ -233,72 +216,9 @@ function NotificationAds() {
               </button>
             </div>
             {/* Small indicator showing it will reappear */}
-            <div className="mt-2 text-white/40 text-[10px] text-center">
+            <div className="mt-2 text-white/30 text-[10px] text-center">
               🔄 Will reappear automatically
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Countdown Overlay (shows when notification is hidden) */}
-      {!isVisible && isCountdownActive && (
-        <div className="fixed bottom-24 left-4 right-4 z-40 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
-          <div className="bg-black/70 backdrop-blur-sm rounded-2xl p-4 border border-white/10 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Bell className="size-5 text-white/60" />
-                </div>
-                <div>
-                  <p className="text-white/50 text-xs">Next notification in</p>
-                  <p className="text-white font-bold text-2xl">{countdown}s</p>
-                </div>
-              </div>
-              <div className="relative w-14 h-14">
-                <svg className="w-14 h-14 transform -rotate-90">
-                  <circle
-                    cx="28"
-                    cy="28"
-                    r="24"
-                    stroke="rgba(255,255,255,0.1)"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <circle
-                    cx="28"
-                    cy="28"
-                    r="24"
-                    stroke="url(#timerGradient)"
-                    strokeWidth="4"
-                    fill="none"
-                    strokeDasharray={`${(countdown / 30) * 150.8} 150.8`}
-                    strokeLinecap="round"
-                    className="transition-all duration-1000"
-                  />
-                  <defs>
-                    <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#10b981" />
-                      <stop offset="100%" stopColor="#3b82f6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">{countdown}</span>
-                </div>
-              </div>
-            </div>
-            {/* Progress bar */}
-            <div className="mt-3 h-1.5 bg-white/10 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-green-500 to-blue-500 rounded-full transition-all duration-1000"
-                style={{ 
-                  width: `${(countdown / 30) * 100}%`
-                }}
-              />
-            </div>
-            <p className="text-white/30 text-[10px] text-center mt-2">
-              ⏱️ Notification will reappear in {countdown} seconds
-            </p>
           </div>
         </div>
       )}
@@ -455,7 +375,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - Dismiss hides, comes back after random time */}
+      {/* Notification Ads - Dismiss hides completely, comes back after random time */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -614,4 +534,4 @@ export default function Page() {
       )}
     </main>
   );
-                                }
+        }
