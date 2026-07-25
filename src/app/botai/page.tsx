@@ -98,7 +98,7 @@ export default function BotAIPage() {
         "Do not share inappropriate content",
         "Follow WhatsApp terms of service"
       ],
-      image: "/images/image2.png",
+      image: "/images/njabulob.png",
       link: "/njabulobot"
     },
     {
