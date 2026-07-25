@@ -11,7 +11,8 @@ import {
   Facebook, Instagram, Twitter, Youtube,
   Github, Linkedin, Globe, ExternalLink,
   Play, Pause, Volume2, VolumeX, Maximize,
-  CheckCircle, ArrowRight
+  CheckCircle, ArrowRight, Home, Search,
+  Menu, X, Filter, Grid3x3, List
 } from "lucide-react";
 import { DATA } from "@/data/resume";
 
@@ -39,6 +40,7 @@ export default function BotAIPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedBot, setSelectedBot] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const slides: SlideImage[] = [
     {
@@ -132,6 +134,11 @@ export default function BotAIPage() {
     }
   ];
 
+  const filteredBots = bots.filter(bot => 
+    bot.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    bot.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
@@ -155,21 +162,67 @@ export default function BotAIPage() {
     setIsPlaying(!isPlaying);
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header with Navigation */}
         <BlurFade delay={0.04}>
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-primary/10 px-6 py-3 rounded-2xl border border-primary/20">
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
+            {/* Back to Home Button */}
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 shadow-sm"
+            >
+              <Home className="size-4" />
+              ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ
+            </Link>
+
+            {/* Title */}
+            <div className="flex items-center gap-2">
               <Bot className="size-8 text-primary" />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 ᴊʙ ʙᴏᴛ ᴀɪ
               </h1>
               <Bot className="size-8 text-primary" />
             </div>
-            <p className="text-muted-foreground mt-2 text-sm">WhatsApp & Telegram Bot Ecosystem</p>
+
+            {/* GitHub Link */}
+            <a
+              href="https://github.com/NjabuloJf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 shadow-sm"
+            >
+              <Github className="size-4" />
+              ɢɪᴛʜᴜʙ
+            </a>
           </div>
+
+          {/* Search Bar */}
+          <div className="relative max-w-md mx-auto mb-6">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="🔍 sᴇᴀʀᴄʜ ʙᴏᴛs..."
+              className="w-full pl-9 pr-10 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                <X className="size-4 text-muted-foreground hover:text-foreground transition-colors" />
+              </button>
+            )}
+          </div>
+
+          <p className="text-muted-foreground text-center text-sm mb-2">ᴡʜᴀᴛsᴀᴘᴘ & ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ ᴇᴄᴏsʏsᴛᴇᴍ</p>
         </BlurFade>
 
         {/* Image Slider */}
@@ -203,13 +256,13 @@ export default function BotAIPage() {
             {/* Slide Controls */}
             <button
               onClick={prevSlide}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 border border-border text-foreground hover:bg-accent transition-colors"
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm"
             >
               <ChevronLeft className="size-5" />
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-background/80 border border-border text-foreground hover:bg-accent transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm"
             >
               <ChevronRight className="size-5" />
             </button>
@@ -230,7 +283,7 @@ export default function BotAIPage() {
             </div>
 
             {/* Slide Counter */}
-            <div className="absolute top-4 right-4 bg-background/80 border border-border text-xs text-muted-foreground px-3 py-1 rounded-full">
+            <div className="absolute top-4 right-4 bg-white border border-border text-xs text-muted-foreground px-3 py-1 rounded-full shadow-sm">
               {currentSlide + 1} / {slides.length}
             </div>
           </div>
@@ -239,104 +292,128 @@ export default function BotAIPage() {
         {/* Bots Section */}
         <BlurFade delay={0.12}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {bots.map((bot) => (
-              <div
-                key={bot.id}
-                className={`border rounded-2xl overflow-hidden bg-card/50 border-border hover:border-primary/50 transition-all duration-300`}
-              >
-                {/* Bot Header */}
-                <div className={`bg-gradient-to-r ${bot.color} p-4 flex items-center justify-between border-b border-border`}>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-full bg-background/50">
-                      {bot.icon}
+            {filteredBots.length > 0 ? (
+              filteredBots.map((bot) => (
+                <div
+                  key={bot.id}
+                  className={`border rounded-2xl overflow-hidden bg-card/50 border-border hover:border-primary/50 transition-all duration-300`}
+                >
+                  {/* Bot Header */}
+                  <div className={`bg-gradient-to-r ${bot.color} p-4 flex items-center justify-between border-b border-border`}>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-full bg-white">
+                        {bot.icon}
+                      </div>
+                      <span className="font-semibold text-sm">{bot.name}</span>
                     </div>
-                    <span className="font-semibold text-sm">{bot.name}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Crown className="size-4 text-primary" />
-                    <span className="text-xs text-primary font-medium">ɢᴏʟᴅ</span>
-                  </div>
-                </div>
-
-                {/* Bot Image */}
-                <div className="p-4 flex justify-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 border-2 border-primary/30 flex items-center justify-center">
-                    <div className="text-3xl">
-                      {bot.id === 1 && "💬"}
-                      {bot.id === 2 && "⚡"}
-                      {bot.id === 3 && "✈️"}
+                    <div className="flex items-center gap-1">
+                      <Crown className="size-4 text-primary" />
+                      <span className="text-xs text-primary font-medium">ɢᴏʟᴅ</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Bot Description */}
-                <div className="px-4">
-                  <p className="text-muted-foreground text-sm text-center">{bot.description}</p>
-                </div>
+                  {/* Bot Image */}
+                  <div className="p-4 flex justify-center">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 border-2 border-primary/30 flex items-center justify-center">
+                      <div className="text-3xl">
+                        {bot.id === 1 && "💬"}
+                        {bot.id === 2 && "⚡"}
+                        {bot.id === 3 && "✈️"}
+                      </div>
+                    </div>
+                  </div>
 
-                {/* Features */}
-                <div className="px-4 py-2">
-                  <div className="flex flex-wrap gap-1 justify-center">
-                    {bot.features.slice(0, 3).map((feature, idx) => (
-                      <span key={idx} className="text-[10px] px-2 py-0.5 bg-muted rounded-full text-muted-foreground">
-                        {feature}
-                      </span>
-                    ))}
-                    {bot.features.length > 3 && (
-                      <span className="text-[10px] px-2 py-0.5 bg-muted rounded-full text-muted-foreground">
-                        +{bot.features.length - 3}
-                      </span>
+                  {/* Bot Description */}
+                  <div className="px-4">
+                    <p className="text-muted-foreground text-sm text-center">{bot.description}</p>
+                  </div>
+
+                  {/* Features */}
+                  <div className="px-4 py-2">
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {bot.features.slice(0, 3).map((feature, idx) => (
+                        <span key={idx} className="text-[10px] px-2 py-0.5 bg-muted rounded-full text-muted-foreground">
+                          {feature}
+                        </span>
+                      ))}
+                      {bot.features.length > 3 && (
+                        <span className="text-[10px] px-2 py-0.5 bg-muted rounded-full text-muted-foreground">
+                          +{bot.features.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Rules */}
+                  <div className="px-4 py-2">
+                    <button
+                      onClick={() => setSelectedBot(selectedBot === bot.id ? null : bot.id)}
+                      className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <span>📜 ʀᴜʟᴇs & ɢᴜɪᴅᴇʟɪɴᴇs</span>
+                      <ChevronRight className={`size-4 transition-transform ${selectedBot === bot.id ? "rotate-90" : ""}`} />
+                    </button>
+                    {selectedBot === bot.id && (
+                      <div className="mt-2 space-y-1 max-h-40 overflow-y-auto">
+                        {bot.rules.map((rule, idx) => (
+                          <p key={idx} className="text-[11px] text-muted-foreground border-b border-border/50 pb-1">
+                            {rule}
+                          </p>
+                        ))}
+                      </div>
                     )}
                   </div>
-                </div>
 
-                {/* Rules */}
-                <div className="px-4 py-2">
-                  <button
-                    onClick={() => setSelectedBot(selectedBot === bot.id ? null : bot.id)}
-                    className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <span>📜 ʀᴜʟᴇs & ɢᴜɪᴅᴇʟɪɴᴇs</span>
-                    <ChevronRight className={`size-4 transition-transform ${selectedBot === bot.id ? "rotate-90" : ""}`} />
-                  </button>
-                  {selectedBot === bot.id && (
-                    <div className="mt-2 space-y-1 max-h-40 overflow-y-auto">
-                      {bot.rules.map((rule, idx) => (
-                        <p key={idx} className="text-[11px] text-muted-foreground border-b border-border/50 pb-1">
-                          {rule}
-                        </p>
-                      ))}
-                    </div>
-                  )}
+                  {/* Button - White background */}
+                  <div className="p-4">
+                    <Link
+                      href={bot.link}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-all text-sm font-medium text-gray-700 shadow-sm"
+                    >
+                      ᴠɪᴇᴡ ʙᴏᴛ
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
                 </div>
-
-                {/* Button */}
-                <div className="p-4">
-                  <Link
-                    href={bot.link}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all text-sm font-medium"
-                  >
-                    ᴠɪᴇᴡ ʙᴏᴛ
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-12 text-muted-foreground">
+                <Bot className="size-12 mx-auto mb-3 text-muted-foreground/50" />
+                <p>ɴᴏ ʙᴏᴛs ғᴏᴜɴᴅ ғᴏʀ "{searchQuery}"</p>
               </div>
-            ))}
+            )}
           </div>
         </BlurFade>
 
         {/* Footer */}
         <BlurFade delay={0.16}>
           <div className="text-center pt-6 mt-8 border-t border-border">
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground flex-wrap">
               <Bot className="size-4 text-primary" />
               <span>ᴘᴏᴡᴇʀᴇᴅ ʙʏ</span>
-              <span className="font-semibold text-foreground">Njabulo Jb AI</span>
+              <a
+                href="https://github.com/NjabuloJf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-500 hover:text-blue-600 hover:underline transition-colors"
+              >
+                Njabulo Jb AI
+              </a>
               <span className="text-muted-foreground">© 2026</span>
+              <span className="text-muted-foreground">•</span>
+              <a
+                href="https://github.com/NjabuloJf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline transition-colors"
+              >
+                <Github className="size-3" />
+                ɢɪᴛʜᴜʙ
+              </a>
             </div>
           </div>
         </BlurFade>
       </div>
     </div>
   );
-        }
+      }
