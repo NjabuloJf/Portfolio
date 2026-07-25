@@ -148,7 +148,7 @@ export const DATA = {
           icon: <Icons.globe className="size-3" />,
         },
       ],
-      image: "njabulobot.png",
+      image: "/images/njabulob.png",
     },
      {
 
@@ -171,7 +171,7 @@ export const DATA = {
           icon: <Icons.globe className="size-3" />,
         },
       ],
-      image: "mitremediaa.png",
+      image: "/images/business.png",
     },
     {
       title: "ᴍᴇssᴀɢᴇ ᴏʀ ғᴏʟʟᴏᴡ ᴍᴇ",
@@ -193,7 +193,7 @@ export const DATA = {
           icon: <Icons.globe className="size-3" />,
         },
       ],
-     image: "magic-ui.png", 
+     image: "/images/message.png", 
     },
   ],
   hackathons: [
