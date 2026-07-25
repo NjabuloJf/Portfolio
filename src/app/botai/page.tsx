@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import BlurFade from "@/components/magicui/blur-fade";
+import Image from "next/image";
 import { 
   ChevronLeft, ChevronRight, Crown, Shield, Bot, 
   Smartphone, Send, MessageCircle, Zap, 
@@ -42,38 +43,39 @@ export default function BotAIPage() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Slide images with correct paths - using your image1.png to image5.png
   const slides: SlideImage[] = [
     {
       id: 1,
-      src: "images/image5.png",
+      src: "/images/image1.png",
       alt: "Njabulo Jb Bot AI",
       title: "Njabulo Jb Bot AI",
       description: "The most powerful WhatsApp bot with advanced AI capabilities"
     },
     {
       id: 2,
-      src: "images/image4.png",
+      src: "/images/image2.png",
       alt: "GWM-XMD Bot",
       title: "GWM-XMD Bot",
       description: "Next generation WhatsApp bot with premium features"
     },
     {
       id: 3,
-      src: "images/image3.png",
+      src: "/images/image3.png",
       alt: "Njabulo Jb Telegram Bot",
       title: "Njabulo Jb Telegram Bot",
       description: "Advanced Telegram bot with channel management"
     },
     {
       id: 4,
-      src: "images/image2.png",
+      src: "/images/image4.png",
       alt: "AI Assistant",
       title: "AI Assistant",
       description: "Intelligent AI powered by Njabulo Jb"
     },
     {
       id: 5,
-      src: "images/image1.png",
+      src: "/images/image5.png",
       alt: "Bot Ecosystem",
       title: "Bot Ecosystem",
       description: "Complete ecosystem of bots and tools"
@@ -95,7 +97,7 @@ export default function BotAIPage() {
         "Do not share inappropriate content",
         "Follow WhatsApp terms of service"
       ],
-      image: "images/image2.png",
+      image: "/images/image2.png",
       link: "/njabulobot"
     },
     {
@@ -112,7 +114,7 @@ export default function BotAIPage() {
         "Use responsibly",
         "Respect privacy of others"
       ],
-      image: "/images/botai/gwmxmd-bot.png",
+      image: "/images/image3.png",
       link: "/gwmxmd"
     },
     {
@@ -129,7 +131,7 @@ export default function BotAIPage() {
         "Do not share personal info",
         "Follow Telegram policies"
       ],
-      image: "/images/botai/telegram-bot.png",
+      image: "/images/image4.png",
       link: "/njabulo-telegrambot"
     }
   ];
@@ -217,7 +219,7 @@ export default function BotAIPage() {
           <p className="text-muted-foreground text-center text-sm mb-2">ᴡʜᴀᴛsᴀᴘᴘ & ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ ᴇᴄᴏsʏsᴛᴇᴍ</p>
         </BlurFade>
 
-        {/* Image Slider */}
+        {/* Image Slider with actual images */}
         <BlurFade delay={0.08}>
           <div className="relative rounded-2xl overflow-hidden bg-card/50 border border-border mb-8">
             <div className="relative h-64 md:h-80">
@@ -231,15 +233,23 @@ export default function BotAIPage() {
                   }`}
                 >
                   <div className="w-full h-full bg-gradient-to-r from-primary/20 to-purple-500/20 flex items-center justify-center">
-                    <div className="text-center p-8">
-                      <div className="text-6xl mb-4">🤖</div>
-                      <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                        {slide.title}
-                      </h2>
-                      <p className="text-muted-foreground text-lg">
-                        {slide.description}
-                      </p>
-                    </div>
+                    {/* Image */}
+                    <img
+                      src={slide.src}
+                      alt={slide.alt}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // If image fails to load, show fallback
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement!.innerHTML = `
+                          <div class="text-center p-8">
+                            <div class="text-6xl mb-4">🤖</div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-2">${slide.title}</h2>
+                            <p class="text-muted-foreground text-lg">${slide.description}</p>
+                          </div>
+                        `;
+                      }}
+                    />
                   </div>
                 </div>
               ))}
@@ -307,11 +317,19 @@ export default function BotAIPage() {
                   {/* Bot Image */}
                   <div className="p-4 flex justify-center">
                     <div className="w-20 h-20 rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 border-2 border-primary/30 flex items-center justify-center">
-                      <div className="text-3xl">
-                        {bot.id === 1 && "💬"}
-                        {bot.id === 2 && "⚡"}
-                        {bot.id === 3 && "✈️"}
-                      </div>
+                      <img
+                        src={bot.image}
+                        alt={bot.name}
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.parentElement!.innerHTML = `
+                            <div class="text-3xl">
+                              ${bot.id === 1 ? "💬" : bot.id === 2 ? "⚡" : "✈️"}
+                            </div>
+                          `;
+                        }}
+                      />
                     </div>
                   </div>
 
