@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, CloseIcon } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -344,7 +344,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* 🆕 Notification Ads - Like Install App Notification */}
+      {/* Notification Ads - Like Install App Notification */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -503,4 +503,4 @@ export default function Page() {
       )}
     </main>
   );
-}
+    }
