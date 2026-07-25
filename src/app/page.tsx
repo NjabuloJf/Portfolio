@@ -93,12 +93,13 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Notification Ads Component - Like Install App Notification (FIXED)
+// 🆕 Notification Ads Component - With Random Reappear Timing
 function NotificationAds() {
   const [activeAd, setActiveAd] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [dismissedAds, setDismissedAds] = useState<number[]>([]);
-  const [toastMessage, setToastMessage] = useState<string | null>(null); // 🆕 For toast notifications
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [reappearTimers, setReappearTimers] = useState<NodeJS.Timeout[]>([]);
 
   const ads = [
     {
@@ -109,7 +110,7 @@ function NotificationAds() {
       description: "Enjoy the latest tracks",
       buttonText: "▶ Play Music",
       color: "from-green-600 to-emerald-600",
-      action: () => setToastMessage("🎵 Now playing music...") // ✅ FIXED: No more alert()
+      action: () => setToastMessage("🎵 Now playing music...")
     },
     {
       id: 2,
@@ -133,7 +134,36 @@ function NotificationAds() {
     }
   ];
 
-  // Check which ads to show
+  // Function to get random time between 20-30 seconds
+  const getRandomReappearTime = () => {
+    return Math.floor(Math.random() * (30 - 20 + 1) + 20) * 1000; // 20-30 seconds in milliseconds
+  };
+
+  // Function to schedule reappearance of a specific ad
+  const scheduleReappear = (adId: number) => {
+    const delay = getRandomReappearTime();
+    console.log(`Ad ${adId} will reappear in ${delay/1000} seconds`);
+    
+    const timer = setTimeout(() => {
+      // Check if this ad is already showing or dismissed
+      if (activeAd !== adId && !dismissedAds.includes(adId)) {
+        setActiveAd(adId);
+        setIsVisible(true);
+        console.log(`Ad ${adId} reappeared`);
+      }
+    }, delay);
+    
+    setReappearTimers(prev => [...prev, timer]);
+  };
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => {
+      reappearTimers.forEach(timer => clearTimeout(timer));
+    };
+  }, [reappearTimers]);
+
+  // Check which ads to show on initial load
   useEffect(() => {
     // Check if ads have been dismissed before
     const dismissed = localStorage.getItem('dismissed-ads');
@@ -160,19 +190,39 @@ function NotificationAds() {
 
   const handleDismiss = () => {
     if (currentAd) {
-      const newDismissed = [...dismissedAds, currentAd.id];
-      setDismissedAds(newDismissed);
-      localStorage.setItem('dismissed-ads', JSON.stringify(newDismissed));
+      // Don't add to permanently dismissed - we want it to reappear
+      // Just hide it and schedule reappearance
+      setIsVisible(false);
       
-      // Show next ad if available
-      const nextAd = ads.find(ad => !newDismissed.includes(ad.id));
+      // Schedule this ad to reappear after random time
+      scheduleReappear(currentAd.id);
+      
+      // Also check if there's another ad to show immediately
+      const nextAd = ads.find(ad => ad.id !== currentAd.id && !dismissedAds.includes(ad.id));
       if (nextAd) {
-        setActiveAd(nextAd.id);
-      } else {
-        setIsVisible(false);
-        setActiveAd(null);
+        // Show next ad after a short delay
+        setTimeout(() => {
+          setActiveAd(nextAd.id);
+          setIsVisible(true);
+        }, 500);
       }
     }
+  };
+
+  // Reset all ads (make them all reappear)
+  const resetAllAds = () => {
+    // Clear all existing timers
+    reappearTimers.forEach(timer => clearTimeout(timer));
+    setReappearTimers([]);
+    
+    // Reset dismissed ads
+    setDismissedAds([]);
+    localStorage.removeItem('dismissed-ads');
+    
+    // Show first ad
+    const firstAd = ads[0];
+    setActiveAd(firstAd.id);
+    setIsVisible(true);
   };
 
   return (
@@ -213,6 +263,10 @@ function NotificationAds() {
               <button onClick={handleDismiss} className="text-white/60 hover:text-white">
                 <X className="size-4" />
               </button>
+            </div>
+            {/* Small timer indicator */}
+            <div className="mt-2 text-white/40 text-[10px] text-center">
+              Will reappear in 20-30 seconds
             </div>
           </div>
         </div>
@@ -370,7 +424,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - Like Install App Notification (FIXED) */}
+      {/* Notification Ads - With Random Reappear Timing */}
       <NotificationAds />
 
       {/* Hero Section */}
