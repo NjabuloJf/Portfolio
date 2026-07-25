@@ -12,7 +12,7 @@ import {
   Github, Linkedin, Globe, ExternalLink,
   Play, Pause, Volume2, VolumeX, Maximize,
   CheckCircle, ArrowRight, Home, Search,
-  Menu, X, Filter, Grid3x3, List
+  Menu, X, Filter, Grid3x3, List, ArrowLeft
 } from "lucide-react";
 import { DATA } from "@/data/resume";
 
@@ -169,16 +169,16 @@ export default function BotAIPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header with Navigation */}
+        {/* Header with Back Arrow */}
         <BlurFade delay={0.04}>
           <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
-            {/* Back to Home Button */}
+            {/* Back Arrow Button */}
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 shadow-sm"
             >
-              <Home className="size-4" />
-              ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ
+              <ArrowLeft className="size-4" />
+              ʙᴀᴄᴋ
             </Link>
 
             {/* Title */}
@@ -190,26 +190,18 @@ export default function BotAIPage() {
               <Bot className="size-8 text-primary" />
             </div>
 
-            {/* GitHub Link */}
-            <a
-              href="https://github.com/NjabuloJf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700 shadow-sm"
-            >
-              <Github className="size-4" />
-              ɢɪᴛʜᴜʙ
-            </a>
+            {/* Empty div for spacing */}
+            <div className="w-[100px] hidden md:block" />
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar with "Jb bot Ai" placeholder */}
           <div className="relative max-w-md mx-auto mb-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="🔍 sᴇᴀʀᴄʜ ʙᴏᴛs..."
+              placeholder="🔍 sᴇᴀʀᴄʜ Jʙ ʙᴏᴛ Aɪ..."
               className="w-full pl-9 pr-10 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
             {searchQuery && (
@@ -400,20 +392,10 @@ export default function BotAIPage() {
                 Njabulo Jb AI
               </a>
               <span className="text-muted-foreground">© 2026</span>
-              <span className="text-muted-foreground">•</span>
-              <a
-                href="https://github.com/NjabuloJf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline transition-colors"
-              >
-                <Github className="size-3" />
-                ɢɪᴛʜᴜʙ
-              </a>
             </div>
           </div>
         </BlurFade>
       </div>
     </div>
   );
-      }
+    }
