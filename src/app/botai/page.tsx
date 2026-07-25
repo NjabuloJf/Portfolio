@@ -13,7 +13,8 @@ import {
   Github, Linkedin, Globe, ExternalLink,
   Play, Pause, Volume2, VolumeX, Maximize,
   CheckCircle, ArrowRight, Home, Search,
-  Menu, X, Filter, Grid3x3, List, ArrowLeft
+  Menu, X, Filter, Grid3x3, List, ArrowLeft,
+  Layout, Code, Terminal
 } from "lucide-react";
 import { DATA } from "@/data/resume";
 
@@ -43,7 +44,7 @@ export default function BotAIPage() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Slide images with correct paths - using your image1.png to image5.png
+  // Slide images with correct paths
   const slides: SlideImage[] = [
     {
       id: 1,
@@ -133,6 +134,24 @@ export default function BotAIPage() {
       ],
       image: "/images/image4.png",
       link: "/njabulo-telegrambot"
+    },
+    // 🆕 Njabulo UI Bot - NEW
+    {
+      id: 4,
+      name: "ɴᴊᴀʙᴜʟᴏ UI ʙᴏᴛ",
+      icon: <Layout className="size-6 text-purple-500" />,
+      color: "from-purple-500/10 to-pink-500/10",
+      description: "UI Bot with code generation, deployment tools, and WhatsApp/Telegram bot creation.",
+      features: ["Code generation", "Deployment tools", "UI components", "Bot creation", "API integration", "Dark/Light mode"],
+      rules: [
+        "Use code responsibly",
+        "Respect intellectual property",
+        "No malicious code generation",
+        "Follow community guidelines",
+        "Report bugs to support"
+      ],
+      image: "/images/image5.png",
+      link: "/njabulo-uibot"
     }
   ];
 
@@ -219,7 +238,7 @@ export default function BotAIPage() {
           <p className="text-muted-foreground text-center text-sm mb-2">ᴡʜᴀᴛsᴀᴘᴘ & ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ ᴇᴄᴏsʏsᴛᴇᴍ</p>
         </BlurFade>
 
-        {/* Image Slider with actual images */}
+        {/* Image Slider */}
         <BlurFade delay={0.08}>
           <div className="relative rounded-2xl overflow-hidden bg-card/50 border border-border mb-8">
             <div className="relative h-64 md:h-80">
@@ -233,13 +252,11 @@ export default function BotAIPage() {
                   }`}
                 >
                   <div className="w-full h-full bg-gradient-to-r from-primary/20 to-purple-500/20 flex items-center justify-center">
-                    {/* Image */}
                     <img
                       src={slide.src}
                       alt={slide.alt}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        // If image fails to load, show fallback
                         e.currentTarget.style.display = 'none';
                         e.currentTarget.parentElement!.innerHTML = `
                           <div class="text-center p-8">
@@ -291,9 +308,9 @@ export default function BotAIPage() {
           </div>
         </BlurFade>
 
-        {/* Bots Section */}
+        {/* Bots Section - Now with 4 bots (including Njabulo UI Bot) */}
         <BlurFade delay={0.12}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredBots.length > 0 ? (
               filteredBots.map((bot) => (
                 <div
@@ -325,7 +342,7 @@ export default function BotAIPage() {
                           e.currentTarget.style.display = 'none';
                           e.currentTarget.parentElement!.innerHTML = `
                             <div class="text-3xl">
-                              ${bot.id === 1 ? "💬" : bot.id === 2 ? "⚡" : "✈️"}
+                              ${bot.id === 1 ? "💬" : bot.id === 2 ? "⚡" : bot.id === 3 ? "✈️" : "🎨"}
                             </div>
                           `;
                         }}
@@ -387,7 +404,7 @@ export default function BotAIPage() {
                 </div>
               ))
             ) : (
-              <div className="col-span-3 text-center py-12 text-muted-foreground">
+              <div className="col-span-4 text-center py-12 text-muted-foreground">
                 <Bot className="size-12 mx-auto mb-3 text-muted-foreground/50" />
                 <p>ɴᴏ ʙᴏᴛs ғᴏᴜɴᴅ ғᴏʀ "{searchQuery}"</p>
               </div>
@@ -416,4 +433,4 @@ export default function BotAIPage() {
       </div>
     </div>
   );
-    }
+  }
