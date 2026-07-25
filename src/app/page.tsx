@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, X as CloseIcon } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Send, Bell, Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -22,7 +22,6 @@ const BLUR_FADE_DELAY = 0.04;
 function LoadingScreen() {
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center">
-      {/* Round Avatar with Verified Badge */}
       <div className="relative mb-4">
         <div className="absolute -inset-1.5 rounded-full">
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-500 animate-pulse" />
@@ -77,6 +76,163 @@ function LoadingScreen() {
   );
 }
 
+// 🆕 Rotating Ads Component
+function RotatingAds() {
+  const [currentAdIndex, setCurrentAdIndex] = useState(0);
+  const [countdown, setCountdown] = useState(60);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  const ads = [
+    {
+      id: 1,
+      type: "music",
+      icon: <Music className="size-8 text-green-500" />,
+      title: "🎵 Listen to Njabulo Jb Music",
+      description: "Enjoy the latest tracks from Njabulo Jb",
+      buttonText: "▶ Play Music",
+      buttonLink: "#",
+      color: "from-green-500/20 to-emerald-500/20",
+      duration: 60,
+      action: () => alert("🎵 Playing music...")
+    },
+    {
+      id: 2,
+      type: "download",
+      icon: <Download className="size-8 text-blue-500" />,
+      title: "📱 Download Njabulo Jb App",
+      description: "Get the official app for Android",
+      buttonText: "⬇ Download APK",
+      buttonLink: "/downloads/Njabulo-Jb.apk",
+      color: "from-blue-500/20 to-purple-500/20",
+      duration: 30,
+      action: () => window.open("/downloads/Njabulo-Jb.apk", "_blank")
+    },
+    {
+      id: 3,
+      type: "channel",
+      icon: <Bell className="size-8 text-yellow-500" />,
+      title: "🔔 Join Njabulo Jb Channel",
+      description: "Get notifications and updates",
+      buttonText: "📢 Join Channel",
+      buttonLink: "/contacts",
+      color: "from-yellow-500/20 to-orange-500/20",
+      duration: 20,
+      action: () => window.open("/contacts", "_blank")
+    }
+  ];
+
+  const currentAd = ads[currentAdIndex];
+  const totalDuration = currentAd.duration;
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    let progressTimer: NodeJS.Timeout;
+
+    if (isPlaying) {
+      setCountdown(totalDuration);
+      setProgress(0);
+
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            // Move to next ad
+            setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
+            return ads[(currentAdIndex + 1) % ads.length].duration;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      progressTimer = setInterval(() => {
+        setProgress((prev) => {
+          const newProgress = prev + (100 / totalDuration);
+          return newProgress >= 100 ? 0 : newProgress;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(progressTimer);
+    };
+  }, [isPlaying, currentAdIndex, totalDuration, ads]);
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const skipAd = () => {
+    setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
+    setCountdown(ads[(currentAdIndex + 1) % ads.length].duration);
+    setProgress(0);
+  };
+
+  const handleAction = () => {
+    currentAd.action();
+  };
+
+  return (
+    <div className="mb-6">
+      <div className={`bg-gradient-to-r ${currentAd.color} border border-border rounded-2xl p-6 relative overflow-hidden`}>
+        {/* Progress Bar */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-muted">
+          <div 
+            className="h-full bg-primary transition-all duration-1000"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          {/* Ad Icon */}
+          <div className="flex-shrink-0">
+            <div className="w-16 h-16 rounded-full bg-background/50 flex items-center justify-center">
+              {currentAd.icon}
+            </div>
+          </div>
+
+          {/* Ad Content */}
+          <div className="flex-1 text-center md:text-left">
+            <h3 className="text-lg font-semibold text-foreground">{currentAd.title}</h3>
+            <p className="text-sm text-muted-foreground">{currentAd.description}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs text-muted-foreground">⏱ {countdown}s</span>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-muted-foreground">Ad {currentAdIndex + 1}/{ads.length}</span>
+            </div>
+          </div>
+
+          {/* Ad Buttons */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleAction}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+            >
+              {currentAd.buttonText}
+            </button>
+            <button
+              onClick={skipAd}
+              className="p-2 hover:bg-accent rounded-full transition-colors text-muted-foreground hover:text-foreground"
+              title="Skip Ad"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Play/Pause */}
+        <button
+          onClick={togglePlay}
+          className="absolute bottom-2 right-2 p-1.5 hover:bg-accent rounded-full transition-colors text-muted-foreground hover:text-foreground"
+          title={isPlaying ? "Pause Ads" : "Play Ads"}
+        >
+          {isPlaying ? <Pause className="size-3" /> : <Play className="size-3" />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // Search Bar Component
 function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => void; searchQuery: string }) {
   return (
@@ -100,79 +256,6 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// 🆕 Install App Notification Component
-function InstallAppNotification() {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
-
-  useEffect(() => {
-    // Check if it's a mobile device
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    if (/android/i.test(userAgent)) {
-      setIsMobile(true);
-    }
-
-    // Check if already installed (PWA)
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true);
-      setIsVisible(false);
-    }
-
-    // Check if notification was dismissed
-    const dismissed = localStorage.getItem('install-notification-dismissed');
-    if (dismissed === 'true') {
-      setIsVisible(false);
-    }
-  }, []);
-
-  const handleDismiss = () => {
-    setIsVisible(false);
-    localStorage.setItem('install-notification-dismissed', 'true');
-  };
-
-  if (!isVisible || !isMobile || isInstalled) return null;
-
-  return (
-    <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-4 shadow-2xl border border-white/20">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-              <Smartphone className="size-6 text-white" />
-            </div>
-          </div>
-          <div className="flex-1">
-            <h4 className="text-white font-semibold text-sm">Install Njabulo Jb App</h4>
-            <p className="text-white/80 text-xs mt-1">
-              Get the best experience with our Android app
-            </p>
-            <div className="flex gap-2 mt-2">
-              <a
-                href="/downloads/Njabulo-Jb.apk"
-                download
-                className="px-3 py-1.5 bg-white text-purple-600 rounded-lg text-xs font-medium hover:bg-white/90 transition-colors"
-              >
-                <Download className="size-3 inline mr-1" />
-                Download APK
-              </a>
-              <button
-                onClick={handleDismiss}
-                className="px-3 py-1.5 bg-white/20 text-white rounded-lg text-xs hover:bg-white/30 transition-colors"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-          <button onClick={handleDismiss} className="text-white/60 hover:text-white">
-            <CloseIcon className="size-4" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // Bottom Buttons Component
 function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   const scrollToProjects = () => {
@@ -184,7 +267,6 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
 
   return (
     <div className="fixed bottom-32 right-8 z-40 flex flex-col gap-3">
-      {/* Music Button */}
       <button
         onClick={onOpenMusic}
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/40 hover:from-green-500/30 hover:to-emerald-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
@@ -194,7 +276,6 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
         <span className="text-sm font-medium text-green-600 hidden sm:inline">Music Player</span>
       </button>
       
-      {/* Download APK Button */}
       <a
         href="/downloads/Njabulo-Jb.apk"
         download
@@ -205,7 +286,6 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
         <span className="text-sm font-medium text-blue-600 hidden sm:inline">Download APK</span>
       </a>
       
-      {/* Projects Button */}
       <button
         onClick={scrollToProjects}
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-orange-500/20 border border-orange-500/40 hover:bg-orange-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
@@ -269,6 +349,7 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
   );
 }
 
+// Carousel Images
 const carouselImages = [
   { src: "/images/image1.png", alt: "Njabulo Jb Project 1", link: "/business" },
   { src: "/images/image2.png", alt: "Njabulo Jb Project 2", link: "https://github.com/NjabuloJf/Njabulo-Jb" },
@@ -300,6 +381,9 @@ export default function Page() {
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm py-3 border-b border-border">
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
+
+      {/* 🆕 Rotating Ads Section */}
+      <RotatingAds />
 
       {/* Hero Section */}
       <section id="hero" className="py-4">
@@ -448,9 +532,6 @@ export default function Page() {
         </BlurFade>
       </section>
 
-      {/* 🆕 Install App Notification */}
-      <InstallAppNotification />
-
       <BottomButtons onOpenMusic={() => setIsMusicPlayerOpen(true)} />
 
       {searchQuery && (
@@ -460,4 +541,4 @@ export default function Page() {
       )}
     </main>
   );
-        }
+}
