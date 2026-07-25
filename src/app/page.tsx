@@ -18,6 +18,23 @@ import { ImageCarousel } from "@/components/image-carousel";
 
 const BLUR_FADE_DELAY = 0.04;
 
+// 🆕 Toast Notification Component
+function Toast({ message, onClose }: { message: string; onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top-4 fade-in">
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-white/20">
+        <Music className="size-5" />
+        <span className="font-medium">{message}</span>
+      </div>
+    </div>
+  );
+}
+
 // Loading Screen
 function LoadingScreen() {
   return (
@@ -76,11 +93,12 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Notification Ads Component - Like Install App Notification
+// 🆕 Notification Ads Component - Like Install App Notification (FIXED)
 function NotificationAds() {
   const [activeAd, setActiveAd] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [dismissedAds, setDismissedAds] = useState<number[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null); // 🆕 For toast notifications
 
   const ads = [
     {
@@ -91,7 +109,7 @@ function NotificationAds() {
       description: "Enjoy the latest tracks",
       buttonText: "▶ Play Music",
       color: "from-green-600 to-emerald-600",
-      action: () => alert("🎵 Playing music...")
+      action: () => setToastMessage("🎵 Now playing music...") // ✅ FIXED: No more alert()
     },
     {
       id: 2,
@@ -157,41 +175,49 @@ function NotificationAds() {
     }
   };
 
-  if (!isVisible || !currentAd) return null;
-
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
-      <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-              {currentAd.icon}
+    <>
+      {/* 🆕 Toast Notification */}
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
+
+      {/* Ad Banner */}
+      {isVisible && currentAd && (
+        <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
+          <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  {currentAd.icon}
+                </div>
+              </div>
+              <div className="flex-1">
+                <h4 className="text-white font-semibold text-sm">{currentAd.title}</h4>
+                <p className="text-white/80 text-xs mt-1">{currentAd.description}</p>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={currentAd.action}
+                    className="px-3 py-1.5 bg-white text-purple-600 rounded-lg text-xs font-medium hover:bg-white/90 transition-colors"
+                  >
+                    {currentAd.buttonText}
+                  </button>
+                  <button
+                    onClick={handleDismiss}
+                    className="px-3 py-1.5 bg-white/20 text-white rounded-lg text-xs hover:bg-white/30 transition-colors"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+              <button onClick={handleDismiss} className="text-white/60 hover:text-white">
+                <X className="size-4" />
+              </button>
             </div>
           </div>
-          <div className="flex-1">
-            <h4 className="text-white font-semibold text-sm">{currentAd.title}</h4>
-            <p className="text-white/80 text-xs mt-1">{currentAd.description}</p>
-            <div className="flex gap-2 mt-2">
-              <button
-                onClick={currentAd.action}
-                className="px-3 py-1.5 bg-white text-purple-600 rounded-lg text-xs font-medium hover:bg-white/90 transition-colors"
-              >
-                {currentAd.buttonText}
-              </button>
-              <button
-                onClick={handleDismiss}
-                className="px-3 py-1.5 bg-white/20 text-white rounded-lg text-xs hover:bg-white/30 transition-colors"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-          <button onClick={handleDismiss} className="text-white/60 hover:text-white">
-            <X className="size-4" />
-          </button>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
@@ -344,7 +370,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - Like Install App Notification */}
+      {/* Notification Ads - Like Install App Notification (FIXED) */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -503,4 +529,4 @@ export default function Page() {
       )}
     </main>
   );
-    }
+      }
