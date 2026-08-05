@@ -6,8 +6,7 @@ import {
   Shield, Code, Lock, Copy, Download, Upload, 
   Github, MessageCircle, Eye, EyeOff,
   RefreshCw, AlertCircle, CheckCircle,
-  FileCode, Trash2, Zap, Terminal, Brain, 
-  Skull, Flame, Rocket, Sword, Crosshair
+  FileCode, Trash2, Zap, Skull, Sword
 } from "lucide-react";
 
 // ============================================================
@@ -39,7 +38,7 @@ function obfuscateCode(code: string, level: number): string {
   // ── LEVEL 2: STANDARD ──
   if (level >= 2) {
     // Create random function names
-    const randomNames = [];
+    const randomNames: string[] = [];
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < 50; i++) {
       let name = '';
@@ -52,7 +51,7 @@ function obfuscateCode(code: string, level: number): string {
     let nameIndex = 0;
     
     // Replace function names
-    result = result.replace(/\bfunction\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, (match, name) => {
+    result = result.replace(/\bfunction\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, (match: string, name: string) => {
       if (name.length > 2 && !name.startsWith('_')) {
         return `function ${randomNames[nameIndex++ % randomNames.length]}(`;
       }
@@ -60,7 +59,7 @@ function obfuscateCode(code: string, level: number): string {
     });
     
     // Replace variable names
-    result = result.replace(/\b(let|const|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match, keyword, name) => {
+    result = result.replace(/\b(let|const|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match: string, keyword: string, name: string) => {
       if (name.length > 2 && !name.startsWith('_')) {
         return `${keyword} ${randomNames[nameIndex++ % randomNames.length]}`;
       }
@@ -68,7 +67,7 @@ function obfuscateCode(code: string, level: number): string {
     });
     
     // Replace parameter names
-    result = result.replace(/\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)/g, (match, param) => {
+    result = result.replace(/\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)/g, (match: string, param: string) => {
       if (param.length > 1 && !param.startsWith('_')) {
         return `(${randomNames[nameIndex++ % randomNames.length]})`;
       }
@@ -76,8 +75,8 @@ function obfuscateCode(code: string, level: number): string {
     });
     
     // String encoding - multiple layers
-    const strings = [];
-    result = result.replace(/`([^`]*)`|"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/g, (match, p1, p2, p3) => {
+    const strings: string[] = [];
+    result = result.replace(/`([^`]*)`|"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/g, (match: string, p1: string, p2: string, p3: string) => {
       const str = p1 || p2 || p3 || '';
       if (str.length > 0) {
         strings.push(str);
@@ -109,11 +108,11 @@ function obfuscateCode(code: string, level: number): string {
   // ── LEVEL 3: ADVANCED - UNBREAKABLE ──
   if (level >= 3) {
     // Number to complex expression
-    result = result.replace(/\b(\d+)\b/g, (match, num) => {
+    result = result.replace(/\b(\d+)\b/g, (match: string, num: string) => {
       const n = parseInt(num);
       if (n > 1 && n < 99999) {
         const hex = n.toString(16);
-        const parts = [];
+        const parts: string[] = [];
         for (let i = 0; i < hex.length; i += 2) {
           parts.push(`0x${hex.slice(i, i + 2)}`);
         }
@@ -123,10 +122,10 @@ function obfuscateCode(code: string, level: number): string {
     });
     
     // Control flow flattening with multiple layers
-    result = result.replace(/function\s*\([^)]*\)\s*\{([^}]+)\}/g, (match, body) => {
+    result = result.replace(/function\s*\([^)]*\)\s*\{([^}]+)\}/g, (match: string, body: string) => {
       const statements = body.split(';').filter(s => s.trim());
       if (statements.length > 3) {
-        const cases = [];
+        const cases: string[] = [];
         statements.forEach((s, i) => {
           cases.push(`case ${i}:${s};break;`);
         });
@@ -197,14 +196,19 @@ function obfuscateCode(code: string, level: number): string {
     result = selfDefend + result;
     
     // Multiple encoding layers
-    const encoded = btoa(result);
-    const layers = [
-      `atob("${encoded}")`,
-      `decodeURIComponent(atob("${encoded}"))`,
-      `unescape(atob("${encoded}"))`
-    ];
-    const selected = layers[Math.floor(Math.random() * layers.length)];
-    result = `try{eval(${selected});}catch(e){console.log('Protected');}`;
+    try {
+      const encoded = btoa(result);
+      const layers = [
+        `atob("${encoded}")`,
+        `decodeURIComponent(atob("${encoded}"))`,
+        `unescape(atob("${encoded}"))`
+      ];
+      const selected = layers[Math.floor(Math.random() * layers.length)];
+      result = `try{eval(${selected});}catch(e){console.log('Protected');}`;
+    } catch (e) {
+      // If btoa fails, use fallback
+      result = `try{eval("${result.replace(/"/g, '\\"')}");}catch(e){}`;
+    }
     
     // Add random junk code
     const junkCount = Math.floor(Math.random() * 5) + 3;
@@ -293,17 +297,27 @@ export default function ObfuscatePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ============================================================
-  // ✅ LOAD MONTSERRAT FONT FROM GOOGLE FONTS
+  // ✅ LOAD MONTSERRAT FONT & JAVASCRIPT OBFUSCATOR FROM CDN
   // ============================================================
   useEffect(() => {
-    // Check if font is already loaded
-    const linkId = 'montserrat-font-link';
-    if (!document.getElementById(linkId)) {
-      const link = document.createElement('link');
-      link.id = linkId;
-      link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
-      link.rel = 'stylesheet';
-      document.head.appendChild(link);
+    // Load Montserrat font
+    const fontLinkId = 'montserrat-font-link';
+    if (!document.getElementById(fontLinkId)) {
+      const fontLink = document.createElement('link');
+      fontLink.id = fontLinkId;
+      fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
+      fontLink.rel = 'stylesheet';
+      document.head.appendChild(fontLink);
+    }
+
+    // Load JavaScript Obfuscator from CDN
+    const obfuscatorScriptId = 'javascript-obfuscator-script';
+    if (!document.getElementById(obfuscatorScriptId)) {
+      const script = document.createElement('script');
+      script.id = obfuscatorScriptId;
+      script.src = 'https://cdn.jsdelivr.net/npm/javascript-obfuscator/dist/index.browser.js';
+      script.async = true;
+      document.head.appendChild(script);
     }
   }, []);
 
@@ -328,6 +342,42 @@ export default function ObfuscatePage() {
     
     setTimeout(() => {
       try {
+        // Try to use the real JavaScript Obfuscator from CDN first
+        // @ts-ignore - JavaScriptObfuscator is loaded from CDN
+        if (typeof window !== 'undefined' && window.JavaScriptObfuscator) {
+          try {
+            // @ts-ignore
+            const obfuscated = window.JavaScriptObfuscator.obfuscate(inputCode, {
+              compact: true,
+              controlFlowFlattening: securityLevel >= 2,
+              controlFlowFlatteningThreshold: securityLevel === 3 ? 0.75 : 0.5,
+              deadCodeInjection: securityLevel >= 2,
+              deadCodeInjectionThreshold: securityLevel === 3 ? 0.5 : 0.3,
+              debugProtection: securityLevel === 3,
+              debugProtectionInterval: securityLevel === 3 ? 2000 : 0,
+              disableConsoleOutput: securityLevel === 3,
+              identifierNamesGenerator: securityLevel === 3 ? 'mangled' : 'hexadecimal',
+              renameGlobals: securityLevel === 3,
+              rotateStringArray: true,
+              selfDefending: securityLevel === 3,
+              stringArray: true,
+              stringArrayEncoding: securityLevel === 3 ? ['rc4'] : ['base64'],
+              stringArrayThreshold: securityLevel === 3 ? 0.8 : 0.5,
+              unicodeEscapeSequence: securityLevel === 3,
+            });
+            const obfuscatedCode = obfuscated.getObfuscatedCode();
+            setOutputCode(obfuscatedCode);
+            setIsObfuscated(true);
+            const levelName = levels.find(l => l.value === securityLevel)?.name || 'UNKNOWN';
+            showNotification(`✅ Code obfuscated successfully! (${levelName} level)`, "success");
+            setIsLoading(false);
+            return;
+          } catch (e) {
+            console.log("CDN obfuscator failed, using fallback", e);
+          }
+        }
+        
+        // Fallback to custom obfuscator
         const obfuscated = obfuscateCode(inputCode, securityLevel);
         setOutputCode(obfuscated);
         setIsObfuscated(true);
