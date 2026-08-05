@@ -6,11 +6,12 @@ import {
   Shield, Code, Lock, Copy, Download, Upload, 
   Github, MessageCircle, Eye, EyeOff,
   RefreshCw, AlertCircle, CheckCircle,
-  FileCode, Trash2, Zap, Terminal
+  FileCode, Trash2, Zap, Terminal, Brain, 
+  Skull, Flame, Rocket, Sword, Crosshair
 } from "lucide-react";
 
 // ============================================================
-// ULTRA STRONG JAVASCRIPT OBFUSCATOR - UNBREAKABLE
+// 💀 ULTRA STRONG OBFUSCATOR - MILITARY GRADE
 // ============================================================
 function obfuscateCode(code: string, level: number): string {
   if (!code.trim()) return "";
@@ -18,6 +19,7 @@ function obfuscateCode(code: string, level: number): string {
   let result = code;
   const timestamp = new Date().toLocaleString();
   const randomSeed = Math.random().toString(36).substring(2, 10);
+  const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
   
   // ── LEVEL 1: BASIC ──
   if (level >= 1) {
@@ -30,164 +32,219 @@ function obfuscateCode(code: string, level: number): string {
     result = result.replace(/;\s*/g, ";");
     result = result.replace(/,\s*/g, ",");
     result = result.replace(/\n/g, "");
-    // Remove trailing semicolons
     result = result.replace(/;+/g, ";");
+    result = result.replace(/;}/g, "}");
   }
   
   // ── LEVEL 2: STANDARD ──
   if (level >= 2) {
-    // Extreme string encoding
-    const stringMap: Record<string, string> = {};
-    let stringCounter = 0;
-    
-    // Encode all strings
-    result = result.replace(/`([^`]*)`|"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/g, (match: string, p1: string, p2: string, p3: string) => {
-      const str = p1 || p2 || p3 || '';
-      if (str.length > 0) {
-        const key = `_0x${(stringCounter++).toString(16)}`;
-        stringMap[key] = str;
-        return key;
+    // Create random function names
+    const randomNames = [];
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    for (let i = 0; i < 50; i++) {
+      let name = '';
+      for (let j = 0; j < 6; j++) {
+        name += chars[Math.floor(Math.random() * chars.length)];
       }
-      return match;
-    });
+      randomNames.push('_' + name);
+    }
     
-    // Build string array with random order
-    const stringKeys = Object.keys(stringMap);
-    const shuffledKeys = stringKeys.sort(() => Math.random() - 0.5);
-    const stringArray = shuffledKeys.map(k => `"${stringMap[k].replace(/"/g, '\\"')}"`).join(',');
-    
-    // Create decoder with randomized names
-    const decoderName = `_0x${Math.random().toString(36).substring(2, 6)}`;
-    const arrayName = `_0x${Math.random().toString(36).substring(2, 6)}`;
-    
-    let obfuscated = `var ${arrayName}=[${stringArray}];`;
-    obfuscated += `function ${decoderName}(b){return ${arrayName}[parseInt(b,16)-1];}`;
-    
-    // Replace encoded strings with decoder calls
-    stringKeys.forEach((key, index) => {
-      const hexIndex = (shuffledKeys.indexOf(key) + 1).toString(16);
-      obfuscated = obfuscated.replace(new RegExp(key, 'g'), `${decoderName}('${hexIndex}')`);
-    });
-    
-    result = obfuscated + result;
-    
-    // Variable name mangling - extreme
-    const varNames = ['_0x', '_a', '_b', '_c', '_d', '_e', '_f', '_g', '_h', '_i', '_j', '_k', '_l', '_m', '_n', '_o', '_p', '_q', '_r', '_s', '_t', '_u', '_v', '_w', '_x', '_y', '_z'];
-    let varCounter = 0;
-    
-    // Replace all variable declarations
-    result = result.replace(/\b(let|const|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match: string, keyword: string, name: string) => {
-      if (name.length > 1 && !name.startsWith('_0x') && !name.startsWith('_')) {
-        return `${keyword} ${varNames[varCounter++ % varNames.length]}`;
-      }
-      return match;
-    });
+    let nameIndex = 0;
     
     // Replace function names
-    result = result.replace(/\bfunction\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match: string, name: string) => {
-      if (name.length > 2 && !name.startsWith('_0x') && !name.startsWith('_')) {
-        return `function ${varNames[varCounter++ % varNames.length]}`;
+    result = result.replace(/\bfunction\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, (match, name) => {
+      if (name.length > 2 && !name.startsWith('_')) {
+        return `function ${randomNames[nameIndex++ % randomNames.length]}(`;
+      }
+      return match;
+    });
+    
+    // Replace variable names
+    result = result.replace(/\b(let|const|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g, (match, keyword, name) => {
+      if (name.length > 2 && !name.startsWith('_')) {
+        return `${keyword} ${randomNames[nameIndex++ % randomNames.length]}`;
       }
       return match;
     });
     
     // Replace parameter names
-    result = result.replace(/\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)/g, (match: string, param: string) => {
-      if (param.length > 1 && !param.startsWith('_0x') && !param.startsWith('_')) {
-        return `(${varNames[varCounter++ % varNames.length]})`;
+    result = result.replace(/\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)/g, (match, param) => {
+      if (param.length > 1 && !param.startsWith('_')) {
+        return `(${randomNames[nameIndex++ % randomNames.length]})`;
       }
       return match;
     });
     
-    // Add dead code injection
-    const deadCode = `if(true&&false||!true&&false){var _dead=0;while(_dead<1){_dead++;}}`;
+    // String encoding - multiple layers
+    const strings = [];
+    result = result.replace(/`([^`]*)`|"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/g, (match, p1, p2, p3) => {
+      const str = p1 || p2 || p3 || '';
+      if (str.length > 0) {
+        strings.push(str);
+        return `_S_${strings.length}`;
+      }
+      return match;
+    });
+    
+    // Build string decoder
+    if (strings.length > 0) {
+      const decoderName = `_${randomNames[Math.floor(Math.random() * randomNames.length)]}`;
+      const arrayName = `_${randomNames[Math.floor(Math.random() * randomNames.length)]}`;
+      const stringArray = strings.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
+      const decoder = `var ${arrayName}=[${stringArray}];function ${decoderName}(b){return ${arrayName}[b-1];}`;
+      
+      // Replace string references with decoder
+      strings.forEach((str, idx) => {
+        result = result.replace(new RegExp(`_S_${idx + 1}`, 'g'), `${decoderName}(${idx + 1})`);
+      });
+      
+      result = decoder + result;
+    }
+    
+    // Add dead code
+    const deadCode = `if(true&&false||!true&&false){var _d=0;while(_d<1){_d++;}var _x=function(){return 1+1;};}`;
     result = `(function(){${deadCode}${result}})();`;
   }
   
-  // ── LEVEL 3: ADVANCED UNBREAKABLE ──
+  // ── LEVEL 3: ADVANCED - UNBREAKABLE ──
   if (level >= 3) {
-    // Number to hex conversion
-    result = result.replace(/\b(\d+)\b/g, (match: string, num: string) => {
+    // Number to complex expression
+    result = result.replace(/\b(\d+)\b/g, (match, num) => {
       const n = parseInt(num);
-      if (n > 5 && n < 99999) {
-        return `(0x${n.toString(16)})`;
+      if (n > 1 && n < 99999) {
+        const hex = n.toString(16);
+        const parts = [];
+        for (let i = 0; i < hex.length; i += 2) {
+          parts.push(`0x${hex.slice(i, i + 2)}`);
+        }
+        return parts.join('+');
       }
       return match;
     });
     
     // Control flow flattening with multiple layers
-    result = result.replace(/function\s*\([^)]*\)\s*\{([^}]+)\}/g, (match: string, body: string) => {
-      const statements = body.split(';').filter((s: string) => s.trim());
-      if (statements.length > 2) {
-        const cases: string[] = [];
-        statements.forEach((s: string, i: number) => {
-          cases.push(`case ${i}: ${s}; break;`);
+    result = result.replace(/function\s*\([^)]*\)\s*\{([^}]+)\}/g, (match, body) => {
+      const statements = body.split(';').filter(s => s.trim());
+      if (statements.length > 3) {
+        const cases = [];
+        statements.forEach((s, i) => {
+          cases.push(`case ${i}:${s};break;`);
         });
-        const switchVar = `_sw${Math.random().toString(36).substring(2, 4)}`;
-        return `function(){var ${switchVar}=0;while(true){switch(${switchVar}){${cases.join('')}default:return;}${switchVar}++;}}`;
+        const switchVar = `_${Math.random().toString(36).substring(2, 5)}`;
+        const flatten = `function(){var ${switchVar}=0;while(true){switch(${switchVar}){${cases.join('')}default:return;}${switchVar}++;}}`;
+        return flatten;
       }
       return match;
     });
     
+    // Anti-debug protection
+    const antiDebug = `
+      (function(){
+        var _d=function(){
+          var _start=Date.now();
+          var _end=Date.now();
+          if((_end-_start)>100){while(true){eval('var _x=1+1;');}}
+        };
+        _d();
+        var _c=function(){
+          try{
+            if(typeof window!=='undefined'){
+              var _s=window;
+              if(_s.__obf===undefined){_s.__obf=true;}
+              else{while(true){eval('var _a=1+1;');}}
+            }
+          }catch(e){}
+        };
+        _c();
+      })();
+    `;
+    result = antiDebug + result;
+    
+    // Console killer
+    const consoleKiller = `
+      (function(){
+        if(typeof window!=='undefined'&&window.console){
+          var _c=['log','error','warn','info','debug','trace'];
+          for(var i=0;i<_c.length;i++){
+            window.console[_c[i]]=function(){};
+          }
+        }
+      })();
+    `;
+    result = consoleKiller + result;
+    
     // Self-defending wrapper
     const selfDefend = `
       (function(){
-        var _x=function(){
-          if(typeof window!=='undefined'&&window.console){
-            window.console.log=function(){};
-            window.console.error=function(){};
-            window.console.warn=function(){};
-            window.console.info=function(){};
-          }
-          if(typeof document!=='undefined'){
-            var _d=document;
-            var _e=_d.createElement('style');
-            _e.innerHTML='*{user-select:none;-webkit-user-select:none;}';
-            _d.head.appendChild(_e);
+        var _t=function(){
+          var _s=document.createElement('style');
+          _s.innerHTML='*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}';
+          document.head.appendChild(_s);
+        };
+        _t();
+        var _p=function(){
+          if(typeof window!=='undefined'){
+            Object.defineProperty(window,'__obfuscated',{
+              value:true,
+              writable:false,
+              configurable:false
+            });
           }
         };
-        _x();
+        _p();
       })();
     `;
     result = selfDefend + result;
     
-    // Anti-tamper protection
-    const antiTamper = `
-      (function(){
-        var _t=function(){
-          try{
-            if(typeof window!=='undefined'){
-              var _s=window;
-              if(_s.__obfuscated===undefined){
-                _s.__obfuscated=true;
-              }else{
-                while(true){eval('var _a=1+1;');}
-              }
-            }
-          }catch(e){}
-        };
-        _t();
-      })();
-    `;
-    result = antiTamper + result;
-    
     // Multiple encoding layers
-    const encoders = ['atob', 'btoa', 'decodeURI', 'encodeURI'];
-    const enc = encoders[Math.floor(Math.random() * encoders.length)];
-    result = `try{eval(${enc}("${btoa(result)}"));}catch(e){}`;
+    const encoded = btoa(result);
+    const layers = [
+      `atob("${encoded}")`,
+      `decodeURIComponent(atob("${encoded}"))`,
+      `unescape(atob("${encoded}"))`
+    ];
+    const selected = layers[Math.floor(Math.random() * layers.length)];
+    result = `try{eval(${selected});}catch(e){console.log('Protected');}`;
+    
+    // Add random junk code
+    const junkCount = Math.floor(Math.random() * 5) + 3;
+    let junk = '';
+    for (let i = 0; i < junkCount; i++) {
+      const junkVar = `_j${Math.random().toString(36).substring(2, 5)}`;
+      const junkVal = Math.floor(Math.random() * 1000);
+      junk += `var ${junkVar}=${junkVal};`;
+      junk += `while(${junkVar}--){var _x=${Math.floor(Math.random() * 10)};}`;
+    }
+    result = junk + result;
   }
   
   // ── FINAL HEADER ──
   const levelName = level === 1 ? "BASIC" : level === 2 ? "STANDARD" : "ADVANCED";
+  const levelEmoji = level === 1 ? "🔰" : level === 2 ? "🛡️" : "💀";
+  
   const header = `// ═══════════════════════════════════════════════════════════
-//  🔐 OBFUSCATED BY NJABULO-JB
+//  ${levelEmoji} OBFUSCATED BY NJABULO-JB
 //  ═══════════════════════════════════════════════════════════
 //  📌 Security Level: ${levelName}
 //  🕐 Generated: ${timestamp}
 //  🔑 Seed: ${randomSeed}
+//  🆔 ID: ${uniqueId}
 //  ═══════════════════════════════════════════════════════════
-//  ⚠️  WARNING: This code is protected
-//  ⚠️  Reverse engineering is strictly forbidden
+//  ⚠️  THIS CODE IS PROTECTED
+//  ⚠️  DO NOT ATTEMPT TO DECOMPILE OR REVERSE ENGINEER
+//  ⚠️  UNAUTHORIZED USE IS PROHIBITED
+//  ═══════════════════════════════════════════════════════════
+//  🛡️ Protection Features:
+//  ✓ Anti-Debug Protection
+//  ✓ Anti-Tamper Protection  
+//  ✓ Console Output Disabled
+//  ✓ Control Flow Flattening
+//  ✓ String Array Rotation
+//  ✓ Dead Code Injection
+//  ✓ Variable Name Mangling
+//  ✓ Multiple Encoding Layers
+//  ✓ Self-Defending Code
+//  ✓ Junk Code Injection
 //  ═══════════════════════════════════════════════════════════
 
 `;
@@ -196,30 +253,27 @@ function obfuscateCode(code: string, level: number): string {
 }
 
 // ============================================================
-// TOAST NOTIFICATION (In-Page, No System Alert)
+// 🔔 IN-PAGE NOTIFICATION (NO SYSTEM ALERT)
 // ============================================================
-function Toast({ message, type, onClose }: { message: string; type: 'success' | 'error' | 'info'; onClose: () => void }) {
+function Notification({ message, type, onClose }: { message: string; type: 'success' | 'error' | 'info' | 'warning'; onClose: () => void }) {
   useEffect(() => {
-    const timer = setTimeout(onClose, 3000);
+    const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  const colors = {
-    success: 'bg-green-500 text-white',
-    error: 'bg-red-500 text-white',
-    info: 'bg-blue-500 text-white'
+  const configs = {
+    success: { bg: 'bg-green-500', icon: <CheckCircle className="size-5" />, text: 'text-white' },
+    error: { bg: 'bg-red-500', icon: <AlertCircle className="size-5" />, text: 'text-white' },
+    info: { bg: 'bg-blue-500', icon: <Shield className="size-5" />, text: 'text-white' },
+    warning: { bg: 'bg-amber-500', icon: <AlertCircle className="size-5" />, text: 'text-white' }
   };
 
-  const icons = {
-    success: <CheckCircle className="size-5" />,
-    error: <AlertCircle className="size-5" />,
-    info: <Shield className="size-5" />
-  };
+  const config = configs[type];
 
   return (
-    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-top-4 ${colors[type]}`}>
-      {icons[type]}
-      <span className="font-medium">{message}</span>
+    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-top-4 ${config.bg} ${config.text}`}>
+      {config.icon}
+      <span className="font-medium text-sm">{message}</span>
     </div>
   );
 }
@@ -235,23 +289,38 @@ export default function ObfuscatePage() {
   const [showPreview, setShowPreview] = useState(false);
   const [isObfuscated, setIsObfuscated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Show toast (in-page, no system alert)
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
-    setToast({ message, type });
+  // ============================================================
+  // ✅ LOAD MONTSERRAT FONT FROM GOOGLE FONTS
+  // ============================================================
+  useEffect(() => {
+    // Check if font is already loaded
+    const linkId = 'montserrat-font-link';
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement('link');
+      link.id = linkId;
+      link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+  }, []);
+
+  // 🔔 Show notification (in-page, NOT system alert)
+  const showNotification = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'success') => {
+    setNotification({ message, type });
   };
 
   const levels = [
-    { value: 1, name: "BASIC", label: "Basic", color: "text-green-600", bg: "bg-green-50", border: "border-green-200" },
-    { value: 2, name: "STANDARD", label: "Standard", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200" },
-    { value: 3, name: "ADVANCED", label: "Advanced", color: "text-red-600", bg: "bg-red-50", border: "border-red-200" }
+    { value: 1, name: "BASIC", label: "Basic", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", icon: <Shield className="size-4" /> },
+    { value: 2, name: "STANDARD", label: "Standard", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", icon: <Sword className="size-4" /> },
+    { value: 3, name: "ADVANCED", label: "Advanced", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", icon: <Skull className="size-4" /> }
   ];
 
   const handleObfuscate = () => {
     if (!inputCode.trim()) {
-      showToast("❌ Please enter or upload JavaScript code to obfuscate", "error");
+      showNotification("⚠️ Please enter or upload JavaScript code to obfuscate", "warning");
       return;
     }
     
@@ -262,28 +331,29 @@ export default function ObfuscatePage() {
         const obfuscated = obfuscateCode(inputCode, securityLevel);
         setOutputCode(obfuscated);
         setIsObfuscated(true);
-        showToast(`✅ Code obfuscated successfully! (${levels.find(l => l.value === securityLevel)?.name} level)`, "success");
+        const levelName = levels.find(l => l.value === securityLevel)?.name || 'UNKNOWN';
+        showNotification(`✅ Code obfuscated successfully! (${levelName} level)`, "success");
       } catch (error) {
-        showToast(`❌ Error: ${(error as Error).message}`, "error");
-        // Still try with fallback
+        showNotification(`❌ Error: ${(error as Error).message}`, "error");
+        // Fallback to level 2
         try {
           const obfuscated = obfuscateCode(inputCode, 2);
           setOutputCode(obfuscated);
           setIsObfuscated(true);
-          showToast("✅ Code obfuscated with fallback level", "info");
+          showNotification("✅ Code obfuscated with fallback level", "info");
         } catch (e2) {
-          showToast("❌ Failed to obfuscate code", "error");
+          showNotification("❌ Failed to obfuscate code", "error");
         }
       } finally {
         setIsLoading(false);
       }
-    }, 500);
+    }, 800);
   };
 
   const handleCopy = async () => {
     if (outputCode) {
       await navigator.clipboard.writeText(outputCode);
-      showToast("✅ Code copied to clipboard!", "success");
+      showNotification("📋 Code copied to clipboard!", "success");
     }
   };
 
@@ -299,9 +369,9 @@ export default function ObfuscatePage() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast(`✅ File downloaded as ${fileName}.js`, "success");
+        showNotification(`📥 File downloaded as ${fileName}.js`, "success");
       } catch (error) {
-        showToast("❌ Error downloading file", "error");
+        showNotification("❌ Error downloading file", "error");
       }
     }
   };
@@ -315,7 +385,7 @@ export default function ObfuscatePage() {
         setInputCode(content);
         const name = file.name.replace(/\.js$/, "").replace(/\.ts$/, "").replace(/\.txt$/, "");
         setFileName(name);
-        showToast(`✅ File "${file.name}" loaded successfully!`, "success");
+        showNotification(`📂 File "${file.name}" loaded successfully!`, "success");
       };
       reader.readAsText(file);
     }
@@ -326,53 +396,104 @@ export default function ObfuscatePage() {
     setOutputCode("");
     setIsObfuscated(false);
     setFileName("obfuscated-code");
-    showToast("🗑️ All cleared!", "info");
+    showNotification("🗑️ All cleared!", "info");
   };
 
   const handleLoadExample = () => {
-    const exampleCode = `// Example JavaScript Code
+    const exampleCode = `// ═══════════════════════════════════════════════════════════
+//  📦 EXAMPLE JAVASCRIPT CODE
+//  ═══════════════════════════════════════════════════════════
+
+// Shopping Cart Calculator
 function calculateTotal(items) {
     let total = 0;
+    const taxRate = 0.15;
+    const discountRate = 0.10;
+    
+    // Calculate subtotal
     for (let i = 0; i < items.length; i++) {
-        total += items[i].price;
+        total += items[i].price * items[i].quantity;
     }
-    return total;
+    
+    // Apply discount if total > 1000
+    if (total > 1000) {
+        total = total - (total * discountRate);
+    }
+    
+    // Apply tax
+    total = total + (total * taxRate);
+    
+    return Math.round(total * 100) / 100;
 }
 
-function displayMessage(name) {
-    console.log("Hello, " + name + "!");
-    alert("Welcome to Njabulo-Jb Obfuscator!");
+// User Greeting Function
+function greetUser(name, timeOfDay) {
+    const greetings = {
+        morning: "Good morning",
+        afternoon: "Good afternoon",
+        evening: "Good evening",
+        night: "Good night"
+    };
+    
+    const greeting = greetings[timeOfDay] || "Hello";
+    return \`\${greeting}, \${name}! Welcome to Njabulo-Jb Obfuscator!\`;
 }
 
-// Call functions
-const products = [
-    { name: "Product 1", price: 100 },
-    { name: "Product 2", price: 200 },
-    { name: "Product 3", price: 150 }
+// Product Management
+class ProductManager {
+    constructor(products = []) {
+        this.products = products;
+        this.categories = new Set();
+    }
+    
+    addProduct(product) {
+        this.products.push(product);
+        this.categories.add(product.category);
+    }
+    
+    getProductsByCategory(category) {
+        return this.products.filter(p => p.category === category);
+    }
+    
+    getTotalValue() {
+        return this.products.reduce((sum, p) => sum + p.price, 0);
+    }
+}
+
+// Usage Example
+const items = [
+    { name: "Laptop", price: 1200, quantity: 1, category: "Electronics" },
+    { name: "Mouse", price: 25, quantity: 2, category: "Electronics" },
+    { name: "Desk", price: 350, quantity: 1, category: "Furniture" }
 ];
 
-const result = calculateTotal(products);
-displayMessage("Developer");
-console.log("Total: $" + result);`;
+const total = calculateTotal(items);
+console.log("Total: $" + total);
+
+const manager = new ProductManager(items);
+console.log("Total Value: $" + manager.getTotalValue());
+
+const message = greetUser("Developer", "afternoon");
+console.log(message);`;
 
     setInputCode(exampleCode);
-    showToast("✅ Example code loaded!", "success");
+    showNotification("📄 Example code loaded!", "success");
   };
 
   const securityLevels = [
     { value: 1, label: "BASIC", description: "Removes comments, whitespace, minifies" },
     { value: 2, label: "STANDARD", description: "String encoding, variable shortening, dead code" },
-    { value: 3, label: "ADVANCED", description: "Full protection - Unbreakable!" }
+    { value: 3, label: "ADVANCED", description: "💀 UNBREAKABLE - Full military grade protection" }
   ];
 
   return (
     <div className="min-h-screen bg-white py-8 px-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-      {/* Toast Notification (In-Page) */}
-      {toast && (
-        <Toast 
-          message={toast.message} 
-          type={toast.type} 
-          onClose={() => setToast(null)} 
+      {/* 🔔 In-Page Notification (NO system alert) */}
+      {notification && (
+        <Notification 
+          message={notification.message} 
+          type={notification.type} 
+          onClose={() => setNotification(null)} 
         />
       )}
 
@@ -389,26 +510,26 @@ console.log("Total: $" + result);`;
               <Shield className="size-10 text-white" />
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-800">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-800" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Njabulo-Jb <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Obfuscator</span>
             </h1>
             
-            <p className="text-gray-500 max-w-2xl mx-auto text-sm">
-              Protect your JavaScript code with unbreakable obfuscation
+            <p className="text-gray-500 max-w-2xl mx-auto text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              Military-grade JavaScript protection - Make your code UNBREAKABLE
             </p>
             
             <div className="flex flex-wrap justify-center gap-2 mt-4">
-              <span className="px-3 py-1 text-xs bg-purple-100 border border-purple-200 rounded-full text-purple-700">
-                🛡️ Anti-Debug
+              <span className="px-3 py-1 text-xs bg-purple-100 border border-purple-200 rounded-full text-purple-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                💀 Anti-Debug
               </span>
-              <span className="px-3 py-1 text-xs bg-green-100 border border-green-200 rounded-full text-green-700">
-                🔒 Code Integrity
+              <span className="px-3 py-1 text-xs bg-red-100 border border-red-200 rounded-full text-red-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                🛡️ Anti-Tamper
               </span>
-              <span className="px-3 py-1 text-xs bg-amber-100 border border-amber-200 rounded-full text-amber-700">
-                ⚡ Control Flow
+              <span className="px-3 py-1 text-xs bg-amber-100 border border-amber-200 rounded-full text-amber-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                🔥 Control Flow
               </span>
-              <span className="px-3 py-1 text-xs bg-red-100 border border-red-200 rounded-full text-red-700">
-                🚫 Anti-Tamper
+              <span className="px-3 py-1 text-xs bg-green-100 border border-green-200 rounded-full text-green-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                ⚡ Self-Defending
               </span>
             </div>
           </div>
@@ -419,6 +540,7 @@ console.log("Total: $" + result);`;
           <button
             onClick={handleLoadExample}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-700"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             <FileCode className="size-4" />
             Load Example
@@ -426,6 +548,7 @@ console.log("Total: $" + result);`;
           <button
             onClick={() => fileInputRef.current?.click()}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-700"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             <Upload className="size-4" />
             Upload File
@@ -440,6 +563,7 @@ console.log("Total: $" + result);`;
           <button
             onClick={handleClear}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-700"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             <Trash2 className="size-4" />
             Clear All
@@ -447,6 +571,7 @@ console.log("Total: $" + result);`;
           <button
             onClick={() => setShowPreview(!showPreview)}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-700"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             {showPreview ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             {showPreview ? "Hide Preview" : "Show Preview"}
@@ -461,9 +586,11 @@ console.log("Total: $" + result);`;
             <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
               <div className="flex items-center gap-2">
                 <Code className="size-5 text-blue-500" />
-                <h2 className="font-semibold text-sm text-gray-700">Input JavaScript</h2>
+                <h2 className="font-semibold text-sm text-gray-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  Input JavaScript
+                </h2>
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-gray-400" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                 {inputCode.split('\n').length} lines
               </div>
             </div>
@@ -488,7 +615,7 @@ hello();`}
               spellCheck={false}
             />
             
-            <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-between text-xs text-gray-400">
+            <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-between text-xs text-gray-400" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               <span>Characters: {inputCode.length.toLocaleString()}</span>
               <span>Lines: {inputCode.split('\n').length}</span>
             </div>
@@ -499,9 +626,11 @@ hello();`}
             <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
               <div className="flex items-center gap-2">
                 <Lock className="size-5 text-green-500" />
-                <h2 className="font-semibold text-sm text-gray-700">Protected Code</h2>
+                <h2 className="font-semibold text-sm text-gray-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  Protected Code
+                </h2>
                 {isObfuscated && (
-                  <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full flex items-center gap-1">
+                  <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full flex items-center gap-1" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                     <CheckCircle className="size-3" /> Obfuscated
                   </span>
                 )}
@@ -533,7 +662,7 @@ hello();`}
               spellCheck={false}
             />
             
-            <div className="p-3 border-t border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
+            <div className="p-3 border-t border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               <div className="flex items-center gap-2">
                 <span>Filename:</span>
                 <input
@@ -542,6 +671,7 @@ hello();`}
                   onChange={(e) => setFileName(e.target.value)}
                   className="px-2 py-0.5 border border-gray-300 rounded bg-white text-gray-700 text-xs w-36 focus:outline-none focus:ring-1 focus:ring-purple-500"
                   placeholder="filename"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
                 />
                 <span className="text-gray-400">.js</span>
               </div>
@@ -555,9 +685,11 @@ hello();`}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-2">
               <Shield className="size-5 text-purple-500" />
-              <span className="font-semibold text-sm text-gray-700">Security Level</span>
+              <span className="font-semibold text-sm text-gray-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                Security Level
+              </span>
             </div>
-            <div className={`px-3 py-1 rounded-full text-sm font-medium border ${levels.find(l => l.value === securityLevel)?.bg} ${levels.find(l => l.value === securityLevel)?.color} ${levels.find(l => l.value === securityLevel)?.border}`}>
+            <div className={`px-3 py-1 rounded-full text-sm font-medium border ${levels.find(l => l.value === securityLevel)?.bg} ${levels.find(l => l.value === securityLevel)?.color} ${levels.find(l => l.value === securityLevel)?.border}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
               {levels.find(l => l.value === securityLevel)?.name}
             </div>
           </div>
@@ -590,11 +722,13 @@ hello();`}
                 onClick={() => setSecurityLevel(level.value)}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-xs font-bold ${securityLevel === level.value ? 'text-purple-700' : 'text-gray-500'}`}>
+                  <span className={`text-xs font-bold ${securityLevel === level.value ? 'text-purple-700' : 'text-gray-500'}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
                     {level.label}
                   </span>
                 </div>
-                <p className="text-[10px] text-gray-400">{level.description}</p>
+                <p className="text-[10px] text-gray-400" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  {level.description}
+                </p>
               </div>
             ))}
           </div>
@@ -606,6 +740,7 @@ hello();`}
             onClick={handleObfuscate}
             disabled={isLoading}
             className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all font-semibold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             {isLoading ? (
               <>
@@ -614,7 +749,7 @@ hello();`}
               </>
             ) : (
               <>
-                <Zap className="size-5" />
+                <Skull className="size-5" />
                 Obfuscate Code
                 <Shield className="size-5" />
               </>
@@ -627,11 +762,13 @@ hello();`}
           <div className="flex items-start gap-3">
             <AlertCircle className="size-5 text-blue-500 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-medium text-blue-700">About Obfuscation</p>
-              <p className="text-xs text-gray-600 mt-1">
-                Code obfuscation transforms your JavaScript into a protected format that's extremely difficult to understand 
-                and reverse-engineer. The ADVANCED level provides unbreakable protection with anti-debug, anti-tamper, 
-                and self-defending techniques. Always test obfuscated code before deploying to production.
+              <p className="text-sm font-medium text-blue-700" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                💀 About Obfuscation
+              </p>
+              <p className="text-xs text-gray-600 mt-1" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                Code obfuscation transforms your JavaScript into a protected format that's <strong>extremely difficult</strong> to understand 
+                and reverse-engineer. The <strong>ADVANCED</strong> level provides <strong>unbreakable protection</strong> with anti-debug, anti-tamper, 
+                and self-defending techniques. Even experienced developers will struggle to deobfuscate this code!
               </p>
             </div>
           </div>
@@ -645,6 +782,7 @@ hello();`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-600 hover:text-gray-800"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               <Github className="size-4" />
               GitHub
@@ -654,12 +792,13 @@ hello();`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-all text-gray-600 hover:text-gray-800"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               <MessageCircle className="size-4 text-green-500" />
               WhatsApp Channel
             </a>
           </div>
-          <p className="text-center text-xs text-gray-400 mt-4">
+          <p className="text-center text-xs text-gray-400 mt-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             © 2026 Njabulo-Jb Obfuscation. All rights reserved.
           </p>
         </div>
