@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -93,12 +93,167 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Notification Ads Component - Dismiss hides completely, comes back after random time
+// 🆕 Mini Music Player for Notification
+function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () => void }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      audioRef.current = new Audio(audioSrc);
+      audioRef.current.loop = false;
+      
+      audioRef.current.addEventListener('loadedmetadata', () => {
+        if (audioRef.current) setDuration(audioRef.current.duration);
+      });
+      
+      audioRef.current.addEventListener('timeupdate', () => {
+        if (audioRef.current) setCurrentTime(audioRef.current.currentTime);
+      });
+      
+      audioRef.current.addEventListener('ended', () => {
+        setIsPlaying(false);
+        setCurrentTime(0);
+        if (audioRef.current) audioRef.current.currentTime = 0;
+      });
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+    };
+  }, [audioSrc]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(err => {
+        console.error('Audio play failed:', err);
+      });
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value);
+    setVolume(val);
+    if (audioRef.current) {
+      audioRef.current.volume = val;
+    }
+    setIsMuted(val === 0);
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      if (isMuted) {
+        audioRef.current.volume = volume || 1;
+        setIsMuted(false);
+      } else {
+        audioRef.current.volume = 0;
+        setIsMuted(true);
+      }
+    }
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="fixed bottom-40 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-4 shadow-2xl border border-white/20">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+              <Music className="size-4 text-white" />
+            </div>
+            <div>
+              <h4 className="text-white font-semibold text-xs">Now Playing</h4>
+              <p className="text-white/70 text-[10px]">Njabulo Jb - Song 1</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-white/60 hover:text-white">
+            <X className="size-4" />
+          </button>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-white/60 text-[10px]">{formatTime(currentTime)}</span>
+          <input
+            type="range"
+            min="0"
+            max={duration || 100}
+            value={currentTime}
+            onChange={(e) => {
+              if (audioRef.current) {
+                const val = parseFloat(e.target.value);
+                audioRef.current.currentTime = val;
+                setCurrentTime(val);
+              }
+            }}
+            className="flex-1 h-1 bg-white/20 rounded-full appearance-none cursor-pointer"
+            style={{
+              background: `linear-gradient(to right, white 0%, white ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.2) ${(currentTime / (duration || 1)) * 100}%)`
+            }}
+          />
+          <span className="text-white/60 text-[10px]">{formatTime(duration)}</span>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center justify-between mt-2">
+          <button
+            onClick={toggleMute}
+            className="text-white/60 hover:text-white transition-colors"
+          >
+            {isMuted || volume === 0 ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+          </button>
+          
+          <div className="flex items-center gap-3">
+            <button
+              onClick={togglePlay}
+              className="w-10 h-10 rounded-full bg-white text-purple-600 hover:bg-white/90 transition-all flex items-center justify-center shadow-lg"
+            >
+              {isPlaying ? <Pause className="size-5" /> : <Play className="size-5 ml-0.5" />}
+            </button>
+          </div>
+
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={isMuted ? 0 : volume}
+            onChange={handleVolumeChange}
+            className="w-16 h-1 bg-white/20 rounded-full appearance-none cursor-pointer"
+            style={{
+              background: `linear-gradient(to right, white 0%, white ${(isMuted ? 0 : volume) * 100}%, rgba(255,255,255,0.2) ${(isMuted ? 0 : volume) * 100}%)`
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 🆕 Notification Ads Component - With Music Player
 function NotificationAds() {
   const [activeAdIndex, setActiveAdIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [reappearTimer, setReappearTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showMusicPlayer, setShowMusicPlayer] = useState(false);
 
   const ads = [
     {
@@ -109,7 +264,10 @@ function NotificationAds() {
       description: "Enjoy the latest tracks",
       buttonText: "▶ Play Music",
       color: "from-green-600 to-emerald-600",
-      action: () => setToastMessage("🎵 Now playing music...")
+      action: () => {
+        setShowMusicPlayer(true);
+        setToastMessage("🎵 Now playing music...");
+      }
     },
     {
       id: 2,
@@ -135,7 +293,7 @@ function NotificationAds() {
 
   // Get random time between 20-30 seconds
   const getRandomReappearTime = () => {
-    return Math.floor(Math.random() * (30 - 20 + 1) + 20) * 1000; // in milliseconds
+    return Math.floor(Math.random() * (30 - 20 + 1) + 20) * 1000;
   };
 
   // Clean up timer on unmount
@@ -148,42 +306,49 @@ function NotificationAds() {
   const currentAd = ads[activeAdIndex];
 
   const handleDismiss = () => {
-    // Clear any existing timer
     if (reappearTimer) {
       clearTimeout(reappearTimer);
       setReappearTimer(null);
     }
 
-    // Hide notification completely
     setIsVisible(false);
     
-    // Set timer to show next notification after random time (20-30 seconds)
     const randomTime = getRandomReappearTime();
     const timer = setTimeout(() => {
-      // Move to next ad
       setActiveAdIndex((prev) => (prev + 1) % ads.length);
-      // Show notification
       setIsVisible(true);
     }, randomTime);
     
     setReappearTimer(timer);
   };
 
-  // Handle ad action
   const handleAction = () => {
     currentAd.action();
-    // After action, dismiss and start countdown
-    handleDismiss();
+    // Dismiss after action (but keep music player open)
+    if (currentAd.type !== 'music') {
+      handleDismiss();
+    }
   };
 
   return (
     <>
+      {/* 🆕 Mini Music Player */}
+      {showMusicPlayer && (
+        <MiniMusicPlayer 
+          audioSrc="/song1.mp3" 
+          onClose={() => {
+            setShowMusicPlayer(false);
+            handleDismiss();
+          }} 
+        />
+      )}
+
       {/* 🆕 Toast Notification */}
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* Ad Banner - Only show when visible, NO countdown shown */}
+      {/* Ad Banner */}
       {isVisible && currentAd && (
         <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
           <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
@@ -215,7 +380,6 @@ function NotificationAds() {
                 <X className="size-4" />
               </button>
             </div>
-            {/* Small indicator showing it will reappear */}
             <div className="mt-2 text-white/30 text-[10px] text-center">
               🔄 Will reappear automatically
             </div>
@@ -375,7 +539,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - Dismiss hides completely, comes back after random time */}
+      {/* Notification Ads - With Music Player */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -534,4 +698,4 @@ export default function Page() {
       )}
     </main>
   );
-        }
+      }
