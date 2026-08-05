@@ -18,7 +18,8 @@ import {
   Volume2, VolumeX, SkipForward, SkipBack, Users, 
   MessageSquare, Facebook, Globe, Bot, Zap, Crown,
   Radio, Headphones, Share2, Star, Heart, Award,
-  Youtube, Github, ExternalLink, Send, Hash, Link as LinkIcon
+  Youtube, Github, ExternalLink, Send, Hash, Link as LinkIcon,
+  FastForward, PlayCircle, Repeat, Timer, Clock
 } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
@@ -100,7 +101,7 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Mini Music Player for Notification with Multiple Songs
+// 🆕 FAST Mini Music Player with Speed Controls
 function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose: () => void }) {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -108,6 +109,8 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [isShuffling, setIsShuffling] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const songNames = [
@@ -118,10 +121,13 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
     "Njabulo Jb - Song 5"
   ];
 
+  const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       audioRef.current = new Audio(audioSrcs[currentSongIndex]);
       audioRef.current.loop = false;
+      audioRef.current.playbackRate = playbackSpeed;
       
       audioRef.current.addEventListener('loadedmetadata', () => {
         if (audioRef.current) setDuration(audioRef.current.duration);
@@ -132,7 +138,11 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
       });
       
       audioRef.current.addEventListener('ended', () => {
-        handleNext();
+        if (isShuffling) {
+          handleShuffleNext();
+        } else {
+          handleNext();
+        }
       });
     }
     
@@ -142,7 +152,7 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
         audioRef.current.src = '';
       }
     };
-  }, [currentSongIndex]);
+  }, [currentSongIndex, playbackSpeed]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -170,7 +180,7 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
         audioRef.current.play().catch(err => console.error('Play failed:', err));
         setIsPlaying(true);
       }
-    }, 100);
+    }, 50);
   };
 
   const handlePrevious = () => {
@@ -186,7 +196,40 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
         audioRef.current.play().catch(err => console.error('Play failed:', err));
         setIsPlaying(true);
       }
-    }, 100);
+    }, 50);
+  };
+
+  const handleShuffleNext = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    let randomIndex;
+    do {
+      randomIndex = Math.floor(Math.random() * audioSrcs.length);
+    } while (randomIndex === currentSongIndex && audioSrcs.length > 1);
+    setCurrentSongIndex(randomIndex);
+    setCurrentTime(0);
+    setIsPlaying(false);
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(err => console.error('Play failed:', err));
+        setIsPlaying(true);
+      }
+    }, 50);
+  };
+
+  const toggleShuffle = () => {
+    setIsShuffling(!isShuffling);
+  };
+
+  const handleSpeedChange = () => {
+    const currentIndex = speedOptions.indexOf(playbackSpeed);
+    const nextIndex = (currentIndex + 1) % speedOptions.length;
+    const newSpeed = speedOptions[nextIndex];
+    setPlaybackSpeed(newSpeed);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = newSpeed;
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -221,11 +264,11 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-4 shadow-2xl border border-white/20">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
               <Music className="size-5 text-white" />
             </div>
             <div>
-              <h4 className="text-white font-semibold text-xs">Now Playing</h4>
+              <h4 className="text-white font-semibold text-xs">⚡ Fast Playing</h4>
               <p className="text-white/80 text-xs">{songNames[currentSongIndex]}</p>
               <p className="text-white/50 text-[10px]">{currentSongIndex + 1} / {audioSrcs.length}</p>
             </div>
@@ -267,12 +310,12 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
             {isMuted || volume === 0 ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
           </button>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={handlePrevious}
-              className="text-white/70 hover:text-white transition-colors"
+              className="text-white/70 hover:text-white transition-colors p-1"
             >
-              <SkipBack className="size-5" />
+              <SkipBack className="size-4" />
             </button>
             
             <button
@@ -284,12 +327,29 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
             
             <button
               onClick={handleNext}
-              className="text-white/70 hover:text-white transition-colors"
+              className="text-white/70 hover:text-white transition-colors p-1"
             >
-              <SkipForward className="size-5" />
+              <SkipForward className="size-4" />
+            </button>
+
+            <button
+              onClick={toggleShuffle}
+              className={`p-1 rounded transition-colors ${isShuffling ? 'text-yellow-300 bg-white/20' : 'text-white/50 hover:text-white'}`}
+            >
+              <Repeat className="size-4" />
             </button>
           </div>
 
+          <button
+            onClick={handleSpeedChange}
+            className="text-white/70 hover:text-white transition-colors text-xs font-bold bg-white/10 px-2 py-1 rounded-full"
+          >
+            {playbackSpeed}x
+          </button>
+        </div>
+
+        {/* Volume Slider */}
+        <div className="flex items-center gap-2 mt-2">
           <input
             type="range"
             min="0"
@@ -297,46 +357,31 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
             step="0.01"
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
-            className="w-16 h-1 bg-white/20 rounded-full appearance-none cursor-pointer"
+            className="flex-1 h-1 bg-white/20 rounded-full appearance-none cursor-pointer"
             style={{
               background: `linear-gradient(to right, white 0%, white ${(isMuted ? 0 : volume) * 100}%, rgba(255,255,255,0.2) ${(isMuted ? 0 : volume) * 100}%)`
             }}
           />
         </div>
 
-        {/* Song indicator dots */}
         <div className="flex justify-center gap-1.5 mt-2">
-          {audioSrcs.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                if (audioRef.current) {
-                  audioRef.current.pause();
-                }
-                setCurrentSongIndex(index);
-                setCurrentTime(0);
-                setIsPlaying(false);
-                setTimeout(() => {
-                  if (audioRef.current) {
-                    audioRef.current.play().catch(err => console.error('Play failed:', err));
-                    setIsPlaying(true);
-                  }
-                }, 100);
-              }}
-              className={`h-1.5 rounded-full transition-all ${
-                index === currentSongIndex 
-                  ? 'bg-white w-6' 
-                  : 'bg-white/30 w-2 hover:bg-white/50'
-              }`}
-            />
-          ))}
+          <span className="text-white/40 text-[8px] flex items-center gap-1">
+            <FastForward className="size-3" />
+            Fast Playback
+          </span>
+          {isShuffling && (
+            <span className="text-yellow-300/60 text-[8px] flex items-center gap-1">
+              <Repeat className="size-3" />
+              Shuffle
+            </span>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// 🆕 Notification Ads Component - 12 Ads Cycling Randomly
+// 🆕 Notification Ads Component - FAST 5-10 seconds with Countdown
 function NotificationAds() {
   const [activeAdIndex, setActiveAdIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -344,6 +389,9 @@ function NotificationAds() {
   const [reappearTimer, setReappearTimer] = useState<NodeJS.Timeout | null>(null);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
   const [usedIndices, setUsedIndices] = useState<number[]>([]);
+  const [remainingAds, setRemainingAds] = useState(12);
+  const [countdown, setCountdown] = useState(0);
+  const [isCountdownActive, setIsCountdownActive] = useState(false);
 
   // Song list
   const songs = [
@@ -492,9 +540,9 @@ function NotificationAds() {
     }
   ];
 
-  // 🔄 Get random time between 10-15 seconds
+  // 🔄 FAST random time between 5-10 seconds
   const getRandomReappearTime = () => {
-    return Math.floor(Math.random() * (15 - 10 + 1) + 10) * 1000; // 10-15 seconds
+    return Math.floor(Math.random() * (10 - 5 + 1) + 5); // 5-10 seconds
   };
 
   // 🎲 Get random unused ad index
@@ -504,11 +552,12 @@ function NotificationAds() {
       .filter(index => !usedIndices.includes(index));
     
     if (available.length === 0) {
-      // Reset used indices when all have been shown
       setUsedIndices([]);
+      setRemainingAds(12);
       return Math.floor(Math.random() * ads.length);
     }
     
+    setRemainingAds(available.length);
     return available[Math.floor(Math.random() * available.length)];
   };
 
@@ -516,8 +565,29 @@ function NotificationAds() {
   useEffect(() => {
     return () => {
       if (reappearTimer) clearTimeout(reappearTimer);
+      if (countdownInterval) clearInterval(countdownInterval);
     };
   }, [reappearTimer]);
+
+  let countdownInterval: NodeJS.Timeout | null = null;
+
+  // Start countdown timer
+  const startCountdown = (seconds: number) => {
+    setCountdown(seconds);
+    setIsCountdownActive(true);
+    
+    countdownInterval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval!);
+          setIsCountdownActive(false);
+          showNextRandomAd();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   // 🎯 Show next random ad
   const showNextRandomAd = () => {
@@ -525,6 +595,7 @@ function NotificationAds() {
     setActiveAdIndex(nextIndex);
     setUsedIndices(prev => [...prev, nextIndex]);
     setIsVisible(true);
+    setIsCountdownActive(false);
   };
 
   // 📌 Initial setup - show first random ad
@@ -532,6 +603,7 @@ function NotificationAds() {
     const initialIndex = Math.floor(Math.random() * ads.length);
     setActiveAdIndex(initialIndex);
     setUsedIndices([initialIndex]);
+    setRemainingAds(11);
     setIsVisible(true);
   }, []);
 
@@ -546,13 +618,11 @@ function NotificationAds() {
     // Hide notification
     setIsVisible(false);
     
-    // Set timer to show next random ad after 10-15 seconds
+    // Get random time for reappear (5-10 seconds)
     const randomTime = getRandomReappearTime();
-    const timer = setTimeout(() => {
-      showNextRandomAd();
-    }, randomTime);
     
-    setReappearTimer(timer);
+    // Start countdown
+    startCountdown(randomTime);
   };
 
   const handleAction = () => {
@@ -564,7 +634,7 @@ function NotificationAds() {
 
   return (
     <>
-      {/* 🆕 Mini Music Player */}
+      {/* 🆕 Fast Mini Music Player */}
       {showMusicPlayer && (
         <MiniMusicPlayer 
           audioSrcs={songs}
@@ -580,13 +650,13 @@ function NotificationAds() {
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* Ad Banner - Shows Random Ad */}
+      {/* Ad Banner - FAST Random Cycling 5-10s with Countdown */}
       {isVisible && currentAd && (
         <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
           <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center animate-pulse">
                   {currentAd.icon}
                 </div>
               </div>
@@ -612,9 +682,27 @@ function NotificationAds() {
                 <X className="size-4" />
               </button>
             </div>
-            <div className="mt-2 text-white/30 text-[10px] text-center flex items-center justify-center gap-2">
-              <span>🔄 Next notification in</span>
-              <span className="font-bold text-white/60">10-15s</span>
+            
+            {/* Countdown Timer */}
+            <div className="mt-2 flex items-center justify-center gap-2 text-white/60 text-[10px]">
+              <Clock className="size-3" />
+              <span>Next notification in</span>
+              <span className="font-bold text-white text-sm animate-pulse">
+                {isCountdownActive ? countdown : '--'}
+              </span>
+              <span>s</span>
+              <span className="text-white/20">|</span>
+              <span className="text-white/30">{remainingAds} ads left</span>
+            </div>
+            
+            {/* Progress Bar for Countdown */}
+            <div className="mt-1.5 h-1 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-white/40 rounded-full transition-all duration-1000"
+                style={{ 
+                  width: isCountdownActive ? `${(countdown / 10) * 100}%` : '0%'
+                }}
+              />
             </div>
           </div>
         </div>
@@ -772,7 +860,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - Random Cycling 10-15s */}
+      {/* Notification Ads - FAST 5-10s with Countdown */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -931,4 +1019,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+  }
