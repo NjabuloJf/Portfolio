@@ -12,7 +12,13 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, Play, Pause, Volume2, VolumeX, SkipForward, SkipBack } from "lucide-react";
+import { 
+  ArrowUpRight, MessageCircle, Search, X, Rocket, Music, 
+  CheckCircle, Download, Smartphone, Bell, Play, Pause, 
+  Volume2, VolumeX, SkipForward, SkipBack, Users, 
+  MessageSquare, Facebook, Globe, Bot, Zap, Crown,
+  Radio, Headphones, Share2, Star, Heart, Award
+} from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -125,7 +131,6 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
       });
       
       audioRef.current.addEventListener('ended', () => {
-        // Auto play next song
         handleNext();
       });
     }
@@ -159,7 +164,6 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
     setCurrentSongIndex(nextIndex);
     setCurrentTime(0);
     setIsPlaying(false);
-    // Auto play next
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.play().catch(err => console.error('Play failed:', err));
@@ -331,7 +335,7 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
   );
 }
 
-// 🆕 Notification Ads Component - With Music Player
+// 🆕 Notification Ads Component - Expanded with More Ads
 function NotificationAds() {
   const [activeAdIndex, setActiveAdIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -348,6 +352,7 @@ function NotificationAds() {
     "/song5.mp3"
   ];
 
+  // Expanded ads list
   const ads = [
     {
       id: 1,
@@ -381,6 +386,107 @@ function NotificationAds() {
       buttonText: "📢 Join Channel",
       color: "from-yellow-600 to-orange-600",
       action: () => window.open("https://t.me/njabulojbbot", "_blank")
+    },
+    {
+      id: 4,
+      type: "group",
+      icon: <Users className="size-6 text-purple-500" />,
+      title: "👥 Join GWM-XMD Group Chat",
+      description: "Connect with the GWM-XMD community",
+      buttonText: "💬 Join Group",
+      color: "from-purple-600 to-indigo-600",
+      action: () => window.open("https://t.me/gwmxmd", "_blank")
+    },
+    {
+      id: 5,
+      type: "whatsapp",
+      icon: <MessageCircle className="size-6 text-green-500" />,
+      title: "💬 Message Owner on WhatsApp",
+      description: "Chat directly with Njabulo Jb",
+      buttonText: "📱 Contact Now",
+      color: "from-green-600 to-teal-600",
+      action: () => window.open("https://wa.me/26777821911", "_blank")
+    },
+    {
+      id: 6,
+      type: "facebook",
+      icon: <Facebook className="size-6 text-blue-500" />,
+      title: "📘 Follow on Facebook",
+      description: "Stay updated on Facebook",
+      buttonText: "👍 Follow Now",
+      color: "from-blue-600 to-cyan-600",
+      action: () => window.open("https://facebook.com/njabulojb", "_blank")
+    },
+    {
+      id: 7,
+      type: "bot",
+      icon: <Bot className="size-6 text-indigo-500" />,
+      title: "🤖 Get Started with NJABULO JB Bot",
+      description: "Try the AI-powered WhatsApp bot",
+      buttonText: "🚀 Start Bot",
+      color: "from-indigo-600 to-purple-600",
+      action: () => window.open("https://wa.me/26777821911?text=!start", "_blank")
+    },
+    {
+      id: 8,
+      type: "share",
+      icon: <Share2 className="size-6 text-rose-500" />,
+      title: "📤 Share GWM-XMD Bot",
+      description: "Share the GWM-XMD with friends",
+      buttonText: "📤 Share Now",
+      color: "from-rose-600 to-pink-600",
+      action: () => {
+        if (navigator.share) {
+          navigator.share({
+            title: 'GWM-XMD Bot',
+            text: 'Check out GWM-XMD Bot!',
+            url: 'https://github.com/NjabuloJf/GWM-XMD'
+          }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText('https://github.com/NjabuloJf/GWM-XMD');
+          setToastMessage("📤 Link copied to clipboard!");
+        }
+      }
+    },
+    {
+      id: 9,
+      type: "star",
+      icon: <Star className="size-6 text-amber-500" />,
+      title: "⭐ Star GWM-XMD on GitHub",
+      description: "Show your support with a star",
+      buttonText: "⭐ Star Now",
+      color: "from-amber-600 to-orange-600",
+      action: () => window.open("https://github.com/NjabuloJf/GWM-XMD", "_blank")
+    },
+    {
+      id: 10,
+      type: "tutorial",
+      icon: <Radio className="size-6 text-cyan-500" />,
+      title: "📺 Getting Started with NJABULO JB",
+      description: "Watch the tutorial and get started",
+      buttonText: "▶ Watch Tutorial",
+      color: "from-cyan-600 to-blue-600",
+      action: () => window.open("https://www.youtube.com/@njabulojb", "_blank")
+    },
+    {
+      id: 11,
+      type: "ui",
+      icon: <Globe className="size-6 text-emerald-500" />,
+      title: "🌐 Visit NJABULO UI Website",
+      description: "Explore the official UI website",
+      buttonText: "🌐 Visit Site",
+      color: "from-emerald-600 to-teal-600",
+      action: () => window.open("https://njabulo-ui.vercel.app", "_blank")
+    },
+    {
+      id: 12,
+      type: "award",
+      icon: <Award className="size-6 text-yellow-500" />,
+      title: "🏆 Get NJABULO JB Badge",
+      description: "Claim your verified badge today",
+      buttonText: "🎖️ Claim Badge",
+      color: "from-yellow-600 to-amber-600",
+      action: () => window.open("https://t.me/njabulojb", "_blank")
     }
   ];
 
@@ -631,7 +737,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - With Music Player */}
+      {/* Notification Ads - Expanded with More Ads */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -790,4 +896,4 @@ export default function Page() {
       )}
     </main>
   );
-      }
+            }
