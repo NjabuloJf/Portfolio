@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { 
   Shield, Code, Lock, Copy, Download, Upload, 
   FileText, Github, MessageCircle, Eye, EyeOff,
   Save, RefreshCw, AlertCircle, CheckCircle,
-  FileCode, FolderOpen, Trash2, Edit3
+  FileCode, FolderOpen, Trash2, Edit3, Zap
 } from "lucide-react";
 
-// Advanced JavaScript Obfuscator
+// ============================================================
+// ADVANCED JAVASCRIPT OBFUSCATOR ENGINE
+// ============================================================
 function obfuscateCode(code: string, level: number): string {
   if (!code.trim()) return "";
   
@@ -131,7 +133,27 @@ export default function ObfuscatePage() {
   const [fileName, setFileName] = useState("obfuscated-code");
   const [showPreview, setShowPreview] = useState(false);
   const [isObfuscated, setIsObfuscated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load Montserrat font
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    
+    // Load JavaScript Obfuscator
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/javascript-obfuscator/dist/index.browser.js';
+    script.async = true;
+    document.head.appendChild(script);
+    
+    return () => {
+      document.head.removeChild(link);
+      document.head.removeChild(script);
+    };
+  }, []);
 
   const levels = [
     { value: 1, name: "BASIC", label: "Basic", color: "text-green-500", bg: "bg-green-500/10" },
@@ -144,14 +166,55 @@ export default function ObfuscatePage() {
       alert("❌ Please enter or upload JavaScript code to obfuscate");
       return;
     }
-    const obfuscated = obfuscateCode(inputCode, securityLevel);
-    setOutputCode(obfuscated);
-    setIsObfuscated(true);
+    
+    setIsLoading(true);
+    
+    // Use the real JavaScript Obfuscator if available
+    setTimeout(() => {
+      try {
+        // @ts-ignore - JavaScriptObfuscator is loaded from CDN
+        if (typeof window !== 'undefined' && window.JavaScriptObfuscator) {
+          // @ts-ignore
+          const obfuscated = window.JavaScriptObfuscator.obfuscate(inputCode, {
+            compact: true,
+            controlFlowFlattening: securityLevel >= 2,
+            controlFlowFlatteningThreshold: securityLevel === 3 ? 0.75 : 0.5,
+            deadCodeInjection: securityLevel >= 2,
+            deadCodeInjectionThreshold: securityLevel === 3 ? 0.5 : 0.3,
+            debugProtection: securityLevel === 3,
+            debugProtectionInterval: securityLevel === 3 ? 2000 : 0,
+            disableConsoleOutput: securityLevel === 3,
+            identifierNamesGenerator: securityLevel === 3 ? 'mangled' : 'hexadecimal',
+            renameGlobals: securityLevel === 3,
+            rotateStringArray: true,
+            selfDefending: securityLevel === 3,
+            stringArray: true,
+            stringArrayEncoding: securityLevel === 3 ? ['rc4'] : ['base64'],
+            stringArrayThreshold: securityLevel === 3 ? 0.8 : 0.5,
+            unicodeEscapeSequence: securityLevel === 3,
+          });
+          setOutputCode(obfuscated.getObfuscatedCode());
+        } else {
+          // Fallback to custom obfuscator
+          const obfuscated = obfuscateCode(inputCode, securityLevel);
+          setOutputCode(obfuscated);
+        }
+        setIsObfuscated(true);
+      } catch (error) {
+        alert("❌ Error obfuscating code: " + (error as Error).message);
+        // Fallback to custom obfuscator
+        const obfuscated = obfuscateCode(inputCode, securityLevel);
+        setOutputCode(obfuscated);
+        setIsObfuscated(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
   };
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (outputCode) {
-      navigator.clipboard.writeText(outputCode);
+      await navigator.clipboard.writeText(outputCode);
       alert("✅ Code copied to clipboard!");
     }
   };
@@ -178,8 +241,7 @@ export default function ObfuscatePage() {
       reader.onload = (event) => {
         const content = event.target?.result as string;
         setInputCode(content);
-        // Auto set filename from uploaded file
-        const name = file.name.replace(/\.js$/, "").replace(/\.ts$/, "");
+        const name = file.name.replace(/\.js$/, "").replace(/\.ts$/, "").replace(/\.txt$/, "");
         setFileName(name);
         alert(`✅ File "${file.name}" loaded successfully!`);
       };
@@ -231,24 +293,41 @@ console.log("Total: $" + result);`;
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/10 to-slate-950 py-8 px-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
       <div className="max-w-7xl mx-auto">
+        
         {/* Header */}
-        <div className="mb-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4">
-            ← Back to Home
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6 text-sm">
+            <span className="transform transition-transform group-hover:-translate-x-1">←</span> Back to Home
           </Link>
           
-          <div className="text-center">
-            <div className="inline-flex p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4">
-              <Shield className="size-8 text-white" />
+          <div className="text-center relative">
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 blur-3xl" />
+            
+            <div className="inline-flex p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4 shadow-2xl shadow-purple-500/30">
+              <Shield className="size-10 text-white" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Njabulo-Jb Code Obfuscator
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+              CRISS VEVO CODE OBFUSCATION
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Protect your JavaScript code with advanced obfuscation techniques
+            
+            <p className="text-slate-400 max-w-2xl mx-auto text-sm">
+              Protect your JavaScript code with enterprise-grade obfuscation techniques
             </p>
+            
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              <span className="px-3 py-1 text-xs bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400">
+                🛡️ Anti-Debug
+              </span>
+              <span className="px-3 py-1 text-xs bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400">
+                🔒 Code Integrity
+              </span>
+              <span className="px-3 py-1 text-xs bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400">
+                ⚡ Control Flow
+              </span>
+            </div>
           </div>
         </div>
 
@@ -256,14 +335,14 @@ console.log("Total: $" + result);`;
         <div className="flex flex-wrap gap-3 mb-6 justify-center">
           <button
             onClick={handleLoadExample}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm border rounded-lg hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-slate-700 rounded-lg hover:bg-slate-800 transition-all text-slate-300 hover:text-white"
           >
             <FileCode className="size-4" />
             Load Example
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm border rounded-lg hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-slate-700 rounded-lg hover:bg-slate-800 transition-all text-slate-300 hover:text-white"
           >
             <Upload className="size-4" />
             Upload File
@@ -277,36 +356,41 @@ console.log("Total: $" + result);`;
           />
           <button
             onClick={handleClear}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm border rounded-lg hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-slate-700 rounded-lg hover:bg-slate-800 transition-all text-slate-300 hover:text-white"
           >
             <Trash2 className="size-4" />
             Clear All
           </button>
+          <button
+            onClick={() => setShowPreview(!showPreview)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-slate-700 rounded-lg hover:bg-slate-800 transition-all text-slate-300 hover:text-white"
+          >
+            {showPreview ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            {showPreview ? "Hide Preview" : "Show Preview"}
+          </button>
         </div>
 
+        {/* Editor Grid */}
         <div className="grid lg:grid-cols-2 gap-6">
+          
           {/* Input Section */}
-          <div className="border rounded-xl overflow-hidden bg-card/50">
-            <div className="flex justify-between items-center p-4 border-b bg-muted/30">
+          <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50 backdrop-blur">
+            <div className="flex justify-between items-center p-4 border-b border-slate-800 bg-slate-800/30">
               <div className="flex items-center gap-2">
-                <Code className="size-5 text-blue-500" />
-                <h2 className="font-semibold">Input JavaScript Code</h2>
+                <Code className="size-5 text-blue-400" />
+                <h2 className="font-semibold text-sm text-slate-200">Input JavaScript Code</h2>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowPreview(!showPreview)}
-                  className="p-1 hover:bg-accent rounded transition-colors"
-                  title={showPreview ? "Hide Preview" : "Show Preview"}
-                >
-                  {showPreview ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
+              <div className="text-xs text-slate-500">
+                {inputCode.split('\n').length} lines
               </div>
             </div>
+            
             {showPreview && inputCode && (
-              <div className="p-3 bg-black/5 border-b max-h-32 overflow-auto">
-                <pre className="text-xs text-muted-foreground">{inputCode.substring(0, 500)}</pre>
+              <div className="p-3 bg-slate-800/20 border-b border-slate-800 max-h-32 overflow-auto">
+                <pre className="text-xs text-slate-400 font-mono">{inputCode.substring(0, 500)}</pre>
               </div>
             )}
+            
             <textarea
               value={inputCode}
               onChange={(e) => setInputCode(e.target.value)}
@@ -317,73 +401,78 @@ function hello() {
   console.log("Hello World!");
 }
 hello();`}
-              className="w-full h-96 p-4 font-mono text-sm bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full h-96 p-4 font-mono text-sm bg-transparent resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/30 text-slate-200 placeholder-slate-600"
+              spellCheck={false}
             />
-            <div className="p-3 border-t bg-muted/30 flex justify-between text-xs text-muted-foreground">
-              <span>Characters: {inputCode.length}</span>
+            
+            <div className="p-3 border-t border-slate-800 bg-slate-800/30 flex justify-between text-xs text-slate-500">
+              <span>Characters: {inputCode.length.toLocaleString()}</span>
               <span>Lines: {inputCode.split('\n').length}</span>
             </div>
           </div>
 
           {/* Output Section */}
-          <div className="border rounded-xl overflow-hidden bg-card/50">
-            <div className="flex justify-between items-center p-4 border-b bg-muted/30">
+          <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50 backdrop-blur">
+            <div className="flex justify-between items-center p-4 border-b border-slate-800 bg-slate-800/30">
               <div className="flex items-center gap-2">
-                <Lock className="size-5 text-green-500" />
-                <h2 className="font-semibold">Protected Code</h2>
+                <Lock className="size-5 text-emerald-400" />
+                <h2 className="font-semibold text-sm text-slate-200">Protected Code</h2>
                 {isObfuscated && (
-                  <span className="text-xs px-2 py-0.5 bg-green-500/10 text-green-500 rounded-full">
-                    Obfuscated
+                  <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center gap-1">
+                    <CheckCircle className="size-3" /> Obfuscated
                   </span>
                 )}
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={handleCopy}
-                  className="p-1 hover:bg-accent rounded transition-colors"
+                  className="p-1.5 hover:bg-slate-700 rounded transition-colors"
                   title="Copy to clipboard"
                 >
-                  <Copy className="size-4" />
+                  <Copy className="size-4 text-slate-400 hover:text-white" />
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="p-1 hover:bg-accent rounded transition-colors"
+                  className="p-1.5 hover:bg-slate-700 rounded transition-colors"
                   title="Download file"
                 >
-                  <Download className="size-4" />
+                  <Download className="size-4 text-slate-400 hover:text-white" />
                 </button>
               </div>
             </div>
+            
             <textarea
               value={outputCode}
               readOnly
               placeholder="// Your obfuscated code will appear here...
 // Click 'Obfuscate Code' to protect your JavaScript"
-              className="w-full h-96 p-4 font-mono text-sm bg-muted/10 resize-none focus:outline-none"
+              className="w-full h-96 p-4 font-mono text-sm bg-slate-900/30 resize-none focus:outline-none text-emerald-300/80 placeholder-slate-600"
+              spellCheck={false}
             />
-            <div className="p-3 border-t bg-muted/30 flex justify-between text-xs text-muted-foreground">
+            
+            <div className="p-3 border-t border-slate-800 bg-slate-800/30 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <div className="flex items-center gap-2">
                 <span>Filename:</span>
                 <input
                   type="text"
                   value={fileName}
                   onChange={(e) => setFileName(e.target.value)}
-                  className="px-2 py-0.5 border rounded bg-background text-xs w-36"
+                  className="px-2 py-0.5 border border-slate-700 rounded bg-slate-800 text-slate-300 text-xs w-36 focus:outline-none focus:ring-1 focus:ring-purple-500"
                   placeholder="filename"
                 />
-                <span className="text-muted-foreground">.js</span>
+                <span className="text-slate-600">.js</span>
               </div>
               <span>Size: {(outputCode.length / 1024).toFixed(2)} KB</span>
             </div>
           </div>
         </div>
 
-        {/* Security Level Slider */}
-        <div className="mt-6 border rounded-xl p-6 bg-card/50">
+        {/* Security Level */}
+        <div className="mt-6 border border-slate-800 rounded-xl p-6 bg-slate-900/50 backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-2">
-              <Shield className="size-5 text-primary" />
-              <span className="font-semibold">Security Level</span>
+              <Shield className="size-5 text-purple-400" />
+              <span className="font-semibold text-sm text-slate-200">Security Level</span>
             </div>
             <div className={`px-3 py-1 rounded-full text-sm font-medium ${levels.find(l => l.value === securityLevel)?.bg} ${levels.find(l => l.value === securityLevel)?.color}`}>
               {levels.find(l => l.value === securityLevel)?.name}
@@ -397,26 +486,32 @@ hello();`}
             step="1"
             value={securityLevel}
             onChange={(e) => setSecurityLevel(parseInt(e.target.value))}
-            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
+            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
             style={{
               background: `linear-gradient(to right, 
-                ${securityLevel >= 1 ? '#22c55e' : '#e5e7eb'} 0%, 
-                ${securityLevel >= 2 ? '#eab308' : '#e5e7eb'} 33%, 
-                ${securityLevel >= 3 ? '#ef4444' : '#e5e7eb'} 66%)`
+                ${securityLevel >= 1 ? '#22c55e' : '#334155'} 0%, 
+                ${securityLevel >= 2 ? '#eab308' : '#334155'} 33%, 
+                ${securityLevel >= 3 ? '#ef4444' : '#334155'} 66%)`
             }}
           />
           
-          <div className="flex justify-between mt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
             {securityLevels.map((level) => (
-              <div key={level.value} className="text-center flex-1">
-                <div className={`w-2 h-2 rounded-full mx-auto mb-1 ${
-                  securityLevel >= level.value ? 
-                    level.value === 1 ? "bg-green-500" :
-                    level.value === 2 ? "bg-yellow-500" : "bg-red-500"
-                    : "bg-muted"
-                }`} />
-                <div className="text-xs font-medium">{level.label}</div>
-                <div className="text-[10px] text-muted-foreground hidden sm:block">{level.description}</div>
+              <div 
+                key={level.value}
+                className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                  securityLevel === level.value 
+                    ? 'border-purple-500 bg-purple-500/10' 
+                    : 'border-slate-800 hover:border-slate-700'
+                }`}
+                onClick={() => setSecurityLevel(level.value)}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-xs font-bold ${securityLevel === level.value ? 'text-white' : 'text-slate-400'}`}>
+                    {level.label}
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-500">{level.description}</p>
               </div>
             ))}
           </div>
@@ -426,36 +521,47 @@ hello();`}
         <div className="mt-6">
           <button
             onClick={handleObfuscate}
-            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all font-semibold"
+            disabled={isLoading}
+            className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all font-semibold text-lg shadow-2xl shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Shield className="size-5" />
-            Obfuscate Code
+            {isLoading ? (
+              <>
+                <RefreshCw className="size-5 animate-spin" />
+                Obfuscating...
+              </>
+            ) : (
+              <>
+                <Zap className="size-5" />
+                Obfuscate Code
+                <Shield className="size-5" />
+              </>
+            )}
           </button>
         </div>
 
         {/* Info Box */}
-        <div className="mt-6 p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
+        <div className="mt-6 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl">
           <div className="flex items-start gap-3">
-            <AlertCircle className="size-5 text-blue-500 mt-0.5" />
+            <AlertCircle className="size-5 text-blue-400 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-medium">About Obfuscation</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Code obfuscation makes your JavaScript code difficult to understand and reverse-engineer.
-                Higher security levels provide better protection but may increase file size.
-                Always test obfuscated code before deploying to production.
+              <p className="text-sm font-medium text-blue-300">About Obfuscation</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Code obfuscation transforms your JavaScript into a protected format that's difficult to understand 
+                and reverse-engineer. Higher security levels provide better protection but may increase file size 
+                and impact performance. Always test obfuscated code before deploying to production.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Footer Links */}
-        <div className="mt-8 pt-6 border-t border-border">
+        {/* Footer */}
+        <div className="mt-10 pt-6 border-t border-slate-800">
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a
               href="https://github.com/NjabuloJf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm border rounded-lg hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-slate-700 rounded-lg hover:bg-slate-800 transition-all text-slate-400 hover:text-white"
             >
               <Github className="size-4" />
               GitHub
@@ -464,16 +570,17 @@ hello();`}
               href="https://wa.me/26777821911"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm border rounded-lg hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-slate-700 rounded-lg hover:bg-slate-800 transition-all text-slate-400 hover:text-white"
             >
               <MessageCircle className="size-4 text-green-500" />
               WhatsApp Channel
             </a>
           </div>
-          <p className="text-center text-xs text-muted-foreground mt-4">
+          <p className="text-center text-xs text-slate-600 mt-4">
             © 2026 Njabulo-Jb Obfuscation. All rights reserved.
           </p>
         </div>
+
       </div>
     </div>
   );
