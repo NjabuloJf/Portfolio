@@ -17,7 +17,8 @@ import {
   CheckCircle, Download, Smartphone, Bell, Play, Pause, 
   Volume2, VolumeX, SkipForward, SkipBack, Users, 
   MessageSquare, Facebook, Globe, Bot, Zap, Crown,
-  Radio, Headphones, Share2, Star, Heart, Award
+  Radio, Headphones, Share2, Star, Heart, Award,
+  Youtube, Github, ExternalLink, Send, Hash, Link as LinkIcon
 } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
@@ -335,13 +336,14 @@ function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose:
   );
 }
 
-// 🆕 Notification Ads Component - Expanded with More Ads
+// 🆕 Notification Ads Component - 12 Ads Cycling Randomly
 function NotificationAds() {
   const [activeAdIndex, setActiveAdIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [reappearTimer, setReappearTimer] = useState<NodeJS.Timeout | null>(null);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+  const [usedIndices, setUsedIndices] = useState<number[]>([]);
 
   // Song list
   const songs = [
@@ -352,7 +354,7 @@ function NotificationAds() {
     "/song5.mp3"
   ];
 
-  // Expanded ads list
+  // 🎯 12 Ads with all links
   const ads = [
     {
       id: 1,
@@ -461,11 +463,11 @@ function NotificationAds() {
     {
       id: 10,
       type: "tutorial",
-      icon: <Radio className="size-6 text-cyan-500" />,
+      icon: <Youtube className="size-6 text-red-500" />,
       title: "📺 Getting Started with NJABULO JB",
       description: "Watch the tutorial and get started",
       buttonText: "▶ Watch Tutorial",
-      color: "from-cyan-600 to-blue-600",
+      color: "from-red-600 to-rose-600",
       action: () => window.open("https://www.youtube.com/@njabulojb", "_blank")
     },
     {
@@ -490,9 +492,24 @@ function NotificationAds() {
     }
   ];
 
-  // Get random time between 20-30 seconds
+  // 🔄 Get random time between 10-15 seconds
   const getRandomReappearTime = () => {
-    return Math.floor(Math.random() * (30 - 20 + 1) + 20) * 1000;
+    return Math.floor(Math.random() * (15 - 10 + 1) + 10) * 1000; // 10-15 seconds
+  };
+
+  // 🎲 Get random unused ad index
+  const getRandomUnusedIndex = () => {
+    const available = ads
+      .map((_, index) => index)
+      .filter(index => !usedIndices.includes(index));
+    
+    if (available.length === 0) {
+      // Reset used indices when all have been shown
+      setUsedIndices([]);
+      return Math.floor(Math.random() * ads.length);
+    }
+    
+    return available[Math.floor(Math.random() * available.length)];
   };
 
   // Clean up timer on unmount
@@ -502,6 +519,22 @@ function NotificationAds() {
     };
   }, [reappearTimer]);
 
+  // 🎯 Show next random ad
+  const showNextRandomAd = () => {
+    const nextIndex = getRandomUnusedIndex();
+    setActiveAdIndex(nextIndex);
+    setUsedIndices(prev => [...prev, nextIndex]);
+    setIsVisible(true);
+  };
+
+  // 📌 Initial setup - show first random ad
+  useEffect(() => {
+    const initialIndex = Math.floor(Math.random() * ads.length);
+    setActiveAdIndex(initialIndex);
+    setUsedIndices([initialIndex]);
+    setIsVisible(true);
+  }, []);
+
   const currentAd = ads[activeAdIndex];
 
   const handleDismiss = () => {
@@ -510,12 +543,13 @@ function NotificationAds() {
       setReappearTimer(null);
     }
 
+    // Hide notification
     setIsVisible(false);
     
+    // Set timer to show next random ad after 10-15 seconds
     const randomTime = getRandomReappearTime();
     const timer = setTimeout(() => {
-      setActiveAdIndex((prev) => (prev + 1) % ads.length);
-      setIsVisible(true);
+      showNextRandomAd();
     }, randomTime);
     
     setReappearTimer(timer);
@@ -546,7 +580,7 @@ function NotificationAds() {
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* Ad Banner */}
+      {/* Ad Banner - Shows Random Ad */}
       {isVisible && currentAd && (
         <div className="fixed bottom-24 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
           <div className={`bg-gradient-to-r ${currentAd.color} rounded-2xl p-4 shadow-2xl border border-white/20`}>
@@ -578,8 +612,9 @@ function NotificationAds() {
                 <X className="size-4" />
               </button>
             </div>
-            <div className="mt-2 text-white/30 text-[10px] text-center">
-              🔄 Will reappear automatically
+            <div className="mt-2 text-white/30 text-[10px] text-center flex items-center justify-center gap-2">
+              <span>🔄 Next notification in</span>
+              <span className="font-bold text-white/60">10-15s</span>
             </div>
           </div>
         </div>
@@ -737,7 +772,7 @@ export default function Page() {
         <SearchBar onSearch={setSearchQuery} searchQuery={searchQuery} />
       </div>
 
-      {/* Notification Ads - Expanded with More Ads */}
+      {/* Notification Ads - Random Cycling 10-15s */}
       <NotificationAds />
 
       {/* Hero Section */}
@@ -896,4 +931,4 @@ export default function Page() {
       )}
     </main>
   );
-            }
+      }
