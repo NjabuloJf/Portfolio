@@ -12,7 +12,7 @@ import ContactSection from "@/components/section/contact-section";
 import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
-import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Search, X, Rocket, Music, CheckCircle, Download, Smartphone, Bell, Play, Pause, Volume2, VolumeX, SkipForward, SkipBack } from "lucide-react";
 import { MusicPlayer } from "@/components/music-player";
 import { ImageCarousel } from "@/components/image-carousel";
 
@@ -93,8 +93,9 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 Mini Music Player for Notification
-function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () => void }) {
+// 🆕 Mini Music Player for Notification with Multiple Songs
+function MiniMusicPlayer({ audioSrcs, onClose }: { audioSrcs: string[]; onClose: () => void }) {
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -102,9 +103,17 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const songNames = [
+    "Njabulo Jb - Song 1",
+    "Njabulo Jb - Song 2",
+    "Njabulo Jb - Song 3",
+    "Njabulo Jb - Song 4",
+    "Njabulo Jb - Song 5"
+  ];
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      audioRef.current = new Audio(audioSrc);
+      audioRef.current = new Audio(audioSrcs[currentSongIndex]);
       audioRef.current.loop = false;
       
       audioRef.current.addEventListener('loadedmetadata', () => {
@@ -116,9 +125,8 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
       });
       
       audioRef.current.addEventListener('ended', () => {
-        setIsPlaying(false);
-        setCurrentTime(0);
-        if (audioRef.current) audioRef.current.currentTime = 0;
+        // Auto play next song
+        handleNext();
       });
     }
     
@@ -128,7 +136,7 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
         audioRef.current.src = '';
       }
     };
-  }, [audioSrc]);
+  }, [currentSongIndex]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -141,6 +149,39 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
       });
     }
     setIsPlaying(!isPlaying);
+  };
+
+  const handleNext = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    const nextIndex = (currentSongIndex + 1) % audioSrcs.length;
+    setCurrentSongIndex(nextIndex);
+    setCurrentTime(0);
+    setIsPlaying(false);
+    // Auto play next
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(err => console.error('Play failed:', err));
+        setIsPlaying(true);
+      }
+    }, 100);
+  };
+
+  const handlePrevious = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    const prevIndex = (currentSongIndex - 1 + audioSrcs.length) % audioSrcs.length;
+    setCurrentSongIndex(prevIndex);
+    setCurrentTime(0);
+    setIsPlaying(false);
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(err => console.error('Play failed:', err));
+        setIsPlaying(true);
+      }
+    }, 100);
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,16 +215,17 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
     <div className="fixed bottom-40 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96 animate-in slide-in-from-bottom-4">
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-4 shadow-2xl border border-white/20">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-              <Music className="size-4 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <Music className="size-5 text-white" />
             </div>
             <div>
               <h4 className="text-white font-semibold text-xs">Now Playing</h4>
-              <p className="text-white/70 text-[10px]">Njabulo Jb - Song 1</p>
+              <p className="text-white/80 text-xs">{songNames[currentSongIndex]}</p>
+              <p className="text-white/50 text-[10px]">{currentSongIndex + 1} / {audioSrcs.length}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-white/60 hover:text-white">
+          <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
             <X className="size-4" />
           </button>
         </div>
@@ -222,10 +264,24 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
           
           <div className="flex items-center gap-3">
             <button
+              onClick={handlePrevious}
+              className="text-white/70 hover:text-white transition-colors"
+            >
+              <SkipBack className="size-5" />
+            </button>
+            
+            <button
               onClick={togglePlay}
               className="w-10 h-10 rounded-full bg-white text-purple-600 hover:bg-white/90 transition-all flex items-center justify-center shadow-lg"
             >
               {isPlaying ? <Pause className="size-5" /> : <Play className="size-5 ml-0.5" />}
+            </button>
+            
+            <button
+              onClick={handleNext}
+              className="text-white/70 hover:text-white transition-colors"
+            >
+              <SkipForward className="size-5" />
             </button>
           </div>
 
@@ -242,6 +298,34 @@ function MiniMusicPlayer({ audioSrc, onClose }: { audioSrc: string; onClose: () 
             }}
           />
         </div>
+
+        {/* Song indicator dots */}
+        <div className="flex justify-center gap-1.5 mt-2">
+          {audioSrcs.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                if (audioRef.current) {
+                  audioRef.current.pause();
+                }
+                setCurrentSongIndex(index);
+                setCurrentTime(0);
+                setIsPlaying(false);
+                setTimeout(() => {
+                  if (audioRef.current) {
+                    audioRef.current.play().catch(err => console.error('Play failed:', err));
+                    setIsPlaying(true);
+                  }
+                }, 100);
+              }}
+              className={`h-1.5 rounded-full transition-all ${
+                index === currentSongIndex 
+                  ? 'bg-white w-6' 
+                  : 'bg-white/30 w-2 hover:bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -254,6 +338,15 @@ function NotificationAds() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [reappearTimer, setReappearTimer] = useState<NodeJS.Timeout | null>(null);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+
+  // Song list
+  const songs = [
+    "/song1.mp3",
+    "/song2.mp3",
+    "/song3.mp3",
+    "/song4.mp3",
+    "/song5.mp3"
+  ];
 
   const ads = [
     {
@@ -324,7 +417,6 @@ function NotificationAds() {
 
   const handleAction = () => {
     currentAd.action();
-    // Dismiss after action (but keep music player open)
     if (currentAd.type !== 'music') {
       handleDismiss();
     }
@@ -335,7 +427,7 @@ function NotificationAds() {
       {/* 🆕 Mini Music Player */}
       {showMusicPlayer && (
         <MiniMusicPlayer 
-          audioSrc="/song1.mp3" 
+          audioSrcs={songs}
           onClose={() => {
             setShowMusicPlayer(false);
             handleDismiss();
