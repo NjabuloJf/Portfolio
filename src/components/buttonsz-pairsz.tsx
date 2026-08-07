@@ -34,7 +34,7 @@ export function ButtonszPairsZ() {
   };
 
   const openWhatsAppGroup = () => {
-    window.open("https://chat.whatsapp.com/H8Q5Iwg4xOl9qHY5xTFMdU", "_blank");
+    window.open("https://chat.whatsapp.com/JHKrrDtlODPEaaCuRxFQ7g", "_blank");
   };
 
   const openWhatsAppChannel = () => {
