@@ -435,17 +435,17 @@ function NotificationAds() {
       description: "Get notifications & updates on Telegram",
       buttonText: "📢 Join Channel",
       color: "from-yellow-600 to-orange-600",
-      action: () => window.open("https://t.me/njabulojbbot", "_blank")
+      action: () => window.open("https://whatsapp.com/channel/0029VbC9yTmElah0BO3KD509", "_blank")
     },
     {
       id: 4,
       type: "group",
       icon: <Users className="size-6 text-purple-500" />,
-      title: "👥 Join GWM-XMD Group Chat",
+      title: "👥 Join GWM-XMD channel",
       description: "Connect with the GWM-XMD community",
       buttonText: "💬 Join Group",
       color: "from-purple-600 to-indigo-600",
-      action: () => window.open("https://t.me/gwmxmd", "_blank")
+      action: () => window.open("https://whatsapp.com/channel/0029VbCZ6JNLY6dBhDfmCY1K", "_blank")
     },
     {
       id: 5,
@@ -465,7 +465,7 @@ function NotificationAds() {
       description: "Stay updated on Facebook",
       buttonText: "👍 Follow Now",
       color: "from-blue-600 to-cyan-600",
-      action: () => window.open("https://facebook.com/njabulojb", "_blank")
+      action: () => window.open("https://www.facebook.com/profile.php?id=100094314013209", "_blank")
     },
     {
       id: 7,
@@ -516,27 +516,27 @@ function NotificationAds() {
       description: "Watch the tutorial and get started",
       buttonText: "▶ Watch Tutorial",
       color: "from-red-600 to-rose-600",
-      action: () => window.open("https://www.youtube.com/@njabulojb", "_blank")
+      action: () => window.open("https://youtube.com/@njabulo-jboffice?si=0T12oxTtZtsU228R", "_blank")
     },
     {
       id: 11,
       type: "ui",
       icon: <Globe className="size-6 text-emerald-500" />,
-      title: "🌐 Visit NJABULO UI Website",
+      title: "🌐 Visit NJABULO UIBOT easy bot",
       description: "Explore the official UI website",
       buttonText: "🌐 Visit Site",
       color: "from-emerald-600 to-teal-600",
-      action: () => window.open("https://njabulo-ui.vercel.app", "_blank")
+      action: () => window.open("https://github.com/NjabuloJf/njabulo-uibot", "_blank")
     },
     {
       id: 12,
       type: "award",
       icon: <Award className="size-6 text-yellow-500" />,
-      title: "🏆 Get NJABULO JB Badge",
+      title: "🏆 Get NJABULO JB Badge free bot",
       description: "Claim your verified badge today",
       buttonText: "🎖️ Claim Badge",
       color: "from-yellow-600 to-amber-600",
-      action: () => window.open("https://t.me/njabulojb", "_blank")
+      action: () => window.open("https://wa.me/26773968411", "_blank")
     }
   ];
 
@@ -833,7 +833,7 @@ const carouselImages = [
   { src: "/images/image2.png", alt: "Njabulo Jb Project 2", link: "https://github.com/NjabuloJf/Njabulo-Jb" },
   { src: "images/image3.png", alt: "Njabulo Jb Project 3", link: "https://github.com/NjabuloJf/GWM-XMD" },
   { src: "images/image4.png", alt: "Njabulo Jb Project 4", link: "https://t.me/njabulojbbot" },
-  { src: "images/image5.png", alt: "Njabulo Jb Project 5", link: "https://wa.me/27791234567" },
+  { src: "images/image5.png", alt: "Njabulo Jb Project 5", link: "https://wa.me/26773968411" },
 ];
 
 export default function Page() {
