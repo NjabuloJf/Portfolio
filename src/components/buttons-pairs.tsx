@@ -128,11 +128,11 @@ TIMEZONE=UTC`;
 
   const handleDownloadZip = () => {
     // Direct download Njabulo-Jb repository as ZIP from GitHub
-    window.open("https://github.com/NjabuloJf/Njabulo-Jb/archive/refs/heads/main.zip", "_blank");
+    window.open("https://github.com/NjabuloJf/fana-md/archive/refs/heads/main.zip", "_blank");
   };
 
   const deployToHeroku = () => {
-    window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/Njabulo-Jb", "_blank");
+    window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/fana-md", "_blank");
   };
 
   const deployToRender = () => {
