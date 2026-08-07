@@ -10,7 +10,7 @@ export function ButtonPair() {
   const handleCopyEnv = async () => {
     const envTemplate = `SESSION_ID="put your session id"
 AUTO_READ_STATUS=true
-STATUS_READ_MSG="Status Seen By me 𝐁𝐖𝐌-𝐗𝐌𝐃"
+STATUS_READ_MSG="Status Seen By me GWM-XMD"
 AUTO_STATUS_REPLY=false
 AUTO_REJECT_CALLS=false
 MODE="public"
@@ -41,7 +41,7 @@ STARTING_BOT_MESSAGE=yes
   const handleDownloadEnv = () => {
     const envContent = `SESSION_ID="put your session id"
 AUTO_READ_STATUS=true
-STATUS_READ_MSG="Status Seen By me 𝐁𝐖𝐌-𝐗𝐌𝐃"
+STATUS_READ_MSG="Status Seen By me GWM-XMD"
 AUTO_STATUS_REPLY=false
 AUTO_REJECT_CALLS=false
 MODE="public"
