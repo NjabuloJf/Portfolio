@@ -123,15 +123,15 @@ https://github.com/NjabuloJf/njabulo-ui-bot
   };
 
   const deployToHeroku = () => {
-    window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/njabulo-ui-bot", "_blank");
+    window.open("https://heroku.com/deploy?template=https://github.com/NjabuloJf/njabulo-uibot", "_blank");
   };
 
   const deployToRender = () => {
-    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/njabulo-ui-bot", "_blank");
+    window.open("https://render.com/deploy?repo=https://github.com/NjabuloJf/njabulo-uibot", "_blank");
   };
 
   const deployToVercel = () => {
-    window.open("https://vercel.com/new/clone?repository-url=https://github.com/NjabuloJf/njabulo-ui-bot", "_blank");
+    window.open("https://vercel.com/new/clone?repository-url=https://github.com/NjabuloJf/njabulo-uibot", "_blank");
   };
 
   const generateQRCode = () => {
@@ -143,11 +143,11 @@ https://github.com/NjabuloJf/njabulo-ui-bot
   };
 
   const viewGitHub = () => {
-    window.open("https://github.com/NjabuloJf/njabulo-ui-bot", "_blank");
+    window.open("https://github.com/NjabuloJf/njabulo-uibot", "_blank");
   };
 
   const generateCode = () => {
-    window.open("https://github.com/NjabuloJf/njabulo-ui-bot/generate", "_blank");
+    window.open("https://github.com/NjabuloJf/njabulo-uibot/generate", "_blank");
   };
 
   return (
