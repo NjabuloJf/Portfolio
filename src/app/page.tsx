@@ -388,7 +388,7 @@ function NotificationAds() {
       id: 1,
       type: "music",
       icon: <Music className="size-6 text-green-500" />,
-      title: "🎵 Listen to Njabulo Jb Music",
+      title: "🎵ʟɪsᴛᴇɴ ᴛᴏ ɴᴊᴀʙᴜʟᴏ ᴊʙ ᴍᴜsɪᴄ",
       description: "Enjoy the latest tracks",
       buttonText: "▶ Play Music",
       color: "from-green-600 to-emerald-600",
@@ -401,7 +401,7 @@ function NotificationAds() {
       id: 2,
       type: "download",
       icon: <Download className="size-6 text-blue-500" />,
-      title: "📱 Download Njabulo Jb App",
+      title: "📱ᴅᴏᴡɴʟᴏᴀᴅ ɴᴊᴀʙᴜʟᴏ ᴊʙ ᴀᴘᴘ",
       description: "Get the official Android app",
       buttonText: "⬇ Download APK",
       color: "from-blue-600 to-purple-600",
@@ -411,17 +411,17 @@ function NotificationAds() {
       id: 3,
       type: "channel",
       icon: <Bell className="size-6 text-yellow-500" />,
-      title: "🔔 Join Njabulo Jb Channel",
-      description: "Get notifications & updates on Telegram",
+      title: "🔔 ᴊᴏɪɴ ɴᴊᴀʙᴜʟᴏ ᴊʙ ᴄʜᴀɴɴᴇʟ",
+      description: "Get notifications & updates on WhatsApp",
       buttonText: "📢 Join Channel",
       color: "from-yellow-600 to-orange-600",
-      action: () => window.open("https://t.me/njabulojbbot", "_blank")
+      action: () => window.open("https://whatsapp.com/channel/0029VbC9yTmElah0BO3KD509", "_blank")
     },
     {
       id: 4,
       type: "whatsapp",
       icon: <MessageCircle className="size-6 text-green-500" />,
-      title: "💬 Message Owner on WhatsApp",
+      title: "💬 ᴍᴇssᴀɢᴇ ᴏᴡɴᴇʀ ᴏɴ ᴡʜᴀᴛsᴀᴘᴘ",
       description: "Chat directly with Njabulo Jb",
       buttonText: "📱 Contact Now",
       color: "from-green-600 to-teal-600",
@@ -431,17 +431,17 @@ function NotificationAds() {
       id: 5,
       type: "facebook",
       icon: <Facebook className="size-6 text-blue-500" />,
-      title: "📘 Follow on Facebook",
+      title: "📘 ғᴏʟʟᴏᴡ ᴏɴ ғᴀᴄᴇʙᴏᴏᴋ",
       description: "Stay updated on Facebook",
       buttonText: "👍 Follow Now",
       color: "from-blue-600 to-cyan-600",
-      action: () => window.open("https://facebook.com/njabulojb", "_blank")
+      action: () => window.open("https://www.facebook.com/profile.php?id=100094314013209", "_blank")
     },
     {
       id: 6,
       type: "bot",
       icon: <Bot className="size-6 text-indigo-500" />,
-      title: "🤖 Get Started with NJABULO JB Bot",
+      title: "🤖 ɢᴇᴛ sᴛᴀʀᴛᴇᴅ ᴡɪᴛʜ ɴᴊᴀʙᴜʟᴏ ᴊʙ ʙᴏᴛ",
       description: "Try the AI-powered WhatsApp bot",
       buttonText: "🚀 Start Bot",
       color: "from-indigo-600 to-purple-600",
@@ -451,7 +451,7 @@ function NotificationAds() {
       id: 7,
       type: "share",
       icon: <Share2 className="size-6 text-rose-500" />,
-      title: "📤 Share NJABULO JB Bot",
+      title: "📤sʜᴀʀᴇ ɴᴊᴀʙᴜʟᴏ ᴊʙ ʙᴏᴛ",
       description: "Share the bot with friends",
       buttonText: "📤 Share Now",
       color: "from-rose-600 to-pink-600",
@@ -472,7 +472,7 @@ function NotificationAds() {
       id: 8,
       type: "star",
       icon: <Star className="size-6 text-amber-500" />,
-      title: "⭐ Star NJABULO JB on GitHub",
+      title: "⭐sᴛᴀʀ ɴᴊᴀʙᴜʟᴏ ᴊʙ ᴏɴ ɢɪᴛʜᴜʙ",
       description: "Show your support with a star",
       buttonText: "⭐ Star Now",
       color: "from-amber-600 to-orange-600",
@@ -482,31 +482,31 @@ function NotificationAds() {
       id: 9,
       type: "video",
       icon: <Youtube className="size-6 text-red-500" />,
-      title: "🎬 How to Deploy Njabulo Jb Bot",
+      title: "🎬 ʜᴏᴡ ᴛᴏ ᴅᴇᴘʟᴏʏ ɴᴊᴀʙᴜʟᴏ ᴊʙ ʙᴏᴛ",
       description: "Watch the full deployment tutorial",
       buttonText: "▶ Watch Video",
       color: "from-red-600 to-rose-600",
-      action: () => window.open("/bot-ai", "_blank")
+      action: () => window.open("/video", "_blank")
     },
     {
       id: 10,
       type: "video",
       icon: <Video className="size-6 text-purple-500" />,
-      title: "📺 Telegram Bot Setup Guide",
+      title: "📺 ʜᴏᴡ ᴛᴏ ᴅᴇᴘʟᴏʏ ɴᴊᴀʙᴜʟᴏ ᴊʙ ʙᴏᴛ",
       description: "Learn how to create a Telegram bot",
       buttonText: "▶ Watch Tutorial",
       color: "from-purple-600 to-indigo-600",
-      action: () => window.open("/bot-ai", "_blank")
+      action: () => window.open("/video", "_blank")
     },
     {
       id: 11,
       type: "video",
       icon: <Film className="size-6 text-blue-500" />,
-      title: "🎥 Njabulo Jb Bot Features Overview",
+      title: "🎥 ɴᴊᴀʙᴜʟᴏ ᴊʙ ʙᴏᴛ ғᴇᴀᴛᴜʀᴇs ᴏᴠᴇʀᴠɪᴇᴡ",
       description: "Explore all bot features",
       buttonText: "▶ Watch Now",
       color: "from-blue-600 to-cyan-600",
-      action: () => window.open("/bot-ai", "_blank")
+      action: () => window.open("/video", "_blank")
     },
     {
       id: 12,
@@ -516,7 +516,7 @@ function NotificationAds() {
       description: "Claim your verified badge today",
       buttonText: "🎖️ Claim Badge",
       color: "from-yellow-600 to-amber-600",
-      action: () => window.open("https://t.me/njabulojb", "_blank")
+      action: () => window.open("https://www.facebook.com/profile.php?id=100094314013209", "_blank")
     }
   ];
 
@@ -726,13 +726,13 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
       </button>
       
       <a
-        href="/downloads/Njabulo-Jb.apk"
+        href="/video"
         download
         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/40 hover:from-blue-500/30 hover:to-purple-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
         aria-label="Download APK"
       >
         <Smartphone className="size-5 text-blue-500 group-hover:scale-110 transition-transform" />
-        <span className="text-sm font-medium text-blue-600 hidden sm:inline">Download APK</span>
+        <span className="text-sm font-medium text-blue-600 hidden sm:inline">Wach video</span>
       </a>
       
       <button
@@ -802,7 +802,7 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
 const carouselImages = [
   { src: "/images/image1.png", alt: "Njabulo Jb Project 1", link: "/business" },
   { src: "/images/image2.png", alt: "Njabulo Jb Project 2", link: "https://github.com/NjabuloJf/Njabulo-Jb" },
-  { src: "images/image3.png", alt: "Njabulo Jb Project 3", link: "https://github.com/NjabuloJf/GWM-XMD" },
+  { src: "images/image3.png", alt: "Njabulo Jb Project 3", link: "https://www.facebook.com/profile.php?id=100094314013209" },
   { src: "images/image4.png", alt: "Njabulo Jb Project 4", link: "https://t.me/njabulojbbot" },
   { src: "images/image5.png", alt: "Njabulo Jb Project 5", link: "https://wa.me/27791234567" },
 ];
