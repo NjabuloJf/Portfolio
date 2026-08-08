@@ -382,7 +382,7 @@ function NotificationAds() {
     "/song5.mp3"
   ];
 
-  // 🎯 12 Ads - Removed GWM-XMD and Njabulo UI, Added Video Notifications
+  // 🎯 12 Ads
   const ads = [
     {
       id: 1,
@@ -705,7 +705,7 @@ function SearchBar({ onSearch, searchQuery }: { onSearch: (query: string) => voi
   );
 }
 
-// Bottom Buttons Component
+// Bottom Buttons Component - Updated with Watch Video (No APK)
 function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
   const scrollToProjects = () => {
     const projectsSection = document.getElementById("projects");
@@ -725,15 +725,15 @@ function BottomButtons({ onOpenMusic }: { onOpenMusic: () => void }) {
         <span className="text-sm font-medium text-green-600 hidden sm:inline">Music Player</span>
       </button>
       
-      <a
+      {/* Watch Video Button - Replaced APK Download */}
+      <Link
         href="/video"
-        download
-        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/40 hover:from-blue-500/30 hover:to-purple-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
-        aria-label="Download APK"
+        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500/20 to-purple-500/20 border border-red-500/40 hover:from-red-500/30 hover:to-purple-500/30 transition-all duration-300 group shadow-lg backdrop-blur-sm"
+        aria-label="Watch Videos"
       >
-        <Smartphone className="size-5 text-blue-500 group-hover:scale-110 transition-transform" />
-        <span className="text-sm font-medium text-blue-600 hidden sm:inline">Wach video</span>
-      </a>
+        <Youtube className="size-5 text-red-500 group-hover:scale-110 transition-transform" />
+        <span className="text-sm font-medium text-red-600 hidden sm:inline">Watch Video</span>
+      </Link>
       
       <button
         onClick={scrollToProjects}
@@ -980,4 +980,4 @@ export default function Page() {
       )}
     </main>
   );
-            }
+        }
