@@ -10,7 +10,8 @@ import {
   Menu, ChevronDown, ChevronUp, Star, Award, Zap,
   Film, Video, Tv, Monitor, Smartphone, Tablet,
   TrendingUp, Flame, Sparkles, Crown, Diamond,
-  Maximize2, Minimize2, Volume2, VolumeX, PlayCircle
+  Maximize2, Minimize2, Volume2, VolumeX, PlayCircle,
+  CheckCircle, AlertCircle, Info
 } from "lucide-react";
 import BlurFade from "@/components/magicui/blur-fade";
 
@@ -20,6 +21,7 @@ type Video = {
   description: string;
   thumbnail: string;
   youtubeUrl: string;
+  embedUrl: string;
   views: number;
   likes: number;
   date: string;
@@ -31,6 +33,7 @@ type Video = {
   featured?: boolean;
   trending?: boolean;
   popular?: boolean;
+  isShort?: boolean;
 };
 
 export default function VideosPage() {
@@ -42,156 +45,54 @@ export default function VideosPage() {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [likedVideos, setLikedVideos] = useState<number[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLIFrameElement | null>(null);
 
-  // 🎬 Video Data - All YouTube Links
+  // 🎬 Video Data - Your Actual Videos
   const videos: Video[] = [
     {
       id: 1,
-      title: "🚀 How to Deploy Njabulo Jb Bot on VPS",
-      description: "Complete step-by-step tutorial on deploying Njabulo Jb WhatsApp bot on any VPS or hosting platform. Learn everything from installation to configuration.",
-      thumbnail: "/images/video1.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example1",
-      views: 15420,
-      likes: 843,
-      date: "2026-07-15",
-      duration: "12:34",
+      title: "🚀 How to Deploy NjabuloJb Minibot on Render Free 📡💬",
+      description: "Step by step tutorial on how to deploy NjabuloJb minibot on Render for free. Full guide with easy steps.",
+      thumbnail: "https://img.youtube.com/vi/_c6F4vGdJbU/maxresdefault.jpg",
+      youtubeUrl: "https://youtube.com/shorts/_c6F4vGdJbU",
+      embedUrl: "https://www.youtube.com/embed/_c6F4vGdJbU",
+      views: 2,
+      likes: 1,
+      date: "2025-09-01",
+      duration: "0:45",
       category: "Tutorial",
-      tags: ["deployment", "vps", "whatsapp-bot", "njabulo-jb"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb",
+      tags: ["deploy", "render", "minibot", "whatsapp-bot", "free"],
+      channel: "Njabulo-JB Office",
+      channelLink: "https://www.youtube.com/@Njabulo-JBOffice",
       featured: true,
       trending: true,
-      popular: true
+      popular: true,
+      isShort: true
     },
     {
       id: 2,
-      title: "🤖 Telegram Bot Setup & Deployment Guide",
-      description: "Learn how to create and deploy your own Telegram bot from scratch. Includes bot creation, API setup, and advanced features.",
-      thumbnail: "/images/video2.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example2",
-      views: 8930,
-      likes: 512,
-      date: "2026-07-20",
-      duration: "15:21",
+      title: "📹 How to Deploy Njabulo JB Simple WhatsApp Bot on Heroku",
+      description: "Watch video now! Complete guide to deploy Njabulo JB WhatsApp bot on Heroku with simple steps.",
+      thumbnail: "https://img.youtube.com/vi/yuFuKu9SUIM/maxresdefault.jpg",
+      youtubeUrl: "https://youtu.be/yuFuKu9SUIM",
+      embedUrl: "https://www.youtube.com/embed/yuFuKu9SUIM",
+      views: 74,
+      likes: 4,
+      date: "2024-12-26",
+      duration: "8:42",
       category: "Tutorial",
-      tags: ["telegram", "bot", "deployment", "api"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb",
-      trending: true
-    },
-    {
-      id: 3,
-      title: "⚡ Njabulo Jb Bot - Full Features Overview",
-      description: "Explore all the powerful features of Njabulo Jb WhatsApp bot. From AI chat to media downloader, see everything in action.",
-      thumbnail: "/images/video3.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example3",
-      views: 12450,
-      likes: 721,
-      date: "2026-07-25",
-      duration: "18:45",
-      category: "Features",
-      tags: ["features", "whatsapp-bot", "ai", "demo"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb",
+      tags: ["heroku", "deploy", "whatsapp-bot", "njabulo-jb"],
+      channel: "Njabulo-JB Office",
+      channelLink: "https://www.youtube.com/@Njabulo-JBOffice",
       featured: true,
+      trending: true,
       popular: true
-    },
-    {
-      id: 4,
-      title: "🔧 Telegram Bot Advanced Commands & Automation",
-      description: "Master advanced Telegram bot commands, automation, and integration techniques. Take your bot to the next level.",
-      thumbnail: "/images/video4.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example4",
-      views: 6720,
-      likes: 389,
-      date: "2026-07-28",
-      duration: "14:02",
-      category: "Advanced",
-      tags: ["telegram", "advanced", "commands", "automation"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb"
-    },
-    {
-      id: 5,
-      title: "💡 WhatsApp Bot Best Practices & Tips",
-      description: "Learn the best practices for running a successful WhatsApp bot. Includes security, performance, and user engagement tips.",
-      thumbnail: "/images/video5.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example5",
-      views: 10580,
-      likes: 634,
-      date: "2026-08-01",
-      duration: "10:56",
-      category: "Tips",
-      tags: ["best-practices", "whatsapp", "security", "performance"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb",
-      trending: true
-    },
-    {
-      id: 6,
-      title: "🎨 Njabulo UI Bot - Complete Walkthrough",
-      description: "A complete walkthrough of the Njabulo UI Bot. Learn how to use the UI, generate code, and deploy your bots.",
-      thumbnail: "/images/video6.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example6",
-      views: 5420,
-      likes: 312,
-      date: "2026-08-03",
-      duration: "22:18",
-      category: "Walkthrough",
-      tags: ["ui", "bot", "walkthrough", "code-generation"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb"
-    },
-    {
-      id: 7,
-      title: "📱 Building WhatsApp Bot from Scratch",
-      description: "Build a WhatsApp bot from scratch using Node.js. Covers everything from setup to deployment.",
-      thumbnail: "/images/video7.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example7",
-      views: 7890,
-      likes: 456,
-      date: "2026-08-05",
-      duration: "25:43",
-      category: "Tutorial",
-      tags: ["build", "nodejs", "whatsapp-bot", "scratch"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb",
-      popular: true
-    },
-    {
-      id: 8,
-      title: "🤖 AI-Powered Chatbot Integration",
-      description: "Integrate AI chatbots into your WhatsApp and Telegram bots. Use OpenAI and other AI services.",
-      thumbnail: "/images/video8.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example8",
-      views: 6540,
-      likes: 423,
-      date: "2026-08-07",
-      duration: "16:32",
-      category: "AI",
-      tags: ["ai", "chatbot", "openai", "integration"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb"
-    },
-    {
-      id: 9,
-      title: "🛡️ Securing Your WhatsApp Bot",
-      description: "Learn how to secure your WhatsApp bot from attacks, spam, and unauthorized access.",
-      thumbnail: "/images/video9.jpg",
-      youtubeUrl: "https://www.youtube.com/watch?v=example9",
-      views: 4320,
-      likes: 278,
-      date: "2026-08-08",
-      duration: "11:45",
-      category: "Security",
-      tags: ["security", "protection", "anti-spam", "encryption"],
-      channel: "Njabulo Jb Tech",
-      channelLink: "https://www.youtube.com/@njabulojb"
     }
   ];
 
   // Categories
-  const categories = ["All", "Tutorial", "Features", "Advanced", "Tips", "Walkthrough", "AI", "Security"];
+  const categories = ["All", "Tutorial", "Deployment", "WhatsApp Bot", "Heroku", "Render"];
 
   // Filter videos
   const filteredVideos = videos.filter(video => {
@@ -212,7 +113,6 @@ export default function VideosPage() {
 
   // Featured videos
   const featuredVideos = videos.filter(v => v.featured);
-  const popularVideos = videos.filter(v => v.popular);
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -226,8 +126,14 @@ export default function VideosPage() {
     );
   };
 
-  const openYouTube = (url: string) => {
-    window.open(url, "_blank");
+  const openVideo = (video: Video) => {
+    setSelectedVideo(video);
+    setIsPlaying(true);
+  };
+
+  const closeVideo = () => {
+    setSelectedVideo(null);
+    setIsPlaying(false);
   };
 
   return (
@@ -337,6 +243,25 @@ export default function VideosPage() {
             </div>
           )}
 
+          {/* Channel Info */}
+          <div className="flex items-center gap-4 p-3 bg-white border border-slate-200 rounded-xl shadow-sm mb-4">
+            <div className="p-2 bg-red-500/10 rounded-xl">
+              <Youtube className="size-6 text-red-500" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-slate-800 text-sm">Njabulo-JB Office</h3>
+              <p className="text-xs text-slate-500">11 subscribers • 4 videos</p>
+            </div>
+            <a
+              href="https://www.youtube.com/@Njabulo-JBOffice"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto px-4 py-1.5 bg-red-500 text-white rounded-lg text-xs font-medium hover:bg-red-600 transition-all shadow-md hover:shadow-lg"
+            >
+              Sᴜʙsᴄʀɪʙᴇ
+            </a>
+          </div>
+
           {/* Results Count */}
           <p className="text-sm text-slate-500 mb-4">
             {sortedVideos.length} ᴠɪᴅᴇᴏs ғᴏᴜɴᴅ
@@ -356,15 +281,18 @@ export default function VideosPage() {
                   <div
                     key={video.id}
                     className="group relative rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-red-500/50 hover:shadow-xl transition-all duration-500 cursor-pointer"
-                    onClick={() => openYouTube(video.youtubeUrl)}
+                    onClick={() => openVideo(video)}
                   >
                     <div className="relative aspect-video bg-gradient-to-br from-red-100 to-purple-100">
-                      <div className="w-full h-full flex flex-col items-center justify-center">
-                        <div className="text-6xl mb-3 group-hover:scale-110 transition-transform duration-300">▶️</div>
-                        <h3 className="text-lg font-bold text-slate-800 px-6 text-center line-clamp-2">{video.title}</h3>
-                        <p className="text-sm text-slate-600 px-6 text-center line-clamp-1 mt-1">{video.category}</p>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                         <div className="w-20 h-20 rounded-full bg-red-600/95 flex items-center justify-center hover:bg-red-700 transition-all cursor-pointer shadow-2xl shadow-red-500/30 transform group-hover:scale-110 transition-transform duration-300">
                           <Play className="size-10 text-white ml-1" />
                         </div>
@@ -372,16 +300,16 @@ export default function VideosPage() {
                       <div className="absolute bottom-3 right-3 bg-black/80 px-3 py-1 rounded-lg text-xs text-white backdrop-blur-sm">
                         {video.duration}
                       </div>
+                      {video.isShort && (
+                        <div className="absolute top-3 left-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                          <Zap className="size-3" />
+                          Short
+                        </div>
+                      )}
                       {video.trending && (
                         <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
                           <Flame className="size-3" />
                           Trending
-                        </div>
-                      )}
-                      {video.popular && (
-                        <div className="absolute top-3 left-3 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-[10px] px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                          <TrendingUp className="size-3" />
-                          Popular
                         </div>
                       )}
                     </div>
@@ -402,18 +330,16 @@ export default function VideosPage() {
                           {video.date}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 mt-2">
-                        <a
-                          href={video.channelLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-[10px] text-blue-500 hover:text-blue-600 transition-colors hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Youtube className="size-3 text-red-500" />
-                          {video.channel}
-                        </a>
-                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openVideo(video);
+                        }}
+                        className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg text-xs font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
+                      >
+                        <Play className="size-3" />
+                        ᴡᴀᴛᴄʜ ɴᴏᴡ
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -437,20 +363,18 @@ export default function VideosPage() {
                   }`}
                   onMouseEnter={() => setHoveredVideo(video.id)}
                   onMouseLeave={() => setHoveredVideo(null)}
-                  onClick={() => openYouTube(video.youtubeUrl)}
+                  onClick={() => openVideo(video)}
                 >
                   {/* Thumbnail */}
                   <div className={`relative ${viewMode === "list" ? "w-56 flex-shrink-0" : "aspect-video"} bg-gradient-to-br from-red-100 to-purple-100 cursor-pointer`}>
-                    <div className="w-full h-full flex flex-col items-center justify-center">
-                      <div className={`${viewMode === "list" ? "text-4xl" : "text-5xl"} mb-2 group-hover:scale-110 transition-transform duration-300`}>
-                        ▶️
-                      </div>
-                      {viewMode === "list" ? (
-                        <p className="text-xs text-slate-600 px-3 text-center line-clamp-2">{video.title}</p>
-                      ) : (
-                        <p className="text-xs text-slate-600 px-3 text-center line-clamp-1">{video.category}</p>
-                      )}
-                    </div>
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
                     {hoveredVideo === video.id && (
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity duration-300">
                         <div className="w-16 h-16 rounded-full bg-red-600/95 flex items-center justify-center hover:bg-red-700 transition-all cursor-pointer shadow-2xl shadow-red-500/30 transform group-hover:scale-110 transition-transform duration-300">
@@ -461,16 +385,16 @@ export default function VideosPage() {
                     <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 rounded-lg text-[10px] text-white backdrop-blur-sm">
                       {video.duration}
                     </div>
+                    {video.isShort && (
+                      <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[9px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
+                        <Zap className="size-2.5" />
+                        Short
+                      </div>
+                    )}
                     {video.trending && !video.featured && (
                       <div className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[9px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
                         <Flame className="size-2.5" />
                         Trending
-                      </div>
-                    )}
-                    {video.popular && !video.featured && !video.trending && (
-                      <div className="absolute top-2 left-2 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-[9px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
-                        <TrendingUp className="size-2.5" />
-                        Popular
                       </div>
                     )}
                   </div>
@@ -512,19 +436,6 @@ export default function VideosPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 mt-2">
-                      <a
-                        href={video.channelLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-[10px] text-blue-500 hover:text-blue-600 transition-colors hover:underline"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Youtube className="size-3 text-red-500" />
-                        {video.channel}
-                      </a>
-                    </div>
-
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1 mt-2">
                       {video.tags.slice(0, 3).map((tag, idx) => (
@@ -539,17 +450,15 @@ export default function VideosPage() {
                       )}
                     </div>
 
-                    {/* YouTube Button */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        openYouTube(video.youtubeUrl);
+                        openVideo(video);
                       }}
                       className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg text-xs font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
                     >
-                      <Youtube className="size-3" />
-                      ᴡᴀᴛᴄʜ ᴏɴ ʏᴏᴜᴛᴜʙᴇ
-                      <ExternalLink className="size-3" />
+                      <Play className="size-3" />
+                      ᴡᴀᴛᴄʜ ɴᴏᴡ
                     </button>
                   </div>
                 </div>
@@ -564,54 +473,6 @@ export default function VideosPage() {
           )}
         </BlurFade>
 
-        {/* Popular Videos Section */}
-        {popularVideos.length > 0 && searchQuery === "" && selectedCategory === "All" && (
-          <BlurFade delay={0.14}>
-            <div className="mt-10">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800">
-                <TrendingUp className="size-5 text-green-500" />
-                ᴘᴏᴘᴜʟᴀʀ ᴠɪᴅᴇᴏs
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {popularVideos.slice(0, 4).map((video) => (
-                  <div
-                    key={video.id}
-                    className="group rounded-xl overflow-hidden bg-white border border-slate-200 hover:border-red-500/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
-                    onClick={() => openYouTube(video.youtubeUrl)}
-                  >
-                    <div className="relative aspect-video bg-gradient-to-br from-red-100 to-purple-100">
-                      <div className="w-full h-full flex items-center justify-center">
-                        <div className="text-3xl group-hover:scale-110 transition-transform duration-300">▶️</div>
-                      </div>
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-red-600/90 flex items-center justify-center hover:bg-red-700 transition-all">
-                          <Play className="size-6 text-white ml-0.5" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-0.5 rounded text-[10px] text-white">
-                        {video.duration}
-                      </div>
-                    </div>
-                    <div className="p-3">
-                      <h4 className="font-semibold text-xs text-slate-800 line-clamp-1">{video.title}</h4>
-                      <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-400">
-                        <div className="flex items-center gap-0.5">
-                          <Eye className="size-2.5" />
-                          {formatNumber(video.views)}
-                        </div>
-                        <div className="flex items-center gap-0.5">
-                          <Heart className="size-2.5" />
-                          {formatNumber(video.likes)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </BlurFade>
-        )}
-
         {/* Footer */}
         <BlurFade delay={0.16}>
           <div className="text-center pt-8 mt-10 border-t border-slate-200">
@@ -619,12 +480,12 @@ export default function VideosPage() {
               <Youtube className="size-4 text-red-500" />
               <span>ᴘᴏᴡᴇʀᴇᴅ ʙʏ</span>
               <a
-                href="https://www.youtube.com/@njabulojb"
+                href="https://www.youtube.com/@Njabulo-JBOffice"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-red-500 hover:text-red-600 hover:underline transition-colors"
               >
-                Njabulo Jb Tech
+                Njabulo-JB Office
               </a>
               <span className="text-slate-300">•</span>
               <span className="text-slate-400">© 2026</span>
@@ -632,6 +493,80 @@ export default function VideosPage() {
           </div>
         </BlurFade>
 
+        {/* Video Player Modal */}
+        {selectedVideo && (
+          <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl">
+              {/* Close Button */}
+              <button
+                onClick={closeVideo}
+                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
+              >
+                <X className="size-6" />
+              </button>
+
+              {/* Video Title */}
+              <div className="absolute top-4 left-4 z-10">
+                <h3 className="text-white font-semibold text-sm line-clamp-1 max-w-[70%]">
+                  {selectedVideo.title}
+                </h3>
+                <p className="text-white/60 text-xs">{selectedVideo.channel}</p>
+              </div>
+
+              {/* Video Player */}
+              <div className="aspect-video w-full">
+                <iframe
+                  ref={videoRef}
+                  src={`${selectedVideo.embedUrl}?autoplay=1&rel=0&modestbranding=1`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  frameBorder="0"
+                />
+              </div>
+
+              {/* Video Info */}
+              <div className="p-4 bg-black/80 backdrop-blur-sm">
+                <div className="flex items-center gap-4 text-xs text-white/60">
+                  <div className="flex items-center gap-1">
+                    <Eye className="size-3" />
+                    {formatNumber(selectedVideo.views)} views
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <ThumbsUp className="size-3" />
+                    {formatNumber(selectedVideo.likes)} likes
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="size-3" />
+                    {selectedVideo.date}
+                  </div>
+                  {selectedVideo.isShort && (
+                    <span className="px-2 py-0.5 bg-purple-500/30 text-purple-300 rounded-full text-[10px]">
+                      Short
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {selectedVideo.tags.map((tag, idx) => (
+                    <span key={idx} className="text-[9px] px-2 py-0.5 bg-white/10 text-white/50 rounded-full">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+                <a
+                  href={selectedVideo.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-2 text-xs text-red-400 hover:text-red-300 transition-colors"
+                >
+                  <Youtube className="size-3" />
+                  ᴏᴘᴇɴ ᴏɴ ʏᴏᴜᴛᴜʙᴇ
+                  <ExternalLink className="size-3" />
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
