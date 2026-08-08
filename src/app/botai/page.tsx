@@ -14,7 +14,8 @@ import {
   Play, Pause, Volume2, VolumeX, Maximize,
   CheckCircle, ArrowRight, Home, Search,
   Menu, X, Filter, Grid3x3, List, ArrowLeft,
-  Layout, Code, Terminal
+  Layout, Code, Terminal, Eye, ThumbsUp, Calendar,
+  Clock, Heart
 } from "lucide-react";
 import { DATA } from "@/data/resume";
 
@@ -24,6 +25,11 @@ type SlideImage = {
   alt: string;
   title: string;
   description: string;
+  views: number;
+  likes: number;
+  date: string;
+  channel: string;
+  channelLink: string;
 };
 
 type BotData = {
@@ -44,45 +50,71 @@ export default function BotAIPage() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Slide images with correct paths
+  // 🎬 YouTube Videos with views, likes, and channel info
   const slides: SlideImage[] = [
     {
       id: 1,
-      src: "/images/image1.png",
-      alt: "Njabulo Jb Bot AI",
-      title: "Njabulo Jb Bot AI",
-      description: "The most powerful WhatsApp bot with advanced AI capabilities"
+      src: "/images/song1.mp4",
+      alt: "How to Deploy Njabulo Jb Bot",
+      title: "🚀 How to Deploy Njabulo Jb Bot",
+      description: "Step by step guide to deploy your own Njabulo Jb WhatsApp bot on VPS or hosting",
+      views: 15420,
+      likes: 843,
+      date: "2026-07-15",
+      channel: "Njabulo Jb Tech",
+      channelLink: "https://www.youtube.com/@njabulojb"
     },
     {
       id: 2,
-      src: "/images/image2.png",
-      alt: "GWM-XMD Bot",
-      title: "GWM-XMD Bot",
-      description: "Next generation WhatsApp bot with premium features"
+      src: "/images/song2.mp4",
+      alt: "Telegram Bot Setup Guide",
+      title: "🤖 Telegram Bot Setup & Deployment Guide",
+      description: "Complete tutorial on how to create and deploy your own Telegram bot",
+      views: 8930,
+      likes: 512,
+      date: "2026-07-20",
+      channel: "Njabulo Jb Tech",
+      channelLink: "https://www.youtube.com/@njabulojb"
     },
     {
       id: 3,
-      src: "/images/image3.png",
-      alt: "Njabulo Jb Telegram Bot",
-      title: "Njabulo Jb Telegram Bot",
-      description: "Advanced Telegram bot with channel management"
+      src: "/images/song3.mp4",
+      alt: "Njabulo Jb Bot Features",
+      title: "⚡ Njabulo Jb Bot - Full Features Overview",
+      description: "Explore all the powerful features of Njabulo Jb WhatsApp bot",
+      views: 12450,
+      likes: 721,
+      date: "2026-07-25",
+      channel: "Njabulo Jb Tech",
+      channelLink: "https://www.youtube.com/@njabulojb"
     },
     {
       id: 4,
-      src: "/images/image4.png",
-      alt: "AI Assistant",
-      title: "AI Assistant",
-      description: "Intelligent AI powered by Njabulo Jb"
+      src: "/images/song4.mp4",
+      alt: "Telegram Bot Advanced Commands",
+      title: "🔧 Telegram Bot Advanced Commands & Automation",
+      description: "Learn advanced Telegram bot commands and automation techniques",
+      views: 6720,
+      likes: 389,
+      date: "2026-07-28",
+      channel: "Njabulo Jb Tech",
+      channelLink: "https://www.youtube.com/@njabulojb"
     },
     {
       id: 5,
-      src: "/images/image5.png",
-      alt: "Bot Ecosystem",
-      title: "Bot Ecosystem",
-      description: "Complete ecosystem of bots and tools"
+      src: "/images/song5.mp4",
+      alt: "WhatsApp Bot Best Practices",
+      title: "💡 WhatsApp Bot Best Practices & Tips",
+      description: "Best practices for running a successful WhatsApp bot",
+      views: 10580,
+      likes: 634,
+      date: "2026-08-01",
+      channel: "Njabulo Jb Tech",
+      channelLink: "https://www.youtube.com/@njabulojb"
     }
   ];
 
+  // 🎯 Bots - Removed GWM-XMD and Njabulo UI Bot
   const bots: BotData[] = [
     {
       id: 1,
@@ -103,23 +135,6 @@ export default function BotAIPage() {
     },
     {
       id: 2,
-      name: "ɢᴡᴍ-xᴍᴅ",
-      icon: <Zap className="size-6 text-purple-500" />,
-      color: "from-purple-500/10 to-pink-500/10",
-      description: "Next generation WhatsApp bot with enhanced security, faster response, and premium features.",
-      features: ["Enhanced security", "Faster response", "Premium features", "24/7 uptime", "Web dashboard", "Analytics tracking"],
-      rules: [
-        "Premium features require activation",
-        "Keep your session ID secure",
-        "Do not share API keys",
-        "Use responsibly",
-        "Respect privacy of others"
-      ],
-      image: "/images/image3.png",
-      link: "/gwmxmd"
-    },
-    {
-      id: 3,
       name: "ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ",
       icon: <Send className="size-6 text-blue-500" />,
       color: "from-blue-500/10 to-cyan-500/10",
@@ -135,23 +150,22 @@ export default function BotAIPage() {
       image: "/images/image4.png",
       link: "/njabulo-telegrambot"
     },
-    // 🆕 Njabulo UI Bot - NEW
     {
-      id: 4,
-      name: "ɴᴊᴀʙᴜʟᴏ UI ʙᴏᴛ",
-      icon: <Layout className="size-6 text-purple-500" />,
-      color: "from-purple-500/10 to-pink-500/10",
-      description: "UI Bot with code generation, deployment tools, and WhatsApp/Telegram bot creation.",
-      features: ["Code generation", "Deployment tools", "UI components", "Bot creation", "API integration", "Dark/Light mode"],
+      id: 3,
+      name: "ɴᴊᴀʙᴜʟᴏ ᴛᴇʟᴇɢʀᴀᴍ ᴄʜᴀɴɴᴇʟ",
+      icon: <Users className="size-6 text-yellow-500" />,
+      color: "from-yellow-500/10 to-amber-500/10",
+      description: "Join Njabulo Jb Telegram channel for updates, news, and community support.",
+      features: ["Daily updates", "Community support", "Bot announcements", "Tips & tricks", "Exclusive content", "Direct support"],
       rules: [
-        "Use code responsibly",
-        "Respect intellectual property",
-        "No malicious code generation",
-        "Follow community guidelines",
-        "Report bugs to support"
+        "Be respectful to others",
+        "No offensive language",
+        "Stay on topic",
+        "No spam or self-promotion",
+        "Follow channel guidelines"
       ],
-      image: "/images/image5.png",
-      link: "/njabulo-uibot"
+      image: "/images/image2.png",
+      link: "https://t.me/njabulojbbot"
     }
   ];
 
@@ -174,7 +188,7 @@ export default function BotAIPage() {
 
   useEffect(() => {
     if (isPlaying) {
-      const timer = setInterval(nextSlide, 4000);
+      const timer = setInterval(nextSlide, 5000);
       return () => clearInterval(timer);
     }
   }, [isPlaying, currentSlide]);
@@ -185,6 +199,13 @@ export default function BotAIPage() {
 
   const clearSearch = () => {
     setSearchQuery("");
+  };
+
+  // Format number with K/M
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
   };
 
   return (
@@ -215,7 +236,7 @@ export default function BotAIPage() {
             <div className="w-[100px] hidden md:block" />
           </div>
 
-          {/* Search Bar with "Jb bot Ai" placeholder */}
+          {/* Search Bar */}
           <div className="relative max-w-md mx-auto mb-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
@@ -238,10 +259,10 @@ export default function BotAIPage() {
           <p className="text-muted-foreground text-center text-sm mb-2">ᴡʜᴀᴛsᴀᴘᴘ & ᴛᴇʟᴇɢʀᴀᴍ ʙᴏᴛ ᴇᴄᴏsʏsᴛᴇᴍ</p>
         </BlurFade>
 
-        {/* Image Slider */}
+        {/* 🎬 YouTube Video Slider with Views & Likes */}
         <BlurFade delay={0.08}>
           <div className="relative rounded-2xl overflow-hidden bg-card/50 border border-border mb-8">
-            <div className="relative h-64 md:h-80">
+            <div className="relative h-72 md:h-96">
               {slides.map((slide, index) => (
                 <div
                   key={slide.id}
@@ -251,22 +272,50 @@ export default function BotAIPage() {
                       : "opacity-0 scale-95"
                   }`}
                 >
-                  <div className="w-full h-full bg-gradient-to-r from-primary/20 to-purple-500/20 flex items-center justify-center">
-                    <img
-                      src={slide.src}
-                      alt={slide.alt}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.parentElement!.innerHTML = `
-                          <div class="text-center p-8">
-                            <div class="text-6xl mb-4">🤖</div>
-                            <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-2">${slide.title}</h2>
-                            <p class="text-muted-foreground text-lg">${slide.description}</p>
+                  <div className="w-full h-full bg-gradient-to-br from-primary/10 to-purple-500/20 flex flex-col items-center justify-center p-6">
+                    {/* YouTube Video Thumbnail */}
+                    <div className="relative w-full max-w-3xl h-48 md:h-56 rounded-xl overflow-hidden bg-black/10">
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-red-500/20 to-purple-500/20">
+                        <div className="text-6xl mb-2">▶️</div>
+                        <h3 className="text-xl md:text-2xl font-bold text-foreground text-center px-4">
+                          {slide.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm text-center px-4 mt-1 max-w-2xl">
+                          {slide.description}
+                        </p>
+                        {/* Play button overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-16 h-16 rounded-full bg-red-600/90 flex items-center justify-center hover:bg-red-700 transition-colors cursor-pointer shadow-2xl">
+                            <Play className="size-8 text-white ml-1" />
                           </div>
-                        `;
-                      }}
-                    />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Video Stats */}
+                    <div className="flex flex-wrap items-center justify-center gap-4 mt-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Eye className="size-3" />
+                        <span>{formatNumber(slide.views)} views</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <ThumbsUp className="size-3" />
+                        <span>{formatNumber(slide.likes)} likes</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="size-3" />
+                        <span>{slide.date}</span>
+                      </div>
+                      <a
+                        href={slide.channelLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors hover:underline"
+                      >
+                        <Youtube className="size-3 text-red-500" />
+                        <span>{slide.channel}</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -275,19 +324,27 @@ export default function BotAIPage() {
             {/* Slide Controls */}
             <button
               onClick={prevSlide}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm"
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm z-10"
             >
               <ChevronLeft className="size-5" />
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm z-10"
             >
               <ChevronRight className="size-5" />
             </button>
 
+            {/* Play/Pause Button */}
+            <button
+              onClick={togglePlay}
+              className="absolute top-4 left-4 p-2 rounded-full bg-white border border-border text-foreground hover:bg-gray-50 transition-colors shadow-sm z-10"
+            >
+              {isPlaying ? <Pause className="size-4" /> : <Play className="size-4" />}
+            </button>
+
             {/* Slide Indicators */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
               {slides.map((_, index) => (
                 <button
                   key={index}
@@ -302,15 +359,15 @@ export default function BotAIPage() {
             </div>
 
             {/* Slide Counter */}
-            <div className="absolute top-4 right-4 bg-white border border-border text-xs text-muted-foreground px-3 py-1 rounded-full shadow-sm">
+            <div className="absolute top-4 right-4 bg-white border border-border text-xs text-muted-foreground px-3 py-1 rounded-full shadow-sm z-10">
               {currentSlide + 1} / {slides.length}
             </div>
           </div>
         </BlurFade>
 
-        {/* Bots Section - Now with 4 bots (including Njabulo UI Bot) */}
+        {/* Bots Section - Now with 3 bots */}
         <BlurFade delay={0.12}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {filteredBots.length > 0 ? (
               filteredBots.map((bot) => (
                 <div
@@ -342,7 +399,7 @@ export default function BotAIPage() {
                           e.currentTarget.style.display = 'none';
                           e.currentTarget.parentElement!.innerHTML = `
                             <div class="text-3xl">
-                              ${bot.id === 1 ? "💬" : bot.id === 2 ? "⚡" : bot.id === 3 ? "✈️" : "🎨"}
+                              ${bot.id === 1 ? "💬" : bot.id === 2 ? "✈️" : "📢"}
                             </div>
                           `;
                         }}
@@ -391,20 +448,32 @@ export default function BotAIPage() {
                     )}
                   </div>
 
-                  {/* Button - White background */}
+                  {/* Button */}
                   <div className="p-4">
-                    <Link
-                      href={bot.link}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-all text-sm font-medium text-gray-700 shadow-sm"
-                    >
-                      ᴠɪᴇᴡ ʙᴏᴛ
-                      <ArrowRight className="size-4" />
-                    </Link>
+                    {bot.id === 3 ? (
+                      <a
+                        href={bot.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-all text-sm font-medium text-gray-700 shadow-sm"
+                      >
+                        ᴊᴏɪɴ ᴄʜᴀɴɴᴇʟ
+                        <ArrowRight className="size-4" />
+                      </a>
+                    ) : (
+                      <Link
+                        href={bot.link}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-border rounded-lg hover:bg-gray-50 transition-all text-sm font-medium text-gray-700 shadow-sm"
+                      >
+                        ᴠɪᴇᴡ ʙᴏᴛ
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))
             ) : (
-              <div className="col-span-4 text-center py-12 text-muted-foreground">
+              <div className="col-span-3 text-center py-12 text-muted-foreground">
                 <Bot className="size-12 mx-auto mb-3 text-muted-foreground/50" />
                 <p>ɴᴏ ʙᴏᴛs ғᴏᴜɴᴅ ғᴏʀ "{searchQuery}"</p>
               </div>
@@ -433,4 +502,4 @@ export default function BotAIPage() {
       </div>
     </div>
   );
-  }
+      }
