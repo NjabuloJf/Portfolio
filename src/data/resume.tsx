@@ -82,7 +82,7 @@ export const DATA = {
   work: [
     {
       company: "ᴏᴡɴᴇʀ ɴᴀᴍᴇ",
-      href: "/repository.html",
+      href: "/repository",
       badges: [],
       location: "Botswana",
       title: "ᴍʏ ɴᴀᴍᴇ ɪs ɴᴊᴀʙᴜʟᴏ",
@@ -106,7 +106,7 @@ export const DATA = {
     },
     {
       company: "ᴍʏ ᴄᴏᴜɴᴛʀʏ",
-      href: "/repository.html",
+      href: "/njabulobot",
       badges: [],
       location: "Toronto, ON",
       title: "ʙᴏᴛsᴡᴀɴᴀ ᴀɴᴅ ᴢɪᴍʙᴀʙᴡᴇ",
@@ -131,7 +131,7 @@ export const DATA = {
   projects: [
     {
       title: "ɴᴊᴀʙᴜʟᴏ-ᴊʙ ʙᴏᴛ",
-      href: "/botai",
+      href: "/njabulobot",
       dates: "last update February 2026 version ^4.12.9¬",
       active: true,
       description:
